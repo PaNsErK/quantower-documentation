@@ -56,6 +56,26 @@ class FractalZonesSourceDriftTests(unittest.TestCase):
         source = 'private static readonly string Name = "Re" + "testConfirmationMinutes";'
         self.assertEqual("RetestConfirmationMinutes", drift.resolve_string_symbols(source)["Name"])
 
+    def test_terminal_fzrui_source_contracts_are_required(self) -> None:
+        indicator = '''
+            new SettingItemDouble("InactiveStateOpacity", 0.35, 660) {
+                Minimum = 0.10, Maximum = 1.00, Increment = 0.05, DecimalPlaces = 2
+            });
+            new SettingItemDateTime("CalculationStartTime", value, 830) {
+                UseEnabilityToggler = true, Enabled = calculationStartTimeUtc.HasValue
+            });
+        '''
+        host_tests = '''
+            ActiveFocusOpacityUsesTwoDecimalHostMetadata();
+            opacity.Value - 0.35; opacity.Increment - 0.05; opacity.DecimalPlaces == 2;
+            CalculationStartTime setting.UseEnabilityToggler;
+            ExplicitCalculationStartRemainsUtcStable();
+            ClearingCalculationStartReturnsToInitialRangeMode();
+        '''
+        drift.validate_fzrui_contracts(indicator, host_tests)
+        with self.assertRaises(drift.SourceContractError):
+            drift.validate_fzrui_contracts(indicator.replace("DecimalPlaces = 2", ""), host_tests)
+
 
 if __name__ == "__main__":
     unittest.main()

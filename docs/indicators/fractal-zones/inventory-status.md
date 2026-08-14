@@ -10,7 +10,7 @@
 | `HelpLink` / nativer Menüort | `not_available_empty_getter` | Die API ist vorhanden, Fractal Zones liefert aktuell aber keinen Link; der native Befehl ist deshalb nicht nutzbar. |
 | Sichtbarkeitszweige | `runtime_inventory_confirmed` | Drei Break-Modi, drei Rendering-Modi und beide Calculation-Range-Modi wurden geschlossen verglichen. |
 | Sanitisiertes Quell-Drift-Gate | `current_source_validated_sanitized` | Geschlossene Produktfakten werden lokal geprüft; private Pfade, Quelltext, Commits und Roh-Hashes werden nicht veröffentlicht. |
-| Uneingeschränkte Quantower-UI-Behauptung | `false` | Eine Produktkorrektur und eine Hostdarstellungs-Bestätigung bleiben offen. |
+| Uneingeschränkte Quantower-UI-Behauptung | `false` | Die beiden gezielten FZRUI-Befunde sind geschlossen; der vollständige manuelle Quantower-Abnahmetest bleibt offen. |
 
 ## Bestätigte `base.Settings`-Union
 
@@ -42,11 +42,11 @@ Es erschienen keine zusätzlichen `LinesSeries`- oder `LinesLevels`-Gruppen.
 | Fixed initial history days | Initial range, Calculation start, Replay checkpoint, Verify und Cancel | – |
 | Chart loaded range plus warm-up | nur Calculation range mode aus der Produktgruppe History | die fünf übrigen History-Zeilen |
 
-## Begrenzte Runtime-Residuals
+## Geschlossene Runtime-Befunde
 
-1. **FZRUI-01 – `root_cause_confirmed_fix_pending`:** Der temporär geöffnete Zweig zeigte `0`, obwohl Quelle und Manifest `0,35` definieren. Die statische Analyse bestätigt, dass im zugehörigen `SettingItemDouble` die Dezimaldarstellungs-Konfiguration fehlt, während vergleichbare Double-Settings zwei Dezimalstellen deklarieren und testen. Das ist eine separate Produktkorrektur; `0,35` bleibt der dokumentierte Quellstandard.
-2. **FZRUI-02 – `host_presentation_runtime_confirmation_pending`:** Quellcode und Hosttests konfigurieren `UseEnabilityToggler=true` sowie den Enabled-Zustand korrekt. Offen ist nur, wie Quantower dieses Host-Control konkret präsentiert; daraus wird kein abweichendes Produktverhalten abgeleitet.
+1. **FZRUI-01 – `runtime_confirmed_fixed`:** Quantower zeigt `Inactive state opacity` als `0,35` mit zwei Dezimalstellen. Ein Spinner-Schritt ergibt `0,40`, der Rückweg `0,35`. Nur die vorgesehene Deckkraft ändert sich; Linienauswahl, Level- und Zustandssemantik bleiben gleich.
+2. **FZRUI-02 – `host_presentation_limitation_confirmed`:** Quantower BusinessLayer 1.146.17.0 zeigt den DateTime-Editor, bewahrt den Wert und deaktiviert `Initial range` bei aktivem Start. Ein separater nativer Enable-Toggler wird trotz korrektem Quellvertrag nicht dargestellt. UTC-, Clear- und Roundtrip-Semantik bleiben durch Hosttests bestätigt.
 
 ## Drift-Status richtig lesen
 
-`no_drift` bedeutet, dass die geschlossenen Produktfakten, die öffentliche Inventur und der FZCP-Umfang übereinstimmen. Es ist **kein** Ersatz für den noch offenen manuellen Quantower-Abnahmetest. `documentation_drift` verlangt eine bewusste Dokumentationsanpassung; `runtime_confirmation_required` hält eine reine Host-/UI-Frage sichtbar offen; `unsafe_or_ambiguous_source` stoppt ohne Veröffentlichung.
+`no_drift` bedeutet, dass die geschlossenen Produktfakten, die öffentliche Inventur und der FZCP-Umfang übereinstimmen. Es ist **kein** Ersatz für den noch offenen vollständigen manuellen Quantower-Abnahmetest. `documentation_drift` verlangt eine bewusste Dokumentationsanpassung; `unsafe_or_ambiguous_source` stoppt ohne Veröffentlichung.

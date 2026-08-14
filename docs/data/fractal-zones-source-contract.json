@@ -49,15 +49,15 @@
   "residuals": [
     {
       "id": "FZRUI-01",
-      "classification": "root_cause_confirmed_fix_pending",
+      "classification": "runtime_confirmed_fixed",
       "source_evidence": "confirmed_with_host_tests",
-      "runtime_evidence": "existing_residual"
+      "runtime_evidence": "confirmed"
     },
     {
       "id": "FZRUI-02",
-      "classification": "host_presentation_runtime_confirmation_pending",
+      "classification": "host_presentation_limitation_confirmed",
       "source_evidence": "confirmed_with_host_tests",
-      "runtime_evidence": "confirmation_pending"
+      "runtime_evidence": "confirmed"
     }
   ],
   "privacy": {
@@ -68,5 +68,5 @@
     "sensitive_runtime_data_persisted": false
   },
   "setting_fact_digest": "da9c18f5c245a4b8c261220b5b49aad208b727f872cf98c0dd1943c3c4401903",
-  "contract_digest": "8ae46a260da8bab5d4c575fad6575c93a21fd297028e583393362216e4221019"
+  "contract_digest": "143190ecb732bef6f9a246f1304f1a071456ae46cf31235bc0c16d34da08e079"
 }

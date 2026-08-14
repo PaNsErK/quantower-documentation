@@ -82,11 +82,14 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     residual_states = drift_result.get("residuals", {})
-    status = (
-        "runtime_confirmation_required"
-        if residual_states.get("FZRUI-02") == "host_presentation_runtime_confirmation_pending"
-        else "no_drift"
-    )
+    expected_residual_states = {
+        "FZRUI-01": "runtime_confirmed_fixed",
+        "FZRUI-02": "host_presentation_limitation_confirmed",
+    }
+    if residual_states != expected_residual_states:
+        print(json.dumps({"status": "documentation_drift", "failed_step": "runtime_findings", "sanitization": "passed"}, sort_keys=True))
+        return 2
+    status = "no_drift"
     print(
         json.dumps(
             {

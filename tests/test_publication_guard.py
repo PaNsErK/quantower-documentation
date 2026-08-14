@@ -27,9 +27,24 @@ class PublicationGuardTests(unittest.TestCase):
         self.assertEqual(66, manifest["inventory"]["maximum_total_atomic_controls"])
         self.assertEqual(["FZRUI-01", "FZRUI-02"], [item["id"] for item in manifest["runtime_inventory"]["residuals"]])
         self.assertEqual(
-            ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"],
+            ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"],
             [item["state"] for item in manifest["runtime_inventory"]["residuals"]],
         )
+
+    def test_terminal_fzrui_findings_do_not_regress_to_pending_states(self) -> None:
+        checked = [
+            ROOT / "docs/data/fractal-zones-source-contract.json",
+            ROOT / "docs/data/public-indicator-manifest.json",
+            ROOT / "docs/index.md",
+            ROOT / "docs/indicators/fractal-zones/inventory-status.md",
+            ROOT / "docs/indicators/fractal-zones/configure/rendering-and-history.md",
+            ROOT / "docs/indicators/fractal-zones/learning/rendering-history.md",
+        ]
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in checked)
+        self.assertIn("runtime_confirmed_fixed", combined)
+        self.assertIn("host_presentation_limitation_confirmed", combined)
+        self.assertNotIn("root_cause_confirmed_fix_pending", combined)
+        self.assertNotIn("host_presentation_runtime_confirmation_pending", combined)
 
     def test_source_contract_is_schema_valid_and_manifest_bound(self) -> None:
         validator.validate_json_instance(

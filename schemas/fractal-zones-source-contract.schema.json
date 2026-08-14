@@ -49,9 +49,9 @@
         "required": ["id", "classification", "source_evidence", "runtime_evidence"],
         "properties": {
           "id": {"enum": ["FZRUI-01", "FZRUI-02"]},
-          "classification": {"enum": ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]},
+          "classification": {"enum": ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"]},
           "source_evidence": {"enum": ["confirmed", "confirmed_with_host_tests"]},
-          "runtime_evidence": {"enum": ["existing_residual", "confirmation_pending"]}
+          "runtime_evidence": {"const": "confirmed"}
         }
       }
     },

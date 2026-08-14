@@ -30,8 +30,7 @@ Wählt den Darstellungsplan. Beispiel: Active focus ist für dichte Charts hilfr
 
 Deckkraft von Provisional und BrokenWatch in Active focus. Beispiel: 0,20 stellt aktive Solid-Segmente stärker heraus. Active wird nicht ausgeblendet.
 
-!!! warning "Bekannte Runtime-Abweichung"
-    Beim bestätigten Runtime-Inventar zeigte der temporär geöffnete Active-focus-Zweig zunächst `0`, obwohl Quelle und Manifest `0,35` vorgeben. Diesen Wert nicht speichern. Zuerst den angezeigten Ausgangswert protokollieren; bei `0` den Test als bekannten Residual markieren und zu Adaptive zurückkehren.
+<p><strong>Runtime bestätigt:</strong> Active focus zeigt den Standard <code>0,35</code> mit zwei Dezimalstellen. Ein Spinner-Schritt führt zu <code>0,40</code>, der Rückweg wieder zu <code>0,35</code>. Dabei ändern sich nur die Deckkraft der dafür vorgesehenen Provisional- und BrokenWatch-Segmente, nicht Linienauswahl, Level oder Zustandssemantik.</p>
 
 </div>
 
@@ -109,7 +108,7 @@ Der Start besitzt drei unterscheidbare Zustände:
 2. **Abgeleitet und eingefroren:** Nach dem Bootstrap kann Quantower bereits einen berechneten Startwert anzeigen; `Initial range` ist dann deaktiviert.
 3. **Explizit gesetzt:** Ein bewusst gewählter Plattformzeitpunkt wird intern deterministisch nach UTC gebunden.
 
-Der im Produktcode konfigurierte Enable-Toggler war im bestätigten Runtime-Dialog nicht als separates Bedienelement erkennbar. Deshalb nicht blind nach einem Schalter suchen oder den Start zum Testen löschen. Vor jeder Änderung den exakten Ausgangswert notieren und danach exakt wiederherstellen.
+Quantower BusinessLayer 1.146.17.0 zeigt den DateTime-Editor und bewahrt seinen aktuellen Wert; bei aktivem Start ist `Initial range` deaktiviert. Der im Produktcode konfigurierte Enable-Toggler wird vom Host nicht als separates Bedienelement dargestellt. Das ist eine bestätigte Hostdarstellungsgrenze, kein abweichendes Berechnungsverhalten. Deshalb nicht nach einem unsichtbaren Schalter suchen oder den Start zum Testen über ein nicht vorhandenes Control löschen. UTC-, Clear- und Roundtrip-Semantik sind durch Hosttests abgedeckt; vor jeder tatsächlichen Änderung trotzdem den Ausgangswert protokollieren und exakt wiederherstellen.
 
 </div>
 

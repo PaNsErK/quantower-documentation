@@ -13,8 +13,8 @@ Diese Website erklärt Quantower-Erweiterungen so, dass du jederzeit weißt, **w
 - [Interaktive manuelle Testsuite](indicators/fractal-zones/test/manual-suite.md)
 - [Fehlerbilder und Diagnose](indicators/fractal-zones/troubleshoot/index.md)
 
-!!! info "Runtime-Inventar bestätigt – zwei Abweichungen bleiben offen"
-    Erfasst sind **29 Produktzeilen**, **11 geerbte Basiszeilen** und zusammen bis zu **66 atomare Controls**. Die geladene Bundle-Version ist bekannt, wird in Quantower aber nicht separat angezeigt; `HelpLink` ist leer. Für FZRUI-01 ist die fehlende Dezimaldarstellungs-Konfiguration als Ursache statisch bestätigt, die Produktkorrektur bleibt offen. FZRUI-02 ist quell- und hosttestseitig korrekt konfiguriert; die konkrete Quantower-Darstellung muss noch gezielt bestätigt werden.
+!!! info "Runtime-Inventar bestätigt – beide gezielten UI-Befunde geschlossen"
+    Erfasst sind **29 Produktzeilen**, **11 geerbte Basiszeilen** und zusammen bis zu **66 atomare Controls**. Die geladene Bundle-Version ist bekannt, wird in Quantower aber nicht separat angezeigt; `HelpLink` ist leer. FZRUI-01 ist in Quantower mit zweistelliger Dezimaldarstellung und unveränderter Liniensemantik bestätigt. FZRUI-02 ist als Hostdarstellungsgrenze bestätigt: Quantower BusinessLayer 1.146.17.0 zeigt den DateTime-Editor, aber keinen separaten nativen Enable-Toggler. Der vollständige manuelle Abnahmetest bleibt davon unabhängig offen.
 
 ## So funktioniert die Navigation
 
