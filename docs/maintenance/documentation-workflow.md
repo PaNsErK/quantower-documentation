@@ -23,7 +23,6 @@ Der Runner gibt ausschließlich geschlossene Zustände aus:
 |---|---|---|
 | `no_drift` | Vertrag und Dokumentation stimmen überein | normaler Review |
 | `documentation_drift` | öffentliche Fakten oder Validierung weichen ab | Dokumentation gezielt aktualisieren |
-| `runtime_confirmation_required` | statische Fakten stimmen; eine Hostdarstellung bleibt offen | getrennte Runtime-Prüfung planen |
 | `unsafe_or_ambiguous_source` | Quelle fehlt, ist mehrdeutig oder nicht sicher auswertbar | sicher stoppen und Quelle klären |
 
 ## Veröffentlichungsgrenze
@@ -40,4 +39,4 @@ Erlaubt sind aggregierte Produktfakten, öffentliche Dokumentation, geschlossene
 - [ ] Der generierte Site-Baum enthält keine externen Runtime-Assets oder private Metadaten.
 - [ ] Der PR verändert nur öffentliche Dokumentationsflächen.
 
-Die Produktkorrektur für FZRUI-01 und die Hostbestätigung für FZRUI-02 gehören weiterhin in getrennte Produkt-/Runtime-Slices; dieser Workflow repariert keinen Indikatorcode.
+FZRUI-01 und FZRUI-02 sind als geschlossene, sanitisiert dokumentierte Runtime-Befunde im Vertrag verankert. Der Workflow kann spätere Neuklassifizierungen synchronisieren, repariert aber weiterhin keinen Indikatorcode und ersetzt keinen vollständigen manuellen Quantower-Abnahmetest.

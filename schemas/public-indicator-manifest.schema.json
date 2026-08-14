@@ -161,7 +161,7 @@
       "properties": {
         "id": {"pattern": "^FZRUI-[0-9]{2}$"},
         "area": {"enum": ["rendering", "history"]},
-        "state": {"enum": ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]},
+        "state": {"enum": ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"]},
         "summary": {"type": "string", "minLength": 20, "maxLength": 300}
       }
     },

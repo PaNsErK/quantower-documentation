@@ -194,6 +194,46 @@ def setting_block(text: str, setting_name: str) -> str:
     return text[brace : end + 1]
 
 
+def validate_fzrui_contracts(indicator: str, host_tests: str) -> None:
+    opacity_block = setting_block(indicator, "InactiveStateOpacity")
+    require_patterns(
+        opacity_block,
+        (
+            r"Minimum\s*=\s*0\.10",
+            r"Maximum\s*=\s*1\.00",
+            r"Increment\s*=\s*0\.05",
+            r"DecimalPlaces\s*=\s*2",
+        ),
+        "FZRUI-01 setting",
+    )
+    require_patterns(
+        host_tests,
+        (
+            r"ActiveFocusOpacityUsesTwoDecimalHostMetadata",
+            r"opacity\.DecimalPlaces\s*==\s*2",
+            r"opacity\.Increment\s*-\s*0\.05",
+            r"opacity\.Value\s*-\s*0\.35",
+        ),
+        "FZRUI-01 host regression",
+    )
+
+    start_block = setting_block(indicator, "CalculationStartTime")
+    require_patterns(
+        start_block,
+        (r"UseEnabilityToggler\s*=\s*true", r"Enabled\s*=\s*calculationStartTimeUtc\.HasValue"),
+        "FZRUI-02 setting",
+    )
+    require_patterns(
+        host_tests,
+        (
+            r"CalculationStartTime.*UseEnabilityToggler",
+            r"ExplicitCalculationStartRemainsUtcStable",
+            r"ClearingCalculationStartReturnsToInitialRangeMode",
+        ),
+        "FZRUI-02 host regression",
+    )
+
+
 def expected_sequence(prefix: str, count: int, width: int) -> list[str]:
     return [f"{prefix}-{index:0{width}d}" for index in range(1, count + 1)]
 
@@ -291,15 +331,8 @@ def verify_source(root: Path, contract: dict[str, object], manifest: dict[str, o
         "lifecycle-setting",
     )
 
-    opacity_block = setting_block(indicator, "InactiveStateOpacity")
-    if "DecimalPlaces" in opacity_block:
-        raise SourceContractError("documentation_drift", "FZRUI-01 source classification changed")
-    require_patterns(opacity_block, (r"Minimum\s*=\s*0\.10", r"Maximum\s*=\s*1\.00", r"Increment\s*=\s*0\.05"), "FZRUI-01")
+    validate_fzrui_contracts(indicator, host_tests)
     require_patterns(host_tests, (r"atrMultiplier\.DecimalPlaces\s*==\s*2", r"distancePercent\.DecimalPlaces\s*==\s*2"), "numeric display test")
-
-    start_block = setting_block(indicator, "CalculationStartTime")
-    require_patterns(start_block, (r"UseEnabilityToggler\s*=\s*true", r"Enabled\s*=\s*calculationStartTimeUtc\.HasValue"), "FZRUI-02")
-    require_patterns(host_tests, (r"CalculationStartTime.*UseEnabilityToggler",), "CalculationStartTime host test")
 
     requirements = source_snapshot.get("requirements")
     traces = source_snapshot.get("goldenTraces")
@@ -326,8 +359,8 @@ def verify_source(root: Path, contract: dict[str, object], manifest: dict[str, o
         "golden_traces": len(traces),
         "manual_acceptances": len(acceptances),
         "residuals": {
-            "FZRUI-01": "root_cause_confirmed_fix_pending",
-            "FZRUI-02": "host_presentation_runtime_confirmation_pending",
+            "FZRUI-01": "runtime_confirmed_fixed",
+            "FZRUI-02": "host_presentation_limitation_confirmed",
         },
         "sanitization": "passed",
     }

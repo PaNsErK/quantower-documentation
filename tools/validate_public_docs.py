@@ -194,8 +194,8 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     if residual_ids != ["FZRUI-01", "FZRUI-02"]:
         fail("runtime residuals must be exactly FZRUI-01 and FZRUI-02")
     residual_states = [item["state"] for item in manifest["runtime_inventory"]["residuals"]]
-    if residual_states != ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]:
-        fail("runtime residual classifications differ from the approved static analysis")
+    if residual_states != ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"]:
+        fail("runtime finding classifications differ from the approved terminal evidence")
     source_drift = load_source_drift_module()
     try:
         source_drift.validate_contract_coupling(load_json(contract_path), manifest)
