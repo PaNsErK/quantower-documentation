@@ -1,0 +1,93 @@
+site_name: Quantower-Dokumentation
+site_description: Interaktive, datensparsame Dokumentation für Quantower-Indikatoren
+site_url: https://panserk.github.io/quantower-documentation/
+site_dir: site
+use_directory_urls: true
+strict: true
+
+exclude_docs: |
+  includes/
+  data/
+
+theme:
+  name: material
+  language: de
+  font: false
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Dunkles Farbschema
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Helles Farbschema
+
+plugins:
+  - search:
+      lang:
+        - de
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra_css:
+  - assets/stylesheets/fractal-zones.css
+extra_javascript:
+  - assets/javascripts/fractal-zones.js
+  - assets/javascripts/manual-tests.js
+
+nav:
+  - Start: index.md
+  - Fractal Zones:
+      - Überblick: indicators/fractal-zones/index.md
+      - Verstehen:
+          - Zeit- und Fraktallogik: indicators/fractal-zones/understand/time-and-fractals.md
+          - Zustandsablauf: indicators/fractal-zones/understand/lifecycle.md
+          - Bruchlogik: indicators/fractal-zones/understand/break-engine.md
+          - Retest, Rollenwechsel und Ende: indicators/fractal-zones/understand/role-and-ended.md
+          - Darstellung und Marker: indicators/fractal-zones/understand/rendering.md
+          - Kontinuität und Wiederherstellung: indicators/fractal-zones/understand/recovery.md
+      - Einstellen:
+          - Alle Einstellungen: indicators/fractal-zones/configure/index.md
+          - Maturity und Break Engine: indicators/fractal-zones/configure/maturity-and-break.md
+          - Lifecycle und Linien: indicators/fractal-zones/configure/lifecycle-and-lines.md
+          - Rendering, Marker und Historie: indicators/fractal-zones/configure/rendering-and-history.md
+      - Testen:
+          - Teststrategie: indicators/fractal-zones/test/index.md
+          - Interaktive Testsuite: indicators/fractal-zones/test/manual-suite.md
+      - Fehlerbilder:
+          - Diagnoseweg: indicators/fractal-zones/troubleshoot/index.md
+          - Daten, Start und Projektion: indicators/fractal-zones/troubleshoot/data-and-projection.md
+          - Performance und Sidecar: indicators/fractal-zones/troubleshoot/performance-and-sidecar.md
+      - Inventarstatus: indicators/fractal-zones/inventory-status.md
+      - Datenschutz: privacy.md

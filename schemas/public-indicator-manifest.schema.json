@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panserk.github.io/quantower-documentation/schemas/public-indicator-manifest.schema.json",
+  "title": "Public indicator documentation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "indicator", "inventory", "topics", "settings", "manual_tests"],
+  "properties": {
+    "schema_version": {"const": "fz-public-manifest-v1"},
+    "indicator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "product_kind", "trading_capability", "indicator_version", "documentation_route", "source_status"],
+      "properties": {
+        "id": {"const": "fractal-zones"},
+        "name": {"const": "Fractal Zones"},
+        "product_kind": {"const": "non-trading-indicator"},
+        "trading_capability": {"const": false},
+        "indicator_version": {"const": "runtime_inventory_pending"},
+        "documentation_route": {"const": "/indicators/fractal-zones/"},
+        "source_status": {"enum": ["confirmed_current_product_source", "runtime_inventory_pending"]}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_owned_setting_rows", "product_owned_actions", "line_option_rows", "maximum_atomic_controls", "base_settings_union", "full_ui_completeness_claim"],
+      "properties": {
+        "product_owned_setting_rows": {"const": 29},
+        "product_owned_actions": {"const": 2},
+        "line_option_rows": {"const": 6},
+        "maximum_atomic_controls": {"const": 41},
+        "base_settings_union": {"const": "runtime_inventory_pending"},
+        "full_ui_completeness_claim": {"const": false}
+      }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 37,
+      "maxItems": 37,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/topic"}
+    },
+    "settings": {
+      "type": "array",
+      "minItems": 29,
+      "maxItems": 29,
+      "items": {"$ref": "#/$defs/setting"}
+    },
+    "manual_tests": {
+      "type": "array",
+      "minItems": 20,
+      "items": {"$ref": "#/$defs/manualTest"}
+    }
+  },
+  "$defs": {
+    "topic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "mode", "page", "summary"],
+      "properties": {
+        "id": {"pattern": "^FZT-[0-9]{2}$"},
+        "title": {"type": "string", "minLength": 3, "maxLength": 120},
+        "mode": {"enum": ["understand", "configure", "test", "troubleshoot"]},
+        "page": {"pattern": "^indicators/fractal-zones/.+\\.md$"},
+        "summary": {"type": "string", "minLength": 10, "maxLength": 280}
+      }
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "group", "type", "default", "range_or_options", "visibility", "atomic_controls", "documentation_anchor"],
+      "properties": {
+        "id": {"pattern": "^[A-Za-z][A-Za-z0-9]+$"},
+        "label": {"type": "string", "minLength": 2, "maxLength": 100},
+        "group": {"enum": ["Fractal Maturity", "Break Engine", "Lifecycle", "Provisional Line Settings", "Active Line Settings", "Historical Line Settings", "Rendering", "Markers", "History"]},
+        "type": {"enum": ["integer", "double", "selector", "boolean", "datetime", "line_options", "action"]},
+        "default": {"type": ["string", "number", "boolean", "null"]},
+        "range_or_options": {"type": "string", "minLength": 1, "maxLength": 240},
+        "visibility": {"type": "string", "minLength": 1, "maxLength": 240},
+        "atomic_controls": {"type": "integer", "minimum": 1, "maximum": 3},
+        "documentation_anchor": {"pattern": "^setting-[a-z0-9-]+$"}
+      }
+    },
+    "manualTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "category", "risk", "steps", "expected", "restoration"],
+      "properties": {
+        "id": {"pattern": "^FZMT-[0-9]{2}$"},
+        "title": {"type": "string", "minLength": 4, "maxLength": 140},
+        "category": {"enum": ["settings", "lifecycle", "rendering", "history", "recovery", "performance", "privacy"]},
+        "risk": {"enum": ["safe_non_trading"]},
+        "steps": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3, "maxLength": 300}},
+        "expected": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3, "maxLength": 300}},
+        "restoration": {"type": "string", "minLength": 3, "maxLength": 300}
+      }
+    }
+  }
+}

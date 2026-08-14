@@ -1,0 +1,5 @@
+INHERIT: mkdocs.yml
+site_url: ""
+site_dir: site-offline
+use_directory_urls: false
+plugins: []

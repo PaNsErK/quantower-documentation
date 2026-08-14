@@ -1,0 +1,13 @@
+.venv/
+site/
+site-offline/
+__pycache__/
+.pytest_cache/
+output/
+.playwright-mcp/
+*.pyc
+*.pyo
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
