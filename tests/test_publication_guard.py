@@ -18,6 +18,25 @@ class PublicationGuardTests(unittest.TestCase):
     def test_manifest_and_closed_counts_pass(self) -> None:
         validator.validate_manifest_and_coverage(ROOT)
 
+    def test_runtime_inventory_is_closed_and_counted(self) -> None:
+        manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
+        self.assertEqual("runtime_inventory_confirmed", manifest["inventory"]["base_settings_union"])
+        self.assertEqual(11, len(manifest["base_settings"]))
+        self.assertEqual(25, sum(item["atomic_controls"] for item in manifest["base_settings"]))
+        self.assertEqual(40, manifest["inventory"]["maximum_total_setting_rows"])
+        self.assertEqual(66, manifest["inventory"]["maximum_total_atomic_controls"])
+        self.assertEqual(["FZRUI-01", "FZRUI-02"], [item["id"] for item in manifest["runtime_inventory"]["residuals"]])
+
+    def test_runtime_pending_state_is_absent_from_public_contracts(self) -> None:
+        checked = [
+            ROOT / "docs/data/public-indicator-manifest.json",
+            ROOT / "schemas/manual-test-result.schema.json",
+            ROOT / "tests/fixtures/manual-result-valid.json",
+            ROOT / "docs/assets/javascripts/manual-tests.js",
+        ]
+        for path in checked:
+            self.assertNotIn("runtime_inventory_pending", path.read_text(encoding="utf-8"), path)
+
     def test_topics_use_markdown_in_html_contract(self) -> None:
         docs_text = "\n".join(
             path.read_text(encoding="utf-8")

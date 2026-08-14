@@ -2,7 +2,7 @@
 
 Lokaler, noch nicht veröffentlichter Dokumentationskandidat für den Quantower-Indikator **Fractal Zones**.
 
-Status: `runtime_inventory_pending`. Die 29 vom Produkt selbst erzeugten `SettingItem`-Zeilen sind dokumentiert. Von Quantower geerbte `base.Settings` sowie der sichtbare native Zugriff auf `HelpLink` werden erst in einem getrennten Runtime-Gate inventarisiert. Deshalb behauptet dieser Stand ausdrücklich keine vollständige Quantower-UI-Inventur.
+Status: `runtime_inventory_confirmed_with_residuals`. Dokumentiert sind 29 produktseitige `SettingItem`-Zeilen mit bis zu 41 atomaren Controls sowie die bestätigte geerbte `base.Settings`-Union mit 11 Zeilen und bis zu 25 weiteren Controls. Die geladene Bundle-Version ist erfasst; Quantower zeigt sie in der Fractal-Zones-UI nicht separat an. `HelpLink` ist aktuell leer und daher nicht nutzbar. Zwei klar begrenzte Runtime-Abweichungen bleiben sichtbar dokumentiert, weshalb dieser Stand keine uneingeschränkte Vollständigkeitsbehauptung abgibt.
 
 ## Lokaler Build
 

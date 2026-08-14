@@ -44,5 +44,5 @@ Die öffentliche Dokumentation trennt drei Ebenen:
 --8<-- "docs/includes/diagrams/lifecycle.md"
 
 <div class="fz-inventory-pending" role="status">
-<strong>Inventarstatus:</strong> 29 produktseitige Setting-Zeilen, 6 LineOptions-Zeilen und höchstens 41 atomare Bedienelemente sind quellbestätigt. Geerbte Quantower-Basiseinstellungen bleiben bis zum Runtime-Abgleich offen.
+<strong>Inventarstatus:</strong> Bestätigt sind 29 produktseitige Setting-Zeilen, 6 LineOptions-Zeilen, 11 geerbte Quantower-Basiszeilen und zusammen bis zu 66 atomare Bedienelemente. Zwei begrenzte Runtime-Residuals bleiben transparent dokumentiert.
 </div>

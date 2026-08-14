@@ -12,7 +12,7 @@
 
 <div markdown="1" class="fz-depth" data-depth="practice">FZMT‑01 bis FZMT‑03 bilden das Einstiegsgate. Wenn eine Zeile fehlt oder eine Abhängigkeit falsch sichtbar ist, keine tiefere Semantik als bestanden markieren.</div>
 
-<div markdown="1" class="fz-depth" data-depth="technical">Das Runtime-Inventar muss die statische 29-Zeilen-Menge mit der tatsächlich sichtbaren Union aus Produkt und `base.Settings` abgleichen.</div>
+<div markdown="1" class="fz-depth" data-depth="technical">Das bestätigte Runtime-Inventar umfasst 29 Produktzeilen, 11 geerbte `base.Settings`-Zeilen und insgesamt bis zu 66 atomare Controls. Manuelle Tests vergleichen dagegen, ohne die zwei dokumentierten Runtime-Residuals als neue Standards zu übernehmen.</div>
 
 </section>
 

@@ -56,4 +56,4 @@
 
 ## Linienarten
 
-Fractal Zones bietet bewusst nur `Solid`, `Dash`, `Dot` und `DashDot`. Quantower kennt weitere `LineStyle`-Werte, sie passen aber nicht zum horizontalen Segmentvertrag dieses Indikators.
+Fractal Zones bietet bewusst nur `Solid`, `Dash`, `Dot` und den in der UI als `Dash dot` bezeichneten Enum-Wert `DashDot`. Quantower kennt weitere `LineStyle`-Werte, sie passen aber nicht zum horizontalen Segmentvertrag dieses Indikators.

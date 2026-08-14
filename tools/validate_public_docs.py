@@ -140,13 +140,15 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     assert isinstance(manifest, dict)
     topics = manifest["topics"]
     settings = manifest["settings"]
+    base_settings = manifest["base_settings"]
     manual_tests = manifest["manual_tests"]
 
     topic_ids = [item["id"] for item in topics]
     setting_ids = [item["id"] for item in settings]
+    base_setting_ids = [item["id"] for item in base_settings]
     anchors = [item["documentation_anchor"] for item in settings]
     test_ids = [item["id"] for item in manual_tests]
-    for label, values in (("topic", topic_ids), ("setting", setting_ids), ("anchor", anchors), ("manual test", test_ids)):
+    for label, values in (("topic", topic_ids), ("setting", setting_ids), ("base setting", base_setting_ids), ("anchor", anchors), ("manual test", test_ids)):
         if len(values) != len(set(values)):
             fail(f"duplicate {label} identifier")
     if len(topics) != 37 or topic_ids != [f"FZT-{index:02d}" for index in range(1, 38)]:
@@ -155,6 +157,20 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
         fail("product-owned setting row count must be exactly 29")
     if sum(int(item["atomic_controls"]) for item in settings) != 41:
         fail("atomic setting-control count must be exactly 41")
+    if len(base_settings) != 11:
+        fail("inherited base-setting row count must be exactly 11")
+    if sum(int(item["atomic_controls"]) for item in base_settings) != 25:
+        fail("inherited atomic control count must be exactly 25")
+    inventory = manifest["inventory"]
+    if inventory["maximum_total_setting_rows"] != len(settings) + len(base_settings):
+        fail("total setting-row projection differs from the manifest inventories")
+    if inventory["maximum_total_atomic_controls"] != sum(int(item["atomic_controls"]) for item in settings + base_settings):
+        fail("total atomic-control projection differs from the manifest inventories")
+    residual_ids = [item["id"] for item in manifest["runtime_inventory"]["residuals"]]
+    if residual_ids != ["FZRUI-01", "FZRUI-02"]:
+        fail("runtime residuals must be exactly FZRUI-01 and FZRUI-02")
+    if "runtime_inventory_pending" in json.dumps(manifest, ensure_ascii=False):
+        fail("runtime inventory manifest contains a stale pending projection")
     if test_ids != [f"FZMT-{index:02d}" for index in range(1, len(test_ids) + 1)]:
         fail("manual-test IDs must form one contiguous sequence")
 

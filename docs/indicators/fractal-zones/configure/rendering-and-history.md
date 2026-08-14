@@ -30,6 +30,9 @@ Wählt den Darstellungsplan. Beispiel: Active focus ist für dichte Charts hilfr
 
 Deckkraft von Provisional und BrokenWatch in Active focus. Beispiel: 0,20 stellt aktive Solid-Segmente stärker heraus. Active wird nicht ausgeblendet.
 
+!!! warning "Bekannte Runtime-Abweichung"
+    Beim bestätigten Runtime-Inventar zeigte der temporär geöffnete Active-focus-Zweig zunächst `0`, obwohl Quelle und Manifest `0,35` vorgeben. Diesen Wert nicht speichern. Zuerst den angezeigten Ausgangswert protokollieren; bei `0` den Test als bekannten Residual markieren und zu Adaptive zurückkehren.
+
 </div>
 
 <div class="fz-setting-card" id="setting-show-end-marker">
@@ -70,7 +73,7 @@ Markiert bestätigte RoleChanges. RoleReaffirmation und Rollenwechsel müssen se
 
 <div markdown="1" class="fz-depth" data-depth="practice">Für den normalen Vergleich 90 Tage belassen. Chart loaded range plus warm-up kann bei kurzem sichtbarem Ausschnitt schneller sein. Expliziter Start ist für reproduzierbare Untersuchungen.</div>
 
-<div markdown="1" class="fz-depth" data-depth="technical">CalculationStartTime wird in Plattformzeit dargestellt, in UTC gebunden und deaktiviert InitialHistoryDays. Source-identical timeframe reuse verhindert unnötige Neuaufbauten.</div>
+<div markdown="1" class="fz-depth" data-depth="technical">CalculationStartTime wird in Plattformzeit dargestellt, in UTC gebunden und deaktiviert InitialHistoryDays. Zu unterscheiden sind unset vor Bootstrap, ein abgeleiteter eingefrorener Start und ein expliziter Start. Source-identical timeframe reuse verhindert unnötige Neuaufbauten.</div>
 
 </section>
 
@@ -98,9 +101,15 @@ Kalendertage zur Ableitung des initialen Rechenstarts. Beispiel: 365 erweitert h
 
 ### Calculation start · `CalculationStartTime`
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> deaktiviert</div><div><strong>Typ:</strong> DateTime mit Toggler</div><div><strong>Änderung:</strong> mit Bestätigung</div></div>
+<div class="fz-setting-meta"><div><strong>Quellstandard:</strong> unset</div><div><strong>Typ:</strong> DateTime in Plattformzeit</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
 
-Expliziter deterministischer Start. Beispiel: Für einen Vergleich ab Monatsbeginn aktivieren und den sichtbaren Plattformzeitpunkt wählen. Intern wird UTC verwendet.
+Der Start besitzt drei unterscheidbare Zustände:
+
+1. **Unset vor Bootstrap:** Die Quelle enthält noch keinen festen Zeitpunkt.
+2. **Abgeleitet und eingefroren:** Nach dem Bootstrap kann Quantower bereits einen berechneten Startwert anzeigen; `Initial range` ist dann deaktiviert.
+3. **Explizit gesetzt:** Ein bewusst gewählter Plattformzeitpunkt wird intern deterministisch nach UTC gebunden.
+
+Der im Produktcode konfigurierte Enable-Toggler war im bestätigten Runtime-Dialog nicht als separates Bedienelement erkennbar. Deshalb nicht blind nach einem Schalter suchen oder den Start zum Testen löschen. Vor jeder Änderung den exakten Ausgangswert notieren und danach exakt wiederherstellen.
 
 </div>
 
@@ -120,7 +129,7 @@ Expliziter deterministischer Start. Beispiel: Für einen Vergleich ab Monatsbegi
 
 ### Enable semantic replay checkpoint · `EnableReplayCheckpoint`
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> false</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> immer</div></div>
+<div class="fz-setting-meta"><div><strong>Standard:</strong> false</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
 
 Aktiviert die semantische Sidecar- und Crash-Restore-Beschleunigung. Wichtig: Eine ältere Implementierungsnotiz nannte fälschlich `true`; der aktuelle Produktstandard ist eindeutig `false`.
 
@@ -130,7 +139,7 @@ Aktiviert die semantische Sidecar- und Crash-Restore-Beschleunigung. Wichtig: Ei
 
 ### Verify full history now… · `VerifyFullHistoryNow`
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Ausführung:</strong> asynchron, Single-Flight</div><div><strong>Sichtbar:</strong> immer</div></div>
+<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Ausführung:</strong> asynchron, Single-Flight</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
 
 Startet eine Vollhistorienprüfung. Beispiel: Nach Datenanbieter-Revisionsverdacht einmal auslösen und Fortschritt/Diagnostik beobachten.
 
@@ -140,7 +149,7 @@ Startet eine Vollhistorienprüfung. Beispiel: Nach Datenanbieter-Revisionsverdac
 
 ### Cancel full-history verify · `CancelFullHistoryVerify`
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Wirkung:</strong> nur optionaler manueller Verify</div><div><strong>Sichtbar:</strong> immer</div></div>
+<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Wirkung:</strong> nur optionaler manueller Verify</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
 
 Fordert einen sicheren Abbruch an. Pflicht-Recovery wird niemals abgebrochen, und ein Teilresultat wird nicht als vollständige Generation veröffentlicht.
 

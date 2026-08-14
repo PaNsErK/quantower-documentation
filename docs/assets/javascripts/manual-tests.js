@@ -75,7 +75,7 @@
     return {
       schema_version: "fz-manual-test-result-v1",
       indicator_id: "fractal-zones",
-      indicator_version_state: "runtime_inventory_pending",
+      indicator_version_state: "runtime_inventory_confirmed_bundle_not_ui_exposed",
       exported_at_utc: new Date().toISOString(),
       notes_included: includeNotes,
       results: catalog.map(function (test) {
@@ -100,7 +100,7 @@
     if (JSON.stringify(keys) !== JSON.stringify(expectedKeys)) {
       throw new Error("Die Importdatei enthält fehlende oder unbekannte Felder.");
     }
-    if (value.schema_version !== "fz-manual-test-result-v1" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "runtime_inventory_pending") {
+    if (value.schema_version !== "fz-manual-test-result-v1" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "runtime_inventory_confirmed_bundle_not_ui_exposed") {
       throw new Error("Schema oder Indikatoridentität passt nicht.");
     }
     if (typeof value.notes_included !== "boolean" || !Array.isArray(value.results) || value.results.length > 100) {

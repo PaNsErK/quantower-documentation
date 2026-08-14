@@ -40,7 +40,7 @@ Beendet die Linie beim angegebenen committed break der aktuellen Rolle. Beispiel
 
 <div markdown="1" class="fz-depth" data-depth="practice">Defaults: Provisional Dot, Active Solid, Historical Dash; Top Grün, Bottom Rot; überall Breite 1.</div>
 
-<div markdown="1" class="fz-depth" data-depth="technical">Zulässige Styles sind `Solid`, `Dash`, `Dot` und `DashDot`. Histogramm, Points, Columns und StepLine werden absichtlich ausgefiltert.</div>
+<div markdown="1" class="fz-depth" data-depth="technical">Die UI zeigt `Solid`, `Dash`, `Dot` und `Dash dot`; der zugehörige Enum-Wert heißt `DashDot`. Histogramm, Points, Columns und StepLine werden absichtlich ausgefiltert.</div>
 
 </section>
 

@@ -8,7 +8,7 @@
   "properties": {
     "schema_version": {"const": "fz-manual-test-result-v1"},
     "indicator_id": {"const": "fractal-zones"},
-    "indicator_version_state": {"const": "runtime_inventory_pending"},
+    "indicator_version_state": {"const": "runtime_inventory_confirmed_bundle_not_ui_exposed"},
     "exported_at_utc": {"type": "string", "format": "date-time"},
     "notes_included": {"type": "boolean"},
     "results": {

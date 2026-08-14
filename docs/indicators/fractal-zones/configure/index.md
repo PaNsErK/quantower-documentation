@@ -3,8 +3,17 @@
 Die aktuelle Produktquelle erzeugt **29 eigene Setting-Zeilen** in neun Gruppen. Sechs LineOptions-Zeilen enthalten je drei Bedienelemente – Style, Breite und Farbe. Damit gibt es höchstens **41 atomare Produkt-Bedienwerte**.
 
 <div class="fz-inventory-pending" role="status">
-<strong>Abgrenzung:</strong> Quantower stellt zuerst <code>base.Settings</code> bereit und Fractal Zones hängt seine eigenen Zeilen an. Exakte geerbte Texte, Reihenfolge und Laufzeitsichtbarkeit werden erst im getrennten Runtime-Inventar bestätigt.
+<strong>Runtime-Abgrenzung:</strong> Quantower stellt zuerst <code>base.Settings</code> bereit und Fractal Zones hängt seine eigenen Zeilen an. Bestätigt sind 11 geerbte Zeilen mit bis zu 25 atomaren Controls. Zusammen umfasst die geschlossene Runtime-Union damit bis zu 40 Zeilen und 66 Controls. Zwei begrenzte Darstellungsfragen bleiben im <a href="../inventory-status/">Inventarstatus</a> ausgewiesen.
 </div>
+
+## Von Quantower geerbte Einstellungen
+
+| Bereich | Zeilen | Atomare Controls | Enthaltene Bedienung |
+|---|---:|---:|---|
+| View | 2 | 2 | Position auf dem Chart und Auto-Skalierung |
+| Timeframe Visibility | 8 | 22 | sieben aktivierte Zeitrahmenbereiche plus zusätzliche Aggregation |
+| UpdateType | 1 | 1 | On tick oder On bar close |
+| **Summe `base.Settings`** | **11** | **25** | bestätigte Runtime-Union |
 
 ## Gruppen
 
