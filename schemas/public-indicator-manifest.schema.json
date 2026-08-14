@@ -4,9 +4,20 @@
   "title": "Public indicator documentation manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "indicator", "inventory", "runtime_inventory", "topics", "settings", "base_settings", "manual_tests"],
+  "required": ["schema_version", "publication", "indicator", "inventory", "runtime_inventory", "topics", "settings", "base_settings", "manual_tests"],
   "properties": {
     "schema_version": {"const": "fz-public-manifest-v1"},
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "manual_acceptance_complete", "official_affiliation", "content_license_state"],
+      "properties": {
+        "status": {"const": "public_beta_manual_acceptance_pending"},
+        "manual_acceptance_complete": {"const": false},
+        "official_affiliation": {"const": false},
+        "content_license_state": {"const": "no_open_source_license"}
+      }
+    },
     "indicator": {
       "type": "object",
       "additionalProperties": false,

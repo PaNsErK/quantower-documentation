@@ -17,4 +17,4 @@ Notizen werden nur exportiert, wenn die Checkbox ausdrücklich aktiviert wurde. 
 
 ## Plattformhinweis
 
-Bei einer späteren Veröffentlichung über GitHub Pages gibt es keine eigene Anwendungstelemetrie. GitHub kann als Hostingplattform jedoch technische Zugriffsdaten wie IP-Adressen für Betrieb und Sicherheit verarbeiten. Daher verspricht diese Dokumentation **keine Übertragung eigener Testdaten**, nicht „null Plattformdaten“.
+Die öffentliche Beta wird über GitHub Pages bereitgestellt und enthält keine eigene Anwendungstelemetrie. GitHub kann als Hostingplattform jedoch technische Zugriffsdaten wie IP-Adressen für Betrieb und Sicherheit verarbeiten. Daher verspricht diese Dokumentation **keine Übertragung eigener Testdaten**, nicht „null Plattformdaten“.

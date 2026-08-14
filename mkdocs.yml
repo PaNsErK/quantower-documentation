@@ -1,5 +1,5 @@
-site_name: Quantower-Dokumentation
-site_description: Interaktive, datensparsame Dokumentation für Quantower-Indikatoren
+site_name: Inoffizielle Quantower-Dokumentation
+site_description: Öffentliche Beta einer interaktiven, datensparsamen Dokumentation für Quantower-Indikatoren
 site_url: https://panserk.github.io/quantower-documentation/
 site_dir: site
 use_directory_urls: true

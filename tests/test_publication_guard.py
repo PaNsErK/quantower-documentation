@@ -27,6 +27,21 @@ class PublicationGuardTests(unittest.TestCase):
         self.assertEqual(66, manifest["inventory"]["maximum_total_atomic_controls"])
         self.assertEqual(["FZRUI-01", "FZRUI-02"], [item["id"] for item in manifest["runtime_inventory"]["residuals"]])
 
+    def test_public_beta_status_is_closed_and_manual_acceptance_is_pending(self) -> None:
+        manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
+        self.assertEqual("public_beta_manual_acceptance_pending", manifest["publication"]["status"])
+        self.assertFalse(manifest["publication"]["manual_acceptance_complete"])
+        self.assertFalse(manifest["publication"]["official_affiliation"])
+        self.assertEqual("no_open_source_license", manifest["publication"]["content_license_state"])
+
+    def test_public_beta_and_unofficial_notices_are_visible(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        index = (ROOT / "docs/index.md").read_text(encoding="utf-8")
+        indicator = (ROOT / "docs/indicators/fractal-zones/index.md").read_text(encoding="utf-8")
+        self.assertIn("public_beta_manual_acceptance_pending", readme)
+        self.assertIn("manual_acceptance_complete=false", readme + index)
+        self.assertIn("inoffiziell", (readme + index + indicator).lower())
+
     def test_runtime_pending_state_is_absent_from_public_contracts(self) -> None:
         checked = [
             ROOT / "docs/data/public-indicator-manifest.json",

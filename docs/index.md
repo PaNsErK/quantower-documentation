@@ -1,4 +1,7 @@
-# Quantower-Dokumentation
+# Inoffizielle Quantower-Dokumentation
+
+!!! warning "Öffentliche Beta – manueller Abnahmetest noch offen"
+    Diese inoffizielle Dokumentation steht in keiner Verbindung zu Quantower und wird nicht von Quantower unterstützt oder herausgegeben. Die Inhalte und das Runtime-Inventar sind technisch validiert und bereits zum Lernen nutzbar. Der vollständige manuelle Quantower-Abnahmetest ist noch nicht abgeschlossen (`manual_acceptance_complete=false`).
 
 Diese Website erklärt Quantower-Erweiterungen so, dass du jederzeit weißt, **wo du bist**, **was du gerade prüfst** und **wie tief du einsteigen möchtest**.
 

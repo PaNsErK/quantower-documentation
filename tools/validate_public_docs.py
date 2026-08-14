@@ -138,6 +138,14 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     validate_json_instance(manifest_path, schema_path)
     manifest = load_json(manifest_path)
     assert isinstance(manifest, dict)
+    expected_publication = {
+        "status": "public_beta_manual_acceptance_pending",
+        "manual_acceptance_complete": False,
+        "official_affiliation": False,
+        "content_license_state": "no_open_source_license",
+    }
+    if manifest["publication"] != expected_publication:
+        fail("public beta publication contract differs from the approved closed state")
     topics = manifest["topics"]
     settings = manifest["settings"]
     base_settings = manifest["base_settings"]
@@ -198,6 +206,24 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     for relative in claimed_pages:
         if not (root / "docs" / relative).is_file():
             fail(f"topic references missing page: {relative}")
+
+    public_status_surfaces = {
+        "README.md": read_utf8(root / "README.md"),
+        "docs/index.md": read_utf8(root / "docs/index.md"),
+        "docs/indicators/fractal-zones/index.md": read_utf8(root / "docs/indicators/fractal-zones/index.md"),
+    }
+    for relative, text in public_status_surfaces.items():
+        if "inoffiziell" not in text.lower():
+            fail(f"unofficial-publication notice missing: {relative}")
+        if relative != "README.md" and "manuell" not in text.lower():
+            fail(f"manual-acceptance notice missing: {relative}")
+    if "public_beta_manual_acceptance_pending" not in public_status_surfaces["README.md"]:
+        fail("README does not expose the closed public beta status")
+    if "manual_acceptance_complete=false" not in "\n".join(public_status_surfaces.values()):
+        fail("public documentation does not expose pending manual acceptance")
+    privacy_text = read_utf8(root / "docs/privacy.md")
+    if "Die öffentliche Beta wird über GitHub Pages bereitgestellt" not in privacy_text:
+        fail("privacy notice is not aligned with the public GitHub Pages state")
 
 
 def validate_workflow(root: Path = ROOT) -> None:

@@ -1,8 +1,10 @@
-# Quantower Documentation – lokaler Kandidat
+# Inoffizielle Quantower-Dokumentation – öffentliche Beta
 
-Lokaler, noch nicht veröffentlichter Dokumentationskandidat für den Quantower-Indikator **Fractal Zones**.
+Öffentliche, inoffizielle Dokumentation für den Quantower-Indikator **Fractal Zones**. Dieses Projekt steht in keiner Verbindung zu Quantower und wird nicht von Quantower unterstützt oder herausgegeben.
 
-Status: `runtime_inventory_confirmed_with_residuals`. Dokumentiert sind 29 produktseitige `SettingItem`-Zeilen mit bis zu 41 atomaren Controls sowie die bestätigte geerbte `base.Settings`-Union mit 11 Zeilen und bis zu 25 weiteren Controls. Die geladene Bundle-Version ist erfasst; Quantower zeigt sie in der Fractal-Zones-UI nicht separat an. `HelpLink` ist aktuell leer und daher nicht nutzbar. Zwei klar begrenzte Runtime-Abweichungen bleiben sichtbar dokumentiert, weshalb dieser Stand keine uneingeschränkte Vollständigkeitsbehauptung abgibt.
+Publikationsstatus: `public_beta_manual_acceptance_pending`. Die Inhalte, Einstellungen und Runtime-Inventur sind technisch validiert und bereits zum Lernen nutzbar. Der vollständige manuelle Quantower-Abnahmetest ist noch nicht abgeschlossen; deshalb ist `manual_acceptance_complete=false` fest im öffentlichen Manifest verankert.
+
+Inventarstatus: `runtime_inventory_confirmed_with_residuals`. Dokumentiert sind 29 produktseitige `SettingItem`-Zeilen mit bis zu 41 atomaren Controls sowie die bestätigte geerbte `base.Settings`-Union mit 11 Zeilen und bis zu 25 weiteren Controls. Die geladene Bundle-Version ist erfasst; Quantower zeigt sie in der Fractal-Zones-UI nicht separat an. `HelpLink` ist aktuell leer und daher nicht nutzbar. Zwei klar begrenzte Runtime-Abweichungen bleiben sichtbar dokumentiert, weshalb dieser Stand keine uneingeschränkte Vollständigkeitsbehauptung abgibt.
 
 ## Lokaler Build
 

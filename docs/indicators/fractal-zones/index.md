@@ -1,5 +1,8 @@
 # Fractal Zones
 
+!!! warning "Beta-Status"
+    Diese inoffizielle Dokumentation ist technisch validiert und zum Lernen nutzbar. Der vollständige manuelle Quantower-Abnahmetest ist noch offen; deshalb bleibt der öffentliche Status `public_beta_manual_acceptance_pending`.
+
 <div class="fz-safety" role="note" aria-label="Sicherheitsgrenze">
 <strong>Nicht-tradender Indikator:</strong> Fractal Zones berechnet und zeichnet Chart-Level. Er platziert, ändert oder storniert keine Orders und verändert weder Konto noch Position, Portfolio, Verbindung oder Strategie.
 </div>

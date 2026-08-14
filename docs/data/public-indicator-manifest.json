@@ -1,5 +1,11 @@
 {
   "schema_version": "fz-public-manifest-v1",
+  "publication": {
+    "status": "public_beta_manual_acceptance_pending",
+    "manual_acceptance_complete": false,
+    "official_affiliation": false,
+    "content_license_state": "no_open_source_license"
+  },
   "indicator": {
     "id": "fractal-zones",
     "name": "Fractal Zones",
