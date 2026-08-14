@@ -4,7 +4,7 @@
   "title": "Public indicator documentation manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "publication", "indicator", "inventory", "runtime_inventory", "topics", "settings", "base_settings", "manual_tests"],
+  "required": ["schema_version", "publication", "source_contract", "indicator", "inventory", "runtime_inventory", "topics", "settings", "base_settings", "manual_tests"],
   "properties": {
     "schema_version": {"const": "fz-public-manifest-v1"},
     "publication": {
@@ -16,6 +16,18 @@
         "manual_acceptance_complete": {"const": false},
         "official_affiliation": {"const": false},
         "content_license_state": {"const": "no_open_source_license"}
+      }
+    },
+    "source_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "schema_version", "validation_mode", "setting_fact_digest", "contract_digest"],
+      "properties": {
+        "status": {"const": "current_source_validated_sanitized"},
+        "schema_version": {"const": "fz-public-source-contract-v1"},
+        "validation_mode": {"const": "local_read_only_only"},
+        "setting_fact_digest": {"pattern": "^[0-9a-f]{64}$"},
+        "contract_digest": {"pattern": "^[0-9a-f]{64}$"}
       }
     },
     "indicator": {
@@ -149,7 +161,7 @@
       "properties": {
         "id": {"pattern": "^FZRUI-[0-9]{2}$"},
         "area": {"enum": ["rendering", "history"]},
-        "state": {"const": "requires_product_clarification"},
+        "state": {"enum": ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]},
         "summary": {"type": "string", "minLength": 20, "maxLength": 300}
       }
     },

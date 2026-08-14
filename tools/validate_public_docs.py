@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import importlib.util
 import json
 import re
 import sys
@@ -48,6 +49,18 @@ SVG_DENY_PATTERNS = {
     "external_reference": re.compile(r"(?:href|src)\s*=\s*['\"]https?://", re.I),
     "javascript_url": re.compile(r"javascript\s*:", re.I),
 }
+
+
+def load_source_drift_module():
+    spec = importlib.util.spec_from_file_location(
+        "check_fractal_zones_source_drift",
+        ROOT / "tools/check_fractal_zones_source_drift.py",
+    )
+    if spec is None or spec.loader is None:
+        fail("source-drift validator cannot be loaded")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class ValidationError(RuntimeError):
@@ -136,6 +149,9 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     manifest_path = root / "docs/data/public-indicator-manifest.json"
     schema_path = root / "schemas/public-indicator-manifest.schema.json"
     validate_json_instance(manifest_path, schema_path)
+    contract_path = root / "docs/data/fractal-zones-source-contract.json"
+    contract_schema_path = root / "schemas/fractal-zones-source-contract.schema.json"
+    validate_json_instance(contract_path, contract_schema_path)
     manifest = load_json(manifest_path)
     assert isinstance(manifest, dict)
     expected_publication = {
@@ -177,6 +193,14 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     residual_ids = [item["id"] for item in manifest["runtime_inventory"]["residuals"]]
     if residual_ids != ["FZRUI-01", "FZRUI-02"]:
         fail("runtime residuals must be exactly FZRUI-01 and FZRUI-02")
+    residual_states = [item["state"] for item in manifest["runtime_inventory"]["residuals"]]
+    if residual_states != ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]:
+        fail("runtime residual classifications differ from the approved static analysis")
+    source_drift = load_source_drift_module()
+    try:
+        source_drift.validate_contract_coupling(load_json(contract_path), manifest)
+    except source_drift.SourceContractError as exc:
+        fail(str(exc))
     if "runtime_inventory_pending" in json.dumps(manifest, ensure_ascii=False):
         fail("runtime inventory manifest contains a stale pending projection")
     if test_ids != [f"FZMT-{index:02d}" for index in range(1, len(test_ids) + 1)]:
@@ -224,6 +248,17 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     privacy_text = read_utf8(root / "docs/privacy.md")
     if "Die öffentliche Beta wird über GitHub Pages bereitgestellt" not in privacy_text:
         fail("privacy notice is not aligned with the public GitHub Pages state")
+    learning_pages = {
+        "docs/indicators/fractal-zones/learning/index.md",
+        "docs/indicators/fractal-zones/learning/first-15-minutes.md",
+        "docs/indicators/fractal-zones/learning/break-modes.md",
+        "docs/indicators/fractal-zones/learning/rendering-history.md",
+        "docs/indicators/fractal-zones/learning/recovery.md",
+        "docs/maintenance/documentation-workflow.md",
+    }
+    for relative in learning_pages:
+        if not (root / relative).is_file():
+            fail(f"guided documentation surface is missing: {relative}")
 
 
 def validate_workflow(root: Path = ROOT) -> None:

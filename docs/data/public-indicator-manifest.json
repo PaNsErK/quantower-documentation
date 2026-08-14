@@ -6,6 +6,13 @@
     "official_affiliation": false,
     "content_license_state": "no_open_source_license"
   },
+  "source_contract": {
+    "status": "current_source_validated_sanitized",
+    "schema_version": "fz-public-source-contract-v1",
+    "validation_mode": "local_read_only_only",
+    "setting_fact_digest": "da9c18f5c245a4b8c261220b5b49aad208b727f872cf98c0dd1943c3c4401903",
+    "contract_digest": "8ae46a260da8bab5d4c575fad6575c93a21fd297028e583393362216e4221019"
+  },
   "indicator": {
     "id": "fractal-zones",
     "name": "Fractal Zones",
@@ -35,8 +42,8 @@
     "loaded_bundle_product_version": "1.0.0+90389555f55237713593a16f63195c900972a898",
     "visibility_branches": ["break_one_minute_atr", "break_percent_of_level", "break_fixed_ticks", "rendering_adaptive", "rendering_full", "rendering_active_focus", "history_fixed_initial", "history_chart_loaded_warmup"],
     "residuals": [
-      {"id":"FZRUI-01","area":"rendering","state":"requires_product_clarification","summary":"Active focus zeigte im temporär geöffneten Runtime-Zweig 0 statt des Quellstandards 0,35; der abweichende Wert wurde nicht gespeichert."},
-      {"id":"FZRUI-02","area":"history","state":"requires_product_clarification","summary":"Der konfigurierte Calculation-start-Toggler war nicht separat sichtbar; bestätigt sind unset vor Bootstrap sowie abgeleitete, eingefrorene oder explizite Startwerte."}
+      {"id":"FZRUI-01","area":"rendering","state":"root_cause_confirmed_fix_pending","summary":"Active focus zeigte 0 statt des Quellstandards 0,35. Die statische Analyse bestätigt die fehlende Dezimaldarstellungs-Konfiguration als Ursache; die Produktkorrektur bleibt separat offen."},
+      {"id":"FZRUI-02","area":"history","state":"host_presentation_runtime_confirmation_pending","summary":"Der Quell- und Hosttest-Vertrag enthält den Enable-Toggler korrekt. Seine konkrete Darstellung durch Quantower bleibt als gezielte Runtime-Bestätigung offen."}
     ]
   },
   "topics": [

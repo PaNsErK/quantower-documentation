@@ -82,6 +82,12 @@ nav:
           - Maturity und Break Engine: indicators/fractal-zones/configure/maturity-and-break.md
           - Lifecycle und Linien: indicators/fractal-zones/configure/lifecycle-and-lines.md
           - Rendering, Marker und Historie: indicators/fractal-zones/configure/rendering-and-history.md
+      - Lernpfade:
+          - Übersicht: indicators/fractal-zones/learning/index.md
+          - Erste 15 Minuten: indicators/fractal-zones/learning/first-15-minutes.md
+          - Bruchmodi und Lifecycle: indicators/fractal-zones/learning/break-modes.md
+          - Rendering und Historie: indicators/fractal-zones/learning/rendering-history.md
+          - Recovery verstehen: indicators/fractal-zones/learning/recovery.md
       - Testen:
           - Teststrategie: indicators/fractal-zones/test/index.md
           - Interaktive Testsuite: indicators/fractal-zones/test/manual-suite.md
@@ -91,3 +97,4 @@ nav:
           - Performance und Sidecar: indicators/fractal-zones/troubleshoot/performance-and-sidecar.md
       - Inventarstatus: indicators/fractal-zones/inventory-status.md
       - Datenschutz: privacy.md
+  - Dokumentation pflegen: maintenance/documentation-workflow.md
