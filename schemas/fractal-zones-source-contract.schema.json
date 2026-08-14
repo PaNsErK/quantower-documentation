@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panserk.github.io/quantower-documentation/schemas/fractal-zones-source-contract.schema.json",
+  "title": "Sanitized Fractal Zones source contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "indicator_id", "contract_state", "validation_mode", "inventory", "conformance", "residuals", "privacy", "setting_fact_digest", "contract_digest"],
+  "properties": {
+    "schema_version": {"const": "fz-public-source-contract-v1"},
+    "indicator_id": {"const": "fractal-zones"},
+    "contract_state": {"const": "current_source_validated_sanitized"},
+    "validation_mode": {"const": "local_read_only_private_source_public_closed_facts"},
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_owned_setting_rows", "product_owned_actions", "line_option_rows", "maximum_atomic_controls", "setting_ids"],
+      "properties": {
+        "product_owned_setting_rows": {"const": 29},
+        "product_owned_actions": {"const": 2},
+        "line_option_rows": {"const": 6},
+        "maximum_atomic_controls": {"const": 41},
+        "setting_ids": {
+          "type": "array",
+          "minItems": 29,
+          "maxItems": 29,
+          "uniqueItems": true,
+          "items": {"pattern": "^[A-Za-z][A-Za-z0-9]+$"}
+        }
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirements_count", "golden_trace_count", "manual_acceptance_count", "sequence_state"],
+      "properties": {
+        "requirements_count": {"const": 75},
+        "golden_trace_count": {"const": 138},
+        "manual_acceptance_count": {"const": 12},
+        "sequence_state": {"const": "contiguous_closed"}
+      }
+    },
+    "residuals": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "classification", "source_evidence", "runtime_evidence"],
+        "properties": {
+          "id": {"enum": ["FZRUI-01", "FZRUI-02"]},
+          "classification": {"enum": ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"]},
+          "source_evidence": {"enum": ["confirmed", "confirmed_with_host_tests"]},
+          "runtime_evidence": {"enum": ["existing_residual", "confirmation_pending"]}
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["absolute_paths_persisted", "source_text_persisted", "repository_metadata_persisted", "raw_source_hashes_persisted", "sensitive_runtime_data_persisted"],
+      "properties": {
+        "absolute_paths_persisted": {"const": false},
+        "source_text_persisted": {"const": false},
+        "repository_metadata_persisted": {"const": false},
+        "raw_source_hashes_persisted": {"const": false},
+        "sensitive_runtime_data_persisted": {"const": false}
+      }
+    },
+    "setting_fact_digest": {"pattern": "^[0-9a-f]{64}$"},
+    "contract_digest": {"pattern": "^[0-9a-f]{64}$"}
+  }
+}

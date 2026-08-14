@@ -6,6 +6,8 @@ Publikationsstatus: `public_beta_manual_acceptance_pending`. Die Inhalte, Einste
 
 Inventarstatus: `runtime_inventory_confirmed_with_residuals`. Dokumentiert sind 29 produktseitige `SettingItem`-Zeilen mit bis zu 41 atomaren Controls sowie die bestätigte geerbte `base.Settings`-Union mit 11 Zeilen und bis zu 25 weiteren Controls. Die geladene Bundle-Version ist erfasst; Quantower zeigt sie in der Fractal-Zones-UI nicht separat an. `HelpLink` ist aktuell leer und daher nicht nutzbar. Zwei klar begrenzte Runtime-Abweichungen bleiben sichtbar dokumentiert, weshalb dieser Stand keine uneingeschränkte Vollständigkeitsbehauptung abgibt.
 
+Die [geführten Lernpfade](docs/indicators/fractal-zones/learning/index.md) bieten einen schnellen Einstieg, gezielte Übungen zu Bruchlogik, Lifecycle, Rendering und Recovery sowie sichere Beispielkonfigurationen. Änderungen können mit dem lokalen, fail-closed Dokumentationslauf gegen einen berechtigten Quell-Checkout geprüft werden; dabei werden weder private Pfade noch Quelltext oder Repository-Metadaten in dieses öffentliche Repository übernommen.
+
 ## Lokaler Build
 
 ```powershell
@@ -16,6 +18,8 @@ uv pip sync --python .venv requirements.lock.txt
 .venv/Scripts/python.exe -m mkdocs build --strict
 .venv/Scripts/python.exe -m mkdocs build --strict -f mkdocs.offline.yml
 ```
+
+Der vollständige Wartungslauf ist unter [Dokumentation pflegen](docs/maintenance/documentation-workflow.md) beschrieben. Er klassifiziert das Ergebnis geschlossen als `no_drift`, `documentation_drift`, `runtime_confirmation_required` oder `unsafe_or_ambiguous_source`.
 
 Online-Vorschau:
 

@@ -1,0 +1,72 @@
+{
+  "schema_version": "fz-public-source-contract-v1",
+  "indicator_id": "fractal-zones",
+  "contract_state": "current_source_validated_sanitized",
+  "validation_mode": "local_read_only_private_source_public_closed_facts",
+  "inventory": {
+    "product_owned_setting_rows": 29,
+    "product_owned_actions": 2,
+    "line_option_rows": 6,
+    "maximum_atomic_controls": 41,
+    "setting_ids": [
+      "MaturityBeforeMinutes",
+      "MaturityAfterMinutes",
+      "BreakDistanceMode",
+      "AtrPeriodMinutes",
+      "BreakAtrMultiplier",
+      "MinimumBreakDistanceTicks",
+      "BreakDistancePercent",
+      "FixedBreakDistanceTicks",
+      "BreakConfirmationMinutes",
+      "MinimumMinutesBetweenBreaks",
+      "RetestConfirmationMinutes",
+      "TerminateOnCurrentRoleBreakNumber",
+      "ProvisionalTopLineOptions",
+      "ProvisionalBottomLineOptions",
+      "ActiveTopLineOptions",
+      "ActiveBottomLineOptions",
+      "HistoricalTopLineOptions",
+      "HistoricalBottomLineOptions",
+      "RenderingMode",
+      "InactiveStateOpacity",
+      "ShowEndMarker",
+      "ShowBreakMarkers",
+      "ShowRoleChangeMarkers",
+      "CalculationRangeMode",
+      "InitialHistoryDays",
+      "CalculationStartTime",
+      "EnableReplayCheckpoint",
+      "VerifyFullHistoryNow",
+      "CancelFullHistoryVerify"
+    ]
+  },
+  "conformance": {
+    "requirements_count": 75,
+    "golden_trace_count": 138,
+    "manual_acceptance_count": 12,
+    "sequence_state": "contiguous_closed"
+  },
+  "residuals": [
+    {
+      "id": "FZRUI-01",
+      "classification": "root_cause_confirmed_fix_pending",
+      "source_evidence": "confirmed_with_host_tests",
+      "runtime_evidence": "existing_residual"
+    },
+    {
+      "id": "FZRUI-02",
+      "classification": "host_presentation_runtime_confirmation_pending",
+      "source_evidence": "confirmed_with_host_tests",
+      "runtime_evidence": "confirmation_pending"
+    }
+  ],
+  "privacy": {
+    "absolute_paths_persisted": false,
+    "source_text_persisted": false,
+    "repository_metadata_persisted": false,
+    "raw_source_hashes_persisted": false,
+    "sensitive_runtime_data_persisted": false
+  },
+  "setting_fact_digest": "da9c18f5c245a4b8c261220b5b49aad208b727f872cf98c0dd1943c3c4401903",
+  "contract_digest": "8ae46a260da8bab5d4c575fad6575c93a21fd297028e583393362216e4221019"
+}

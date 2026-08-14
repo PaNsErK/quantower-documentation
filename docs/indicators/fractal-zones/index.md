@@ -39,10 +39,10 @@ Die öffentliche Dokumentation trennt drei Ebenen:
 
 ## Schnellstart
 
-1. Lies [Zeit- und Fraktallogik](understand/time-and-fractals.md).
-2. Vergleiche danach den [Zustandsablauf](understand/lifecycle.md).
+1. Starte mit dem Lernpfad [Erste 15 Minuten](learning/first-15-minutes.md).
+2. Lies danach [Zeit- und Fraktallogik](understand/time-and-fractals.md) und den [Zustandsablauf](understand/lifecycle.md).
 3. Prüfe vor manuellen Änderungen [alle Einstellungen](configure/index.md).
-4. Arbeite die [interaktive Testsuite](test/manual-suite.md) in einem sicheren, nicht-tradenden Chart ab.
+4. Nutze die weiteren [geführten Lernpfade](learning/index.md) oder arbeite die [interaktive Testsuite](test/manual-suite.md) in einem sicheren, nicht-tradenden Chart ab.
 
 --8<-- "docs/includes/diagrams/lifecycle.md"
 

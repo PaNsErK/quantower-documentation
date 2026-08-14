@@ -26,6 +26,32 @@ class PublicationGuardTests(unittest.TestCase):
         self.assertEqual(40, manifest["inventory"]["maximum_total_setting_rows"])
         self.assertEqual(66, manifest["inventory"]["maximum_total_atomic_controls"])
         self.assertEqual(["FZRUI-01", "FZRUI-02"], [item["id"] for item in manifest["runtime_inventory"]["residuals"]])
+        self.assertEqual(
+            ["root_cause_confirmed_fix_pending", "host_presentation_runtime_confirmation_pending"],
+            [item["state"] for item in manifest["runtime_inventory"]["residuals"]],
+        )
+
+    def test_source_contract_is_schema_valid_and_manifest_bound(self) -> None:
+        validator.validate_json_instance(
+            ROOT / "docs/data/fractal-zones-source-contract.json",
+            ROOT / "schemas/fractal-zones-source-contract.schema.json",
+        )
+        source_drift = validator.load_source_drift_module()
+        source_drift.validate_contract_coupling(
+            validator.load_json(ROOT / "docs/data/fractal-zones-source-contract.json"),
+            validator.load_json(ROOT / "docs/data/public-indicator-manifest.json"),
+        )
+
+    def test_learning_and_maintenance_routes_are_materialized(self) -> None:
+        expected = [
+            ROOT / "docs/indicators/fractal-zones/learning/index.md",
+            ROOT / "docs/indicators/fractal-zones/learning/first-15-minutes.md",
+            ROOT / "docs/indicators/fractal-zones/learning/break-modes.md",
+            ROOT / "docs/indicators/fractal-zones/learning/rendering-history.md",
+            ROOT / "docs/indicators/fractal-zones/learning/recovery.md",
+            ROOT / "docs/maintenance/documentation-workflow.md",
+        ]
+        self.assertTrue(all(path.is_file() for path in expected))
 
     def test_public_beta_status_is_closed_and_manual_acceptance_is_pending(self) -> None:
         manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")

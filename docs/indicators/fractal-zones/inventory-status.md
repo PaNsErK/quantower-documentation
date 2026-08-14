@@ -9,7 +9,8 @@
 | Geladene Bundle-Version | `confirmed_from_loaded_bundle` | `1.0.0+90389555f55237713593a16f63195c900972a898`; keine eigene UI-Anzeige. |
 | `HelpLink` / nativer Menüort | `not_available_empty_getter` | Die API ist vorhanden, Fractal Zones liefert aktuell aber keinen Link; der native Befehl ist deshalb nicht nutzbar. |
 | Sichtbarkeitszweige | `runtime_inventory_confirmed` | Drei Break-Modi, drei Rendering-Modi und beide Calculation-Range-Modi wurden geschlossen verglichen. |
-| Uneingeschränkte Quantower-UI-Behauptung | `false` | Zwei begrenzte Produktklärungen werden nicht als bestätigtes Verhalten ausgegeben. |
+| Sanitisiertes Quell-Drift-Gate | `current_source_validated_sanitized` | Geschlossene Produktfakten werden lokal geprüft; private Pfade, Quelltext, Commits und Roh-Hashes werden nicht veröffentlicht. |
+| Uneingeschränkte Quantower-UI-Behauptung | `false` | Eine Produktkorrektur und eine Hostdarstellungs-Bestätigung bleiben offen. |
 
 ## Bestätigte `base.Settings`-Union
 
@@ -43,5 +44,9 @@ Es erschienen keine zusätzlichen `LinesSeries`- oder `LinesLevels`-Gruppen.
 
 ## Begrenzte Runtime-Residuals
 
-1. **FZRUI-01 – Active-focus-Deckkraft:** Der temporär geöffnete Zweig zeigte `0`, obwohl Quelle und Manifest `0,35` definieren. Der Wert wurde nicht gespeichert und wird nicht als neuer Standard dokumentiert.
-2. **FZRUI-02 – Calculation start:** Bestätigt sind unset vor Bootstrap sowie abgeleitete, eingefrorene oder explizite Werte. Der im Code konfigurierte Enable-Toggler war nicht als separates Bedienelement erkennbar.
+1. **FZRUI-01 – `root_cause_confirmed_fix_pending`:** Der temporär geöffnete Zweig zeigte `0`, obwohl Quelle und Manifest `0,35` definieren. Die statische Analyse bestätigt, dass im zugehörigen `SettingItemDouble` die Dezimaldarstellungs-Konfiguration fehlt, während vergleichbare Double-Settings zwei Dezimalstellen deklarieren und testen. Das ist eine separate Produktkorrektur; `0,35` bleibt der dokumentierte Quellstandard.
+2. **FZRUI-02 – `host_presentation_runtime_confirmation_pending`:** Quellcode und Hosttests konfigurieren `UseEnabilityToggler=true` sowie den Enabled-Zustand korrekt. Offen ist nur, wie Quantower dieses Host-Control konkret präsentiert; daraus wird kein abweichendes Produktverhalten abgeleitet.
+
+## Drift-Status richtig lesen
+
+`no_drift` bedeutet, dass die geschlossenen Produktfakten, die öffentliche Inventur und der FZCP-Umfang übereinstimmen. Es ist **kein** Ersatz für den noch offenen manuellen Quantower-Abnahmetest. `documentation_drift` verlangt eine bewusste Dokumentationsanpassung; `runtime_confirmation_required` hält eine reine Host-/UI-Frage sichtbar offen; `unsafe_or_ambiguous_source` stoppt ohne Veröffentlichung.
