@@ -1,5 +1,15 @@
 # Darstellung und Marker
 
+## Interaktiver Renderingvergleich
+
+Wechsle zwischen Adaptive, Full und Active focus und verschiebe den Beispiel-Viewport. Linienidentität und sichtbare Segmentzahl bleiben gleich; nur Renderweg beziehungsweise Deckkraft ändern sich.
+
+<div class="fz-simulator" data-fz-simulator="rendering-modes">
+<p><strong>Ohne JavaScript:</strong> Adaptive und Full müssen semantisch dasselbe Ergebnis zeigen. Active focus verändert nur die Deckkraft von Provisional und BrokenWatch.</p>
+</div>
+
+*Schematischer Rendervergleich mit synthetischen Segmenten; keine Laufzeitmessung.*
+
 <section markdown="1" class="fz-topic" data-topic="FZT-18" data-modes="understand configure">
 
 ## Ursprungsstabile Farben

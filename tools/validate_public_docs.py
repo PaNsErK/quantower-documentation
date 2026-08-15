@@ -403,6 +403,7 @@ def validate_generated_site(site_root: Path, offline_root: Path) -> None:
             if path.suffix.lower() in {".html", ".css", ".js", ".json", ".map", ".svg", ".txt", ".xml"}:
                 check_mojibake = path.suffix.lower() == ".html" or relative in {
                     "assets/javascripts/fractal-zones.js",
+                    "assets/javascripts/fractal-zones-simulators.js",
                     "assets/javascripts/manual-tests.js",
                     "assets/stylesheets/fractal-zones.css",
                 }

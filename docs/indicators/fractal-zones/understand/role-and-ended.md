@@ -2,6 +2,16 @@
 
 --8<-- "docs/includes/diagrams/role-change.md"
 
+## Interaktives Chartlabor: Retest, Rolle und Ende
+
+Schalte zwischen den fachlich unterschiedlichen Ergebnissen um und gehe den Ablauf schrittweise durch. Entscheidend ist nicht nur, wo der Kurs liegt, sondern welches Ereignis bereits bestätigt wurde.
+
+<div class="fz-simulator" data-fz-simulator="role-ended">
+<p><strong>Ohne JavaScript:</strong> RoleChange ändert die aktuelle Rolle, RoleReaffirmation bestätigt sie. Re-arm verhindert Doppelbestätigungen; Ended beendet die Linie exakt am terminalen Commit.</p>
+</div>
+
+*Realitätsnahes synthetisches Szenario; keine Live-, Konto- oder Handelsdaten.*
+
 <section markdown="1" class="fz-topic" data-topic="FZT-14" data-modes="understand">
 
 ## RetestPending und Re-arm

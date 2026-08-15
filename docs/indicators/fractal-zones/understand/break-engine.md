@@ -2,6 +2,16 @@
 
 --8<-- "docs/includes/diagrams/break-reset.md"
 
+## Interaktives Chartlabor: Bruchgrenze
+
+Wähle Distanzmodus, Zonenseite und Verlauf. Die gelbe Linie zeigt die tatsächlich zu überschreitende Bruchgrenze. Linienart, Farbe und Breite lassen sich ausschließlich für diese Lernansicht verändern.
+
+<div class="fz-simulator" data-fz-simulator="break-boundary">
+<p><strong>Ohne JavaScript:</strong> Bei Resistance liegt die Bruchgrenze oberhalb, bei Support unterhalb des Levels. Fixed ticks bleibt absolut, Percent skaliert mit dem Levelpreis und One-minute ATR mit der MIN1-Volatilität.</p>
+</div>
+
+*Realitätsnahes synthetisches Szenario; keine Live-, Konto- oder Handelsdaten.*
+
 <section markdown="1" class="fz-topic" data-topic="FZT-08" data-modes="understand">
 
 ## Active und BreakPending

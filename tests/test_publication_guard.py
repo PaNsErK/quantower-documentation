@@ -101,6 +101,31 @@ class PublicationGuardTests(unittest.TestCase):
         self.assertNotIn('<section class="fz-topic"', docs_text)
         self.assertNotIn('<div class="fz-depth"', docs_text)
 
+    def test_interactive_explainers_are_declared_once(self) -> None:
+        docs_text = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in (ROOT / "docs/indicators/fractal-zones").rglob("*.md")
+        )
+        for simulator_id in (
+            "break-boundary",
+            "role-ended",
+            "timeframe-parity",
+            "lifecycle",
+            "rendering-modes",
+        ):
+            self.assertEqual(1, docs_text.count(f'data-fz-simulator="{simulator_id}"'))
+
+    def test_interactive_explainer_asset_is_local_and_registered(self) -> None:
+        asset = ROOT / "docs/assets/javascripts/fractal-zones-simulators.js"
+        self.assertTrue(asset.is_file())
+        self.assertIn(
+            "assets/javascripts/fractal-zones-simulators.js",
+            (ROOT / "mkdocs.yml").read_text(encoding="utf-8"),
+        )
+        source = asset.read_text(encoding="utf-8")
+        for pattern in validator.CUSTOM_JS_NETWORK_PATTERNS.values():
+            self.assertIsNone(pattern.search(source))
+
     def test_workflow_is_least_privilege_and_sha_pinned(self) -> None:
         validator.validate_workflow(ROOT)
 

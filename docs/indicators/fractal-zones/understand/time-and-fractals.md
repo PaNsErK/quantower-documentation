@@ -1,5 +1,15 @@
 # Zeit- und Fraktallogik
 
+## Interaktiver Timeframe-Vergleich
+
+Alle drei Ansichten verwenden dieselben kanonischen MIN1-Daten. Verändere die rechte Reifezeit und die Sessionpause: Die sichtbare Kerzenzahl ändert sich je Timeframe, der fachliche Bestätigungszeitpunkt bleibt identisch.
+
+<div class="fz-simulator" data-fz-simulator="timeframe-parity">
+<p><strong>Ohne JavaScript:</strong> 30 offene Sessionminuten entsprechen 30 Ein-Minuten-Kerzen, häufig sechs Fünf-Minuten-Kerzen oder zwei Fünfzehn-Minuten-Kerzen. Geschlossene Sessionminuten werden nicht mitgezählt.</p>
+</div>
+
+*Realitätsnahes synthetisches Szenario; keine Live-, Konto- oder Handelsdaten.*
+
 <section markdown="1" class="fz-topic" data-topic="FZT-02" data-modes="understand">
 
 ## Kanonische Ein-Minuten-Datenbasis

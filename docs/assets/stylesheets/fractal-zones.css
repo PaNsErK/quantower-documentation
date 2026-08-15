@@ -220,6 +220,248 @@ body[data-fz-depth="practice"] .fz-depth[data-depth="technical"] {
   border: 1px solid var(--fz-warning);
 }
 
+.fz-simulator {
+  margin: 1rem 0 0.65rem;
+  padding: 1rem;
+  border: 1px solid var(--fz-border);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--md-default-bg-color) 94%, var(--fz-accent) 6%);
+}
+
+.fz-simulator__controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 0.9rem;
+}
+
+.fz-simulator__field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fz-simulator__field select,
+.fz-simulator__field input[type="range"],
+.fz-simulator__field input[type="color"] {
+  width: 100%;
+}
+
+.fz-simulator__field select {
+  min-height: 2.2rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--fz-border);
+  border-radius: 0.4rem;
+  color: inherit;
+  background: var(--md-default-bg-color);
+  font: inherit;
+  font-weight: 400;
+}
+
+.fz-simulator__field input[type="color"] {
+  min-height: 2.2rem;
+  padding: 0.15rem;
+  border: 1px solid var(--fz-border);
+  border-radius: 0.4rem;
+  background: var(--md-default-bg-color);
+}
+
+.fz-simulator__field input:focus-visible,
+.fz-simulator__field select:focus-visible,
+.fz-simulator__step-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--fz-accent) 70%, white);
+  outline-offset: 2px;
+}
+
+.fz-simulator__chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 15rem;
+  border: 1px solid var(--fz-border);
+  border-radius: 0.55rem;
+  background: var(--md-code-bg-color);
+}
+
+.fz-simulator__chart text {
+  fill: var(--md-default-fg-color);
+  font-family: var(--md-text-font-family);
+  font-size: 12px;
+}
+
+.fz-simulator__chart .fz-chart-muted {
+  fill: var(--md-default-fg-color--light);
+}
+
+.fz-simulator__chart .fz-chart-grid {
+  stroke: color-mix(in srgb, currentColor 12%, transparent);
+  stroke-width: 1;
+}
+
+.fz-simulator__chart .fz-chart-price {
+  fill: none;
+  stroke: #42a5f5;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.fz-simulator__chart .fz-chart-up {
+  fill: #35c57a;
+  stroke: #35c57a;
+}
+
+.fz-simulator__chart .fz-chart-down {
+  fill: #ff6961;
+  stroke: #ff6961;
+}
+
+.fz-simulator__chart .fz-chart-level {
+  stroke: var(--md-default-fg-color);
+  stroke-width: 1.5;
+}
+
+.fz-simulator__chart .fz-chart-boundary {
+  fill: none;
+}
+
+.fz-simulator__chart .fz-chart-marker-reset {
+  fill: #ff6961;
+  stroke: var(--md-code-bg-color);
+  stroke-width: 2;
+}
+
+.fz-simulator__chart .fz-chart-marker-confirm {
+  fill: #35c57a;
+  stroke: var(--md-code-bg-color);
+  stroke-width: 2;
+}
+
+.fz-simulator__chart .fz-chart-marker-pending {
+  fill: #ffca28;
+  stroke: var(--md-code-bg-color);
+  stroke-width: 2;
+}
+
+.fz-simulator__status {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.fz-simulator__status > div {
+  min-width: 0;
+  padding: 0.55rem 0.65rem;
+  border-left: 0.2rem solid var(--fz-accent);
+  background: var(--md-code-bg-color);
+  font-size: 0.78rem;
+}
+
+.fz-simulator__status strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--fz-accent);
+}
+
+.fz-simulator__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0 0 0.75rem;
+}
+
+.fz-simulator__step-button {
+  min-height: 2.15rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--fz-border);
+  border-radius: 0.4rem;
+  color: inherit;
+  background: var(--md-default-bg-color);
+  cursor: pointer;
+  font: inherit;
+}
+
+.fz-simulator__step-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.fz-simulator__step-label {
+  flex: 1 1 12rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.fz-simulator__small-multiples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.fz-simulator__mini-chart {
+  min-width: 0;
+}
+
+.fz-simulator__mini-chart h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+}
+
+.fz-simulator__mini-chart .fz-simulator__chart {
+  min-height: 10rem;
+}
+
+.fz-simulator__check {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  min-height: 2.2rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fz-simulator__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.55rem 0;
+  font-size: 0.75rem;
+}
+
+.fz-simulator__legend span::before {
+  content: "";
+  display: inline-block;
+  width: 1.3rem;
+  margin-right: 0.3rem;
+  border-top: 2px solid currentColor;
+  vertical-align: middle;
+}
+
+.fz-simulator__legend .is-dot::before { border-top-style: dotted; }
+.fz-simulator__legend .is-dash::before { border-top-style: dashed; }
+
+@media (max-width: 58rem) {
+  .fz-simulator__small-multiples {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 36rem) {
+  .fz-simulator {
+    padding: 0.75rem;
+  }
+
+  .fz-simulator__chart {
+    min-height: 12rem;
+  }
+}
+
 @media (max-width: 52rem) {
   .fz-statusbar,
   .fz-test-toolbar {
@@ -235,7 +477,9 @@ body[data-fz-depth="practice"] .fz-depth[data-depth="technical"] {
   .fz-statusbar,
   .fz-test-actions,
   .fz-note,
-  .fz-status-select {
+  .fz-status-select,
+  .fz-simulator__controls,
+  .fz-simulator__steps {
     display: none !important;
   }
 
