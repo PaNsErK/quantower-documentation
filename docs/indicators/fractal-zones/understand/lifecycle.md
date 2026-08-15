@@ -2,6 +2,16 @@
 
 --8<-- "docs/includes/diagrams/lifecycle.md"
 
+## Interaktive Zustandsreise
+
+Gehe die Lebensdauer eines Levels Schritt für Schritt durch. Die Ansicht zeigt, wann ein neuer Linienabschnitt beginnt und warum frühere Segmente unverändert bleiben.
+
+<div class="fz-simulator" data-fz-simulator="lifecycle">
+<p><strong>Ohne JavaScript:</strong> Provisional wird Dot gezeichnet, Active ab dem Commit Solid und BrokenWatch ab dem Bruch Dash. Ended besitzt danach kein Liniensegment.</p>
+</div>
+
+*Realitätsnahes synthetisches Szenario; keine Live-, Konto- oder Handelsdaten.*
+
 <section markdown="1" class="fz-topic" data-topic="FZT-05" data-modes="understand">
 
 ## Candidate und Provisional
