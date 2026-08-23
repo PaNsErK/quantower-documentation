@@ -1,23 +1,17 @@
 # Teststrategie
 
-Der manuelle Test ist **nicht-tradend** und folgt einer kostengünstigen Reihenfolge:
+Die Abnahme ist bewusst in drei Klassen getrennt:
 
-1. Settings und Sicherheitsgrenze.
-2. Provisional/Active und sichtbare Segmenttreue.
-3. Break-, Retest-, Rollen- und Endsemantik.
-4. Rendering- und Marker-Vergleich.
-5. Historie, Restart, Recovery und Performance.
-6. Datenschutz von lokalem Testzustand und Export.
+| Klasse | Kennung | Aktueller Stand |
+|---|---|---|
+| automatisierte Konformität | FZ-001…102, GT-01…180, MVA-01…25 | vollständig und geschlossen |
+| öffentliche Lern-/Regressionstests | FZMT-01…24 | lokal im Browser speicherbar |
+| neue subjektive Benutzerprüfung | FZV2-RM-001…019 | `pending_user_evaluation` |
 
-## Was ein PASS bedeutet
+`runtime_acceptance_complete=true` beschreibt die technische Laufzeitabnahme. `manual_acceptance_complete=false` bleibt korrekt, bis die 19 neuen Benutzerfälle tatsächlich durchgeführt wurden. Keiner dieser Zustände wird aus dem anderen abgeleitet.
 
-Ein PASS gilt nur für den konkret geprüften Testfall, das Instrument, den Datenstand und die sichtbare Quantower-Sitzung. Ein erfolgreicher lokaler Dokumentationsbuild oder ein erfolgreicher Produktbuild ersetzt diese Runtime-Evidenz nicht.
+--8<-- "docs/includes/diagrams/runtime-vs-user-acceptance.md"
 
-## Vor dem Start
-
-- Einen Chart ohne offene Trading-Aufgabe verwenden.
-- Keine Konto-, Order-, Positions-, Portfolio-, Verbindungs- oder Strategiefläche öffnen.
-- Ausgangswerte und Chartzustand notieren.
-- Nach jedem Test die angegebene Wiederherstellung durchführen.
-
-[Interaktive Testsuite öffnen](manual-suite.md)
+- [Regression und Lernen](manual-suite.md)
+- [Technische Runtime-Abnahme](runtime-acceptance.md)
+- [Offene Benutzer-Testmatrix](v2-remediation-user-matrix.md)

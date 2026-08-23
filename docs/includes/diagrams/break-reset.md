@@ -16,3 +16,10 @@
   <path d="M440 210 L465 235 L490 210" fill="none" stroke="#f14c4c" stroke-width="5"/>
   <path d="M820 35 L840 55 L870 20" fill="none" stroke="#25b86b" stroke-width="6"/>
 </svg>
+```text
+außerhalb ── Timer läuft ──┐
+                           ├─ Neutralzone: Timer sofort auf 0
+Neutralzone ───────────────┘  derselbe MIN1-Slot: kein Neustart
+
+nächster gültiger Slot außerhalb ──> neuer Versuch ab 0
+```

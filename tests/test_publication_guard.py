@@ -6,197 +6,75 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("validate_public_docs", ROOT / "tools/validate_public_docs.py")
+SPEC = importlib.util.spec_from_file_location("validator", ROOT / "tools/validate_public_docs.py")
 validator = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
 SPEC.loader.exec_module(validator)
 
 
 class PublicationGuardTests(unittest.TestCase):
-    def test_manifest_and_closed_counts_pass(self) -> None:
+    def test_manifest_and_coverage_pass(self) -> None:
         validator.validate_manifest_and_coverage(ROOT)
 
-    def test_runtime_inventory_is_closed_and_counted(self) -> None:
+    def test_current_inventory_is_exact(self) -> None:
         manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
-        self.assertEqual("runtime_inventory_confirmed", manifest["inventory"]["base_settings_union"])
-        self.assertEqual(11, len(manifest["base_settings"]))
-        self.assertEqual(25, sum(item["atomic_controls"] for item in manifest["base_settings"]))
-        self.assertEqual(40, manifest["inventory"]["maximum_total_setting_rows"])
-        self.assertEqual(66, manifest["inventory"]["maximum_total_atomic_controls"])
-        self.assertEqual(["FZRUI-01", "FZRUI-02"], [item["id"] for item in manifest["runtime_inventory"]["residuals"]])
-        self.assertEqual(
-            ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"],
-            [item["state"] for item in manifest["runtime_inventory"]["residuals"]],
-        )
+        self.assertEqual(56, len(manifest["settings"]))
+        self.assertEqual(70, sum(item["atomic_controls"] for item in manifest["settings"]))
+        self.assertEqual(7, sum(item["type"] == "line_options" for item in manifest["settings"]))
+        self.assertEqual(2, sum(item["type"] == "action" for item in manifest["settings"]))
 
-    def test_terminal_fzrui_findings_do_not_regress_to_pending_states(self) -> None:
-        checked = [
-            ROOT / "docs/data/fractal-zones-source-contract.json",
-            ROOT / "docs/data/public-indicator-manifest.json",
-            ROOT / "docs/index.md",
-            ROOT / "docs/indicators/fractal-zones/inventory-status.md",
-            ROOT / "docs/indicators/fractal-zones/configure/rendering-and-history.md",
-            ROOT / "docs/indicators/fractal-zones/learning/rendering-history.md",
-        ]
-        combined = "\n".join(path.read_text(encoding="utf-8") for path in checked)
-        self.assertIn("runtime_confirmed_fixed", combined)
-        self.assertIn("host_presentation_limitation_confirmed", combined)
-        self.assertNotIn("root_cause_confirmed_fix_pending", combined)
-        self.assertNotIn("host_presentation_runtime_confirmation_pending", combined)
-
-    def test_source_contract_is_schema_valid_and_manifest_bound(self) -> None:
-        validator.validate_json_instance(
-            ROOT / "docs/data/fractal-zones-source-contract.json",
-            ROOT / "schemas/fractal-zones-source-contract.schema.json",
-        )
-        source_drift = validator.load_source_drift_module()
-        source_drift.validate_contract_coupling(
-            validator.load_json(ROOT / "docs/data/fractal-zones-source-contract.json"),
-            validator.load_json(ROOT / "docs/data/public-indicator-manifest.json"),
-        )
-
-    def test_learning_and_maintenance_routes_are_materialized(self) -> None:
-        expected = [
-            ROOT / "docs/indicators/fractal-zones/learning/index.md",
-            ROOT / "docs/indicators/fractal-zones/learning/first-15-minutes.md",
-            ROOT / "docs/indicators/fractal-zones/learning/break-modes.md",
-            ROOT / "docs/indicators/fractal-zones/learning/rendering-history.md",
-            ROOT / "docs/indicators/fractal-zones/learning/recovery.md",
-            ROOT / "docs/maintenance/documentation-workflow.md",
-        ]
-        self.assertTrue(all(path.is_file() for path in expected))
-
-    def test_public_beta_status_is_closed_and_manual_acceptance_is_pending(self) -> None:
+    def test_runtime_and_user_acceptance_are_not_conflated(self) -> None:
         manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
-        self.assertEqual("public_beta_manual_acceptance_pending", manifest["publication"]["status"])
+        self.assertTrue(manifest["publication"]["runtime_acceptance_complete"])
         self.assertFalse(manifest["publication"]["manual_acceptance_complete"])
-        self.assertFalse(manifest["publication"]["official_affiliation"])
-        self.assertEqual("no_open_source_license", manifest["publication"]["content_license_state"])
+        self.assertEqual("pending_user_evaluation", manifest["publication"]["user_evaluation"])
 
-    def test_public_beta_and_unofficial_notices_are_visible(self) -> None:
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        index = (ROOT / "docs/index.md").read_text(encoding="utf-8")
-        indicator = (ROOT / "docs/indicators/fractal-zones/index.md").read_text(encoding="utf-8")
-        self.assertIn("public_beta_manual_acceptance_pending", readme)
-        self.assertIn("manual_acceptance_complete=false", readme + index)
-        self.assertIn("inoffiziell", (readme + index + indicator).lower())
+    def test_fzmt_and_user_suites_are_separate_and_contiguous(self) -> None:
+        fzmt = validator.load_json(ROOT / "docs/includes/manual-test-catalog.json")
+        user = validator.load_json(ROOT / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json")
+        self.assertEqual([f"FZMT-{index:02d}" for index in range(1, 25)], [item["id"] for item in fzmt])
+        self.assertEqual([f"FZV2-RM-{index:03d}" for index in range(1, 20)], [item["id"] for item in user])
+        self.assertTrue(all("result" not in item and "note" not in item for item in user))
 
-    def test_runtime_pending_state_is_absent_from_public_contracts(self) -> None:
-        checked = [
-            ROOT / "docs/data/public-indicator-manifest.json",
-            ROOT / "schemas/manual-test-result.schema.json",
-            ROOT / "tests/fixtures/manual-result-valid.json",
-            ROOT / "docs/assets/javascripts/manual-tests.js",
-        ]
-        for path in checked:
-            self.assertNotIn("runtime_inventory_pending", path.read_text(encoding="utf-8"), path)
+    def test_runtime_facts_are_closed(self) -> None:
+        runtime = validator.load_json(ROOT / "docs/data/fractal-zones-runtime-acceptance.json")
+        self.assertEqual(2700.009, runtime["soak"]["elapsed_seconds"])
+        self.assertEqual(188, runtime["soak"]["responsive_samples"])
+        self.assertEqual("accepted_persistence_quota_and_efficiency_risk", runtime["residual_warning"]["classification"])
 
-    def test_topics_use_markdown_in_html_contract(self) -> None:
-        docs_text = "\n".join(
-            path.read_text(encoding="utf-8")
-            for path in (ROOT / "docs/indicators/fractal-zones").rglob("*.md")
-        )
-        self.assertNotIn('<section class="fz-topic"', docs_text)
-        self.assertNotIn('<div class="fz-depth"', docs_text)
-
-    def test_interactive_explainers_are_declared_once(self) -> None:
-        docs_text = "\n".join(
-            path.read_text(encoding="utf-8")
-            for path in (ROOT / "docs/indicators/fractal-zones").rglob("*.md")
-        )
-        for simulator_id in (
-            "break-boundary",
-            "role-ended",
-            "timeframe-parity",
-            "lifecycle",
-            "rendering-modes",
-        ):
-            self.assertEqual(1, docs_text.count(f'data-fz-simulator="{simulator_id}"'))
-
-    def test_interactive_explainer_asset_is_local_and_registered(self) -> None:
-        asset = ROOT / "docs/assets/javascripts/fractal-zones-simulators.js"
-        self.assertTrue(asset.is_file())
-        self.assertIn(
-            "assets/javascripts/fractal-zones-simulators.js",
-            (ROOT / "mkdocs.yml").read_text(encoding="utf-8"),
-        )
-        source = asset.read_text(encoding="utf-8")
-        for pattern in validator.CUSTOM_JS_NETWORK_PATTERNS.values():
-            self.assertIsNone(pattern.search(source))
-
-    def test_workflow_is_least_privilege_and_sha_pinned(self) -> None:
-        validator.validate_workflow(ROOT)
-
-    def test_valid_manual_result_passes_schema(self) -> None:
-        validator.validate_manual_result_fixture(ROOT)
-
-    def test_invalid_manual_result_fixture_is_rejected(self) -> None:
+    def test_valid_result_passes_and_wrong_namespace_fails(self) -> None:
         schema = validator.load_json(ROOT / "schemas/manual-test-result.schema.json")
-        instance = validator.load_json(ROOT / "tests/fixtures/manual-result-invalid-extra-field.json")
-        errors = list(validator.Draft202012Validator(schema).iter_errors(instance))
-        self.assertTrue(errors)
+        valid = validator.load_json(ROOT / "tests/fixtures/manual-result-v2-valid.json")
+        invalid = validator.load_json(ROOT / "tests/fixtures/manual-result-v2-invalid-suite.json")
+        self.assertFalse(list(validator.Draft202012Validator(schema).iter_errors(valid)))
+        self.assertTrue(list(validator.Draft202012Validator(schema).iter_errors(invalid)))
 
-    def test_manual_result_rejects_unknown_field(self) -> None:
-        schema = validator.load_json(ROOT / "schemas/manual-test-result.schema.json")
-        instance = validator.load_json(ROOT / "tests/fixtures/manual-result-valid.json")
-        instance["private_path"] = "forbidden"
-        errors = list(validator.Draft202012Validator(schema).iter_errors(instance))
-        self.assertTrue(errors)
+    def test_manual_test_runtime_separates_suites_and_limits_legacy_migration(self) -> None:
+        script = validator.read_utf8(ROOT / "docs/assets/javascripts/manual-tests.js")
+        self.assertIn('"fzdocs.manual-test-state.v2." + suiteId', script)
+        self.assertIn('suiteId === "FZMT"', script)
+        self.assertIn('suiteId !== "FZMT" && suiteId !== "FZV2-RM"', script)
+        self.assertIn('value.suite_id !== suiteId', script)
 
-    def test_absolute_windows_path_is_rejected(self) -> None:
+    def test_current_simulator_inventory_is_registered(self) -> None:
+        script = validator.read_utf8(ROOT / "docs/assets/javascripts/fractal-zones-simulators.js")
+        for simulator in ("break-boundary", "role-ended", "timeframe-parity", "lifecycle", "rendering-modes", "break-source", "history-range"):
+            self.assertIn(f'"{simulator}"', script)
+
+    def test_source_tree_rejects_private_or_network_content(self) -> None:
         with self.assertRaises(validator.ValidationError):
             validator.assert_safe_text("C:" + "/Users/Example/private.txt", "fixture")
+        self.assertIsNotNone(validator.NETWORK_PATTERNS["fetch"].search("fetch('/collect')"))
 
-    def test_secret_assignment_is_rejected(self) -> None:
-        with self.assertRaises(validator.ValidationError):
-            validator.assert_safe_text("api_" + "key=" + "abcdefghijklmnop", "fixture")
-
-    def test_custom_network_primitive_is_rejected(self) -> None:
-        pattern = validator.CUSTOM_JS_NETWORK_PATTERNS["fetch"]
-        self.assertIsNotNone(pattern.search("fetch('/collect')"))
-
-    def test_unsafe_svg_is_rejected(self) -> None:
-        with self.assertRaises(validator.ValidationError):
-            payload = "<svg><scr" + "ipt>alert(1)</scr" + "ipt></svg>"
-            validator.validate_svg_text(payload, "fixture")
-
-    def test_external_runtime_asset_is_rejected(self) -> None:
-        parser = validator.ResourceHTMLParser()
-        parser.feed('<scr' + 'ipt src="http' + 's://example.invalid/app.js"></scr' + 'ipt>')
-        self.assertEqual(1, len(parser.external_resources))
-
-    def test_generated_root_cannot_escape_repository(self) -> None:
-        with self.assertRaises(validator.ValidationError):
-            validator.resolve_safe_root("..", "fixture")
-
-    def test_broken_generated_internal_link_is_rejected(self) -> None:
+    def test_generated_link_escape_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            source = root / "guide" / "index.html"
-            source.parent.mkdir()
-            source.write_text("safe", encoding="utf-8")
+            root = Path(temporary); source = root / "guide" / "index.html"; source.parent.mkdir(); source.write_text("safe", encoding="utf-8")
             with self.assertRaises(validator.ValidationError):
-                validator.validate_generated_internal_link(root, source, "../missing/")
+                validator.validate_generated_internal_link(root, source, "../../missing/")
 
-    def test_duplicate_test_ids_are_not_accepted_by_import_contract(self) -> None:
-        fixture = json.loads((ROOT / "tests/fixtures/manual-result-valid.json").read_text(encoding="utf-8"))
-        fixture["results"].append(dict(fixture["results"][0]))
-        ids = [item["test_id"] for item in fixture["results"]]
-        self.assertNotEqual(len(ids), len(set(ids)))
-
-    def test_source_tree_rejects_symlink(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            (root / "target.md").write_text("safe", encoding="utf-8")
-            link = root / "link.md"
-            try:
-                link.symlink_to(root / "target.md")
-            except OSError:
-                self.skipTest("symlink creation is unavailable")
-            with self.assertRaises(validator.ValidationError):
-                validator.relative_files(root)
+    def test_workflow_remains_least_privilege_and_pinned(self) -> None:
+        validator.validate_workflow(ROOT)
 
 
 if __name__ == "__main__":

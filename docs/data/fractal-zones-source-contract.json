@@ -1,72 +1,23 @@
 {
-  "schema_version": "fz-public-source-contract-v1",
+  "schema_version": "fz-public-source-contract-v2",
   "indicator_id": "fractal-zones",
-  "contract_state": "current_source_validated_sanitized",
-  "validation_mode": "local_read_only_private_source_public_closed_facts",
-  "inventory": {
-    "product_owned_setting_rows": 29,
-    "product_owned_actions": 2,
-    "line_option_rows": 6,
-    "maximum_atomic_controls": 41,
-    "setting_ids": [
-      "MaturityBeforeMinutes",
-      "MaturityAfterMinutes",
-      "BreakDistanceMode",
-      "AtrPeriodMinutes",
-      "BreakAtrMultiplier",
-      "MinimumBreakDistanceTicks",
-      "BreakDistancePercent",
-      "FixedBreakDistanceTicks",
-      "BreakConfirmationMinutes",
-      "MinimumMinutesBetweenBreaks",
-      "RetestConfirmationMinutes",
-      "TerminateOnCurrentRoleBreakNumber",
-      "ProvisionalTopLineOptions",
-      "ProvisionalBottomLineOptions",
-      "ActiveTopLineOptions",
-      "ActiveBottomLineOptions",
-      "HistoricalTopLineOptions",
-      "HistoricalBottomLineOptions",
-      "RenderingMode",
-      "InactiveStateOpacity",
-      "ShowEndMarker",
-      "ShowBreakMarkers",
-      "ShowRoleChangeMarkers",
-      "CalculationRangeMode",
-      "InitialHistoryDays",
-      "CalculationStartTime",
-      "EnableReplayCheckpoint",
-      "VerifyFullHistoryNow",
-      "CancelFullHistoryVerify"
-    ]
-  },
-  "conformance": {
-    "requirements_count": 75,
-    "golden_trace_count": 138,
-    "manual_acceptance_count": 12,
-    "sequence_state": "contiguous_closed"
-  },
-  "residuals": [
-    {
-      "id": "FZRUI-01",
-      "classification": "runtime_confirmed_fixed",
-      "source_evidence": "confirmed_with_host_tests",
-      "runtime_evidence": "confirmed"
-    },
-    {
-      "id": "FZRUI-02",
-      "classification": "host_presentation_limitation_confirmed",
-      "source_evidence": "confirmed_with_host_tests",
-      "runtime_evidence": "confirmed"
-    }
+  "indicator_generation": "Fractal Zones v2",
+  "source_state": "current_merged_product_source_runtime_validated",
+  "inventory": {"product_setting_rows":56,"product_actions":2,"line_option_rows":7,"atomic_product_controls":70},
+  "setting_ids": [
+    "MaturityBeforeMinutes","MaturityAfterMinutes","BreakDistanceMode","BreakPriceSource","AtrPeriodMinutes","BreakAtrMultiplier","MinimumBreakDistanceTicks","BreakDistancePercent","FixedBreakDistanceTicks","BreakConfirmationMinutes","MinimumMinutesBetweenBreaks","RetestConfirmationMinutes","TerminateOnCurrentRoleBreakNumber","ShowProvisionalLines","ProvisionalTopLineOptions","ProvisionalBottomLineOptions","ActiveTopLineOptions","ActiveBottomLineOptions","ShowBreakBoundaryLine","BreakBoundaryLineOptions","ShowBreakBoundaryConnector","ShowHistoricalLines","HistoricalTopLineOptions","HistoricalBottomLineOptions","RenderingMode","InactiveStateOpacity","ShowStatusOverlay","EnablePriceRelevanceFilter","PriceRelevancePercent","OpenLineProjectionMode","OpenLineProjectionMinutes","OpenLineProjectionCandles","ShowEndMarker","TerminationMarkerColor","ShowBreakMarkers","BreakMarkerColor","ShowRoleChangeMarkers","RoleMarkerColor","ShowMarkersAtEvent","ShowMarkersAtLineEnd","EventMarkerOffsetMode","EventMarkerOffsetX","EventMarkerOffsetY","LineEndMarkerOffsetMode","LineEndMarkerOffsetX","LineEndMarkerOffsetY","EventMarkerFontSize","LineEndMarkerFontSize","CalculationRangeMode","InitialHistoryDays","CalculationStartTime","WarmupMode","AdditionalWarmupDays","EnableReplayCheckpoint","VerifyFullHistoryNow","CancelFullHistoryVerify"
   ],
-  "privacy": {
-    "absolute_paths_persisted": false,
-    "source_text_persisted": false,
-    "repository_metadata_persisted": false,
-    "raw_source_hashes_persisted": false,
-    "sensitive_runtime_data_persisted": false
+  "line_option_ids": ["ProvisionalTopLineOptions","ProvisionalBottomLineOptions","ActiveTopLineOptions","ActiveBottomLineOptions","BreakBoundaryLineOptions","HistoricalTopLineOptions","HistoricalBottomLineOptions"],
+  "action_ids": ["VerifyFullHistoryNow","CancelFullHistoryVerify"],
+  "visibility_branches": ["break_one_minute_atr","break_percent_of_level","break_fixed_ticks","rendering_active_focus","price_relevance_enabled","projection_minutes","projection_chart_candles","history_fixed_lookback","history_fixed_start","history_chart_loaded_warmup_automatic","history_chart_loaded_warmup_manual"],
+  "conformance": {
+    "packs": ["v1","v2","v3","v4"],
+    "requirements": {"first":"FZ-001","last":"FZ-102","count":102},
+    "golden_traces": {"first":"GT-01","last":"GT-180","count":180},
+    "manual_acceptance": {"first":"MVA-01","last":"MVA-25","count":25}
   },
-  "setting_fact_digest": "da9c18f5c245a4b8c261220b5b49aad208b727f872cf98c0dd1943c3c4401903",
-  "contract_digest": "143190ecb732bef6f9a246f1304f1a071456ae46cf31235bc0c16d34da08e079"
+  "runtime_acceptance": {"state":"terminal_technical_acceptance_with_nonblocking_warning","manual_acceptance_complete":false,"user_evaluation":"pending_user_evaluation","evidence_document":"fractal-zones-runtime-acceptance.json"},
+  "sanitization": {"private_paths":false,"private_repository_metadata":false,"private_source_text":false,"raw_source_hashes":false,"raw_logs":false,"sensitive_runtime_data":false},
+  "setting_fact_digest": "1345d9dce508d04c91c023a2fbb7557cd682d5467f7a6b76bde2b0dd3d3ab924",
+  "contract_digest": "820dec4389d11919f0b0a08920126c241a5e0b40fefa140f5115162fdfb693c1"
 }

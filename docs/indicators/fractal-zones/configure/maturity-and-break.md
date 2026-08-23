@@ -1,132 +1,41 @@
-# Maturity und Break Engine einstellen
+# Maturity und Break Engine konfigurieren
 
-<section markdown="1" class="fz-topic" data-topic="FZT-26" data-modes="configure">
+## Maturity
 
-## Maturity konfigurieren
+`Before` und `After` zählen erwartete **offene Ein-Minuten-Session-Slots**, nicht Chartkerzen. 30/30 bedeutet: Ein Kandidat benötigt 30 gültige Minuten links und 30 rechts. Auf einem 5-Minuten-Chart bleiben es dieselben 60 MIN1-Slots.
 
-<div markdown="1" class="fz-depth" data-depth="short">30/30 Minuten ist ein ausgewogener Start. Kleinere Werte reagieren schneller, größere Werte filtern stärker.</div>
+- [Before (minutes)](index.md#setting-maturity-before-minutes): Standard 30.
+- [After (minutes)](index.md#setting-maturity-after-minutes): Standard 30.
 
-<div markdown="1" class="fz-depth" data-depth="practice">Ändere vor und nach einem Vergleich immer nur eine Seite. Prüfe danach denselben Marktabschnitt auf mehreren Chart-Timeframes.</div>
+Größere Werte liefern selektivere, später bestätigte Fraktale. Kleinere Werte reagieren schneller und erzeugen mehr Level.
 
-<div markdown="1" class="fz-depth" data-depth="technical">Die Werte zählen erwartete offene Sessionminuten. Sie skalieren nicht mit der Chartkerzengröße.</div>
+## Distanzmodus
 
-</section>
+| Modus | Formel | Sinnvoll wenn |
+|---|---|---|
+| One-minute ATR | max(ATR × Multiplikator, Mindestticks) | Volatilität und Instrumente stark variieren |
+| Percent of level | max(Level × Prozent, Mindestticks) | relative Preisbewegung maßgeblich ist |
+| Fixed ticks | feste Tickzahl | ein instrumentspezifischer Abstand gewollt ist |
 
-<div class="fz-setting-card" id="setting-maturity-before-minutes">
+Die Distanz wird nach außen auf das zum Preisband gültige Tickraster quantisiert. Dadurch wird die effektive Grenze nie versehentlich enger.
 
-### Before (minutes) · `MaturityBeforeMinutes`
+## Preisquelle
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 30 min</div><div><strong>Bereich:</strong> 1–43.200</div><div><strong>Sichtbar:</strong> immer</div></div>
+- **Close**: Nur der Schlusskurs einer geschlossenen MIN1-Bar qualifiziert die Seite.
+- **High/Low**: High oder Low darf die Grenze erreichen. Trifft dieselbe Bar beide Seiten, entsteht `AmbiguousBothSides`; der Indikator rät keine Richtung.
 
-Legt fest, wie viele erwartete offene Sessionminuten **vor** dem Kandidaten für das strikte Extrem betrachtet werden. Beispiel: 60 verlangt eine längere linke Einordnung und erzeugt meist weniger Kandidaten als 30.
+<div data-fz-simulator="break-source"></div>
 
-Technik: semantisches Setting; eine Änderung erfordert Replay ab dem passenden Warm-up.
+## Null ist ein echter Wert
 
-</div>
+`ATR multiplier = 0`, `Minimum break distance = 0`, `Break distance (%) = 0`, `Fixed break distance = 0` und `Break confirmation = 0` sind gültig. Bei effektiver Distanz null zählt der Grenzkontakt. ATR-Multiplikator null benötigt kein ATR-Warm-up. Bestätigung null committed im ersten qualifizierenden geschlossenen Session-Slot.
 
-<div class="fz-setting-card" id="setting-maturity-after-minutes">
+## Timer, Reset und Cooldown
 
-### After (minutes) · `MaturityAfterMinutes`
+Ein qualifizierter Übertritt startet `BreakPending`. Jede Rückkehr in die neutrale Zone setzt den Timer sofort zurück. Ein Reset-Slot darf nicht zugleich einen neuen Versuch starten. Nach einem committed Break blockiert der Cooldown weitere Commits bis zum Ende des konfigurierten Minutenabstands.
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 30 min</div><div><strong>Bereich:</strong> 1–43.200</div><div><strong>Sichtbar:</strong> immer</div></div>
+--8<-- "docs/includes/diagrams/break-reset.md"
 
-Legt die Bestätigungsdauer **nach** dem Kandidaten fest. Beispiel: 15 bestätigt früher als 30, akzeptiert aber weniger rechte Marktstruktur.
+## Praxisbeispiel
 
-Technik: Die Provisional-Linie bleibt bis zum vollständigen rechten Zeitfenster gepunktet.
-
-</div>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-27" data-modes="configure">
-
-## Break Engine konfigurieren
-
-<div markdown="1" class="fz-depth" data-depth="short">Wähle zuerst den Distanzmodus, dann dessen Parameter, danach Bestätigungszeit und Cooldown.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Für instrument- und timeframeübergreifende Nutzung ist One-minute ATR der Standard. Percent und Fixed ticks bleiben bewusste Alternativen.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Der Modus bestimmt den Rohabstand. Mindestticks, variables TickGrid und outward quantization erzeugen daraus die committed boundary.</div>
-
-</section>
-
-<div class="fz-setting-card" id="setting-break-distance-mode">
-
-### Break distance mode · `BreakDistanceMode`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> One-minute ATR</div><div><strong>Optionen:</strong> ATR · Percent · Fixed ticks</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Bestimmt, wie weit der Preis über das Level hinauslaufen muss. Beispiel: Für ein Portfolio aus ES, Gold und BTC ist ATR meist vergleichbarer; für eine feste Mikrostruktur kann Fixed ticks sinnvoller sein.
-
-</div>
-
-<div class="fz-setting-card" id="setting-atr-period-minutes">
-
-### ATR period (minutes) · `AtrPeriodMinutes`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 60</div><div><strong>Bereich:</strong> 1–43.200</div><div><strong>Sichtbar:</strong> nur ATR</div></div>
-
-Zeitfenster der One-minute ATR. Beispiel: 60 reagiert auf die jüngste Stunde offener Sessiondaten; 240 glättet stärker.
-
-</div>
-
-<div class="fz-setting-card" id="setting-break-atr-multiplier">
-
-### ATR multiplier · `BreakAtrMultiplier`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 0,5</div><div><strong>Bereich:</strong> 0,000001–1.000.000</div><div><strong>Sichtbar:</strong> nur ATR</div></div>
-
-Multipliziert die zeitnormalisierte ATR. Beispiel: ATR 8 Punkte × 0,5 ergibt 4 Punkte Rohabstand, bevor Mindestticks und Quantisierung greifen.
-
-</div>
-
-<div class="fz-setting-card" id="setting-minimum-break-distance-ticks">
-
-### Minimum break distance (ticks) · `MinimumBreakDistanceTicks`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 2</div><div><strong>Bereich:</strong> 1–1.000.000</div><div><strong>Sichtbar:</strong> ATR oder Percent</div></div>
-
-Schützt vor zu kleinen relativen Abständen. Beispiel: Ergibt ATR oder Prozent nur 0,7 Tick, werden mindestens 2 Ticks verlangt.
-
-</div>
-
-<div class="fz-setting-card" id="setting-break-distance-percent">
-
-### Break distance (%) · `BreakDistancePercent`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 0,05 %</div><div><strong>Bereich:</strong> 0,000001–100</div><div><strong>Sichtbar:</strong> nur Percent</div></div>
-
-Berechnet den Rohabstand relativ zum Level. Beispiel: Bei 20.000 Punkten entsprechen 0,05 % genau 10 Punkten, vorbehaltlich Tickquantisierung.
-
-</div>
-
-<div class="fz-setting-card" id="setting-fixed-break-distance-ticks">
-
-### Fixed break distance (ticks) · `FixedBreakDistanceTicks`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 2</div><div><strong>Bereich:</strong> 1–1.000.000</div><div><strong>Sichtbar:</strong> nur Fixed ticks</div></div>
-
-Verwendet immer die feste Anzahl Ticks. Beispiel: Bei Tickgröße 0,25 bedeuten 2 Ticks einen Abstand von 0,50 Preiseinheiten.
-
-</div>
-
-<div class="fz-setting-card" id="setting-break-confirmation-minutes">
-
-### Break confirmation (minutes) · `BreakConfirmationMinutes`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 5 min</div><div><strong>Bereich:</strong> 1–43.200</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Wie lange die bestätigende Seite gehalten werden muss. Beispiel: Ein 3‑Minuten-Ausflug bei Wert 5 bleibt ein fehlgeschlagener Attempt.
-
-</div>
-
-<div class="fz-setting-card" id="setting-minimum-minutes-between-breaks">
-
-### Minimum between breaks (minutes) · `MinimumMinutesBetweenBreaks`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 5 min</div><div><strong>Bereich:</strong> 0–43.200</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Cooldown zwischen committed breaks derselben Linie. Beispiel: Nach einem Bruch um 10:00 kann vor 10:05 kein weiterer committed break gezählt werden.
-
-</div>
-
-!!! tip "Sicherer Vergleich"
-    Für einen sauberen A/B-Test zuerst nur `BreakDistanceMode` und dessen sichtbare Parameter ändern. Bestätigungszeit und Cooldown unverändert lassen.
+Level 100, ATR 2, Multiplikator 0,5 und Mindestabstand 2 Ticks à 0,25: Rohdistanz 1,0; Mindestdistanz 0,5; maßgeblich ist 1,0. Bei Break confirmation 5 muss die Preisquelle fünf fortlaufende offene Minuten jenseits der eingefrorenen Grenze bleiben.

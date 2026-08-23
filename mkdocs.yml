@@ -71,6 +71,10 @@ nav:
   - Start: index.md
   - Fractal Zones:
       - Überblick: indicators/fractal-zones/index.md
+      - Aktueller Stand: indicators/fractal-zones/current-state.md
+      - Installation:
+          - Installieren: indicators/fractal-zones/install/index.md
+          - Update und Rollback: indicators/fractal-zones/install/update-and-rollback.md
       - Verstehen:
           - Zeit- und Fraktallogik: indicators/fractal-zones/understand/time-and-fractals.md
           - Zustandsablauf: indicators/fractal-zones/understand/lifecycle.md
@@ -91,7 +95,9 @@ nav:
           - Recovery verstehen: indicators/fractal-zones/learning/recovery.md
       - Testen:
           - Teststrategie: indicators/fractal-zones/test/index.md
-          - Interaktive Testsuite: indicators/fractal-zones/test/manual-suite.md
+          - Regression und Lernen: indicators/fractal-zones/test/manual-suite.md
+          - Technische Runtime-Abnahme: indicators/fractal-zones/test/runtime-acceptance.md
+          - Offene Benutzer-Testmatrix: indicators/fractal-zones/test/v2-remediation-user-matrix.md
       - Fehlerbilder:
           - Diagnoseweg: indicators/fractal-zones/troubleshoot/index.md
           - Daten, Start und Projektion: indicators/fractal-zones/troubleshoot/data-and-projection.md

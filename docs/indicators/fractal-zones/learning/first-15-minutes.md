@@ -1,39 +1,20 @@
-# Lernpfad 1: Erste 15 Minuten
+# Erste 15 Minuten
 
-**Voraussetzung:** Fractal Zones ist auf einem neutralen Chart geladen. **Ziel:** Du erkennst Ursprung, Reife und sichtbaren Linienzustand, ohne die Break- oder Recovery-Logik zu verändern.
+## 1. Orientierung
 
-## Minute 0–3: Orientierung
+Lade Fractal Zones in einen neutralen Chart. Standardmäßig nutzt der Indikator `Adaptive`, `ChartLoadedRangePlusWarmup`, Maturity 30/30 und One-minute ATR. Prüfe, ob der Status-Overlay einen vollständigen statt unvollständigen Datenzustand meldet.
 
-- Öffne die Einstellungen und finde die neun Produktgruppen.
-- Prüfe `Before (minutes)=30`, `After (minutes)=30` und `Rendering mode=Adaptive`.
-- Merke dir: Die Entscheidung basiert auf MIN1-Zeit, nicht auf der Anzahl sichtbarer Chartkerzen.
+## 2. Linien lesen
 
-## Minute 3–8: Top und Bottom lesen
+- Dot: Provisional – rechte Reife läuft.
+- Solid: Active – bestätigt und aktuell wirksam.
+- Dash: BrokenWatch – bereits gebrochen und historisch weiter beobachtet.
+- Linienende: terminal `Ended`; optionaler Marker markiert den Zeitpunkt.
 
-- **Top-Origin:** standardmäßig grüne Linie.
-- **Bottom-Origin:** standardmäßig rote Linie.
-- **Dot:** provisorisch; die rechte Reifezeit ist noch nicht vollständig bestätigt.
-- **Solid:** ab dem Bestätigungszeitpunkt aktiv. Der frühere provisorische Abschnitt bleibt segmenttreu gepunktet.
-- **Dash:** nach einem bestätigten Bruch historisch weiter beobachtet.
+## 3. Ein kontrollierter Vergleich
 
-Beispiel: Ein Hoch entsteht um 10:00 Uhr. Mit `After=30` kann es frühestens nach 30 gültigen Sessionminuten bestätigt werden. Die Linie von 10:00 Uhr bis zur Bestätigung bleibt Dot; erst der folgende Abschnitt ist Solid.
+Wechsle nur `Rendering mode` von Adaptive zu Full. Die Menge und Preise der Levels müssen gleich bleiben. Danach teste Active focus: Nur die Deckkraft inaktiver Zustände darf sich ändern.
 
-## Minute 8–12: Drei Ebenen trennen
+## 4. Zurücksetzen
 
-| Ebene | Frage |
-|---|---|
-| Semantik | Welcher Zustand gilt zu welchem Zeitpunkt? |
-| Darstellung | Welche Segmente und Marker liegen im Viewport? |
-| Betrieb | Sind Historie, Datenkontinuität und Restore vollständig? |
-
-Ein Wechsel zwischen `Adaptive`, `Full` und `Active focus` darf die berechneten Level nicht verändern.
-
-## Minute 12–15: Sicherer Abschluss
-
-- Ändere nichts an den Action-Settings `Verify full history now…` und `Cancel full-history verify`.
-- Prüfe die [vollständige Einstellungstabelle](../configure/index.md).
-- Stelle versehentlich geänderte Werte auf `30 / 30 / Adaptive` zurück.
-
-**Erwartetes Ergebnis:** Du kannst Dot, Solid und Dash erklären und weißt, warum Farbe und aktuelle Rolle nicht dasselbe sind.
-
-**Vertiefung:** [Kurz/Praxis/Technik zur Fraktallogik](../understand/time-and-fractals.md) · [Zustandsablauf](../understand/lifecycle.md)
+Stelle den ursprünglichen Modus wieder her. Nutze anschließend die [interaktive Regression-Suite](../test/manual-suite.md) für dokumentierte Beobachtungen.

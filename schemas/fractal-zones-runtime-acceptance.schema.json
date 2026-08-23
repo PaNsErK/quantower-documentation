@@ -1,0 +1,5 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,
+  "required":["schema_version","indicator_id","state","runtime_environment","validation","runtime_manual_acceptance","ranges","soak","restart_restore","residual_warning","earlier_user_tests","privacy"],
+  "properties":{"schema_version":{"const":"fz-runtime-acceptance-public-v1"},"indicator_id":{"const":"fractal-zones"},"state":{"const":"terminal_technical_acceptance_with_nonblocking_warning"},"runtime_environment":{"type":"object"},"validation":{"type":"object"},"runtime_manual_acceptance":{"type":"object"},"ranges":{"type":"array","minItems":3,"maxItems":3},"soak":{"type":"object"},"restart_restore":{"type":"object"},"residual_warning":{"type":"object"},"earlier_user_tests":{"type":"object"},"privacy":{"type":"object"}}
+}

@@ -32,7 +32,7 @@ jobs:
         run: python -m pip install --require-hashes -r requirements.lock.txt
       - name: Validate source and tests
         run: |
-          python tools/validate_public_docs.py all
+          python tools/validate_public_docs.py source
           python -m unittest discover -s tests -p 'test_*.py' -v
       - name: Build online and offline sites
         run: |

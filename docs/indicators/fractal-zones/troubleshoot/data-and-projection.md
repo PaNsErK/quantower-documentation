@@ -1,31 +1,17 @@
-# Daten, Start und Projektion diagnostizieren
+# Daten, Start und Projektion
 
-<section markdown="1" class="fz-topic" data-topic="FZT-36" data-modes="troubleshoot">
+## Keine Linien
 
-## Leere Projektion und Datenlücken
+Prüfe zuerst, ob genügend gültige MIN1-Historie für Maturity und Warm-up vorhanden ist. `ChartLoadedRangePlusWarmup` berechnet nur geladenen Bereich plus Vorlauf; ein enger Chart kann deshalb bewusst weniger Historie enthalten als RollingLookbackDays.
 
-<div markdown="1" class="fz-depth" data-depth="short">Leere Linien bedeuten nicht automatisch einen Paint-Fehler. Zuerst Bootstrap, History, Session und Projection prüfen.</div>
+## Weniger Linien als erwartet
 
-<div markdown="1" class="fz-depth" data-depth="practice">
+Schalte den Preisbereichsfilter aus. Er ist rein visuell. Vergleiche Adaptive mit Full; beide müssen dieselben Levels zeigen. Prüfe außerdem, ob du nur Active focus betrachtest und inaktive Segmente durch niedrige Deckkraft übersiehst.
 
-| Beobachtung | Wahrscheinliche Ebene | Nächste sichere Prüfung |
-|---|---|---|
-| `CalculationStartUnavailable` | Start/Session | Startmodus, Plattformzeit und Sessionkalender prüfen |
-| `Incomplete` | History | Fehlende Slot-Evidenz und Recovery-Zustand prüfen |
-| `SuspendedByDataGap` | Continuity | Retry/Backoff und Epoch-Marker beobachten |
-| Segmente = 0 bei Complete | Fraktal/Range | Maturity, Zeitraum und strikte Extreme prüfen |
-| Segmente > 0, nichts sichtbar | Projektion/Paint | Viewport, Render-Plan und LastPaintOutcome prüfen |
+## CalculationStart
 
-</div>
+Bei `FixedStartUtc` wird die Auswahl im Host in Plattformzeitzone präsentiert, intern aber eindeutig nach UTC konvertiert. Clear entfernt den Wert. Ein unset-Wert darf den Bootstrap nicht dauerhaft blockieren.
 
-<div markdown="1" class="fz-depth" data-depth="technical">
+## Datenlücke
 
-Ein erlaubter Diagnoseauszug besteht nur aus geschlossenem Status, Zählern und sanitisierten Präfixen wie FZDIAG/FZCONT. Unknown oder widersprüchlicher Evidence-State ist kein PASS. Ein fehlgeschlagener Bootstrap darf die Hostoberfläche nicht werfen oder blockieren; er bleibt recoverable und gedrosselt.
-
-</div>
-
-</section>
-
-## Kein Absturz bei gelegentlicher Datenungenauigkeit
-
-`Incomplete` ist ein Datenqualitätszustand, kein globaler Programmabbruch. Die zuletzt vollständig publizierte Generation bleibt nutzbar. Erst nach vollständigem Replay und erneuter Source-Prüfung wird atomar umgeschaltet.
+`Incomplete` und `SuspendedByDataGap` sind recoverable. Der Indikator behält die letzte gute Generation, isoliert die neue DataEpoch und veröffentlicht erst nach vollständigem Replay.

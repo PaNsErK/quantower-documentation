@@ -1,8 +1,8 @@
 (function () {
   "use strict";
 
-  var storageKey = "fzdocs.manual-test-state.v1";
-  var allowedStatuses = ["open", "pass", "fail", "blocked"];
+  var legacyStorageKey = "fzdocs.manual-test-state.v1";
+  var allowedStatuses = ["open", "pass", "fail", "blocked", "improvement"];
   var maximumImportBytes = 256 * 1024;
   var noteLimit = 1000;
   var forbiddenNotePatterns = [
@@ -34,10 +34,18 @@
     return state;
   }
 
-  function loadState(catalog) {
+  function storageKey(suiteId) {
+    return "fzdocs.manual-test-state.v2." + suiteId;
+  }
+
+  function loadState(catalog, suiteId) {
     var state = emptyState(catalog);
     try {
-      var parsed = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+      var raw = window.localStorage.getItem(storageKey(suiteId));
+      if (!raw && suiteId === "FZMT") {
+        raw = window.localStorage.getItem(legacyStorageKey);
+      }
+      var parsed = JSON.parse(raw || "{}");
       Object.keys(state).forEach(function (id) {
         if (parsed[id] && allowedStatuses.indexOf(parsed[id].status) >= 0) {
           state[id].status = parsed[id].status;
@@ -50,9 +58,9 @@
     return state;
   }
 
-  function saveState(state) {
+  function saveState(state, suiteId) {
     try {
-      window.localStorage.setItem(storageKey, JSON.stringify(state));
+      window.localStorage.setItem(storageKey(suiteId), JSON.stringify(state));
     } catch (_error) {
       /* Local persistence is optional; no network fallback is used. */
     }
@@ -71,11 +79,12 @@
     return note;
   }
 
-  function buildResult(catalog, state, includeNotes) {
+  function buildResult(catalog, state, includeNotes, suiteId) {
     return {
-      schema_version: "fz-manual-test-result-v1",
+      schema_version: "fz-manual-test-result-v2",
       indicator_id: "fractal-zones",
-      indicator_version_state: "runtime_inventory_confirmed_bundle_not_ui_exposed",
+      indicator_version_state: "current_merged_runtime_validated_build_not_publicly_versioned",
+      suite_id: suiteId,
       exported_at_utc: new Date().toISOString(),
       notes_included: includeNotes,
       results: catalog.map(function (test) {
@@ -91,16 +100,16 @@
     };
   }
 
-  function validateImport(value, catalog) {
+  function validateImport(value, catalog, suiteId) {
     if (!value || typeof value !== "object" || Array.isArray(value)) {
       throw new Error("Die Importdatei ist kein Objekt.");
     }
     var keys = Object.keys(value).sort();
-    var expectedKeys = ["exported_at_utc", "indicator_id", "indicator_version_state", "notes_included", "results", "schema_version"].sort();
+    var expectedKeys = ["exported_at_utc", "indicator_id", "indicator_version_state", "notes_included", "results", "schema_version", "suite_id"].sort();
     if (JSON.stringify(keys) !== JSON.stringify(expectedKeys)) {
       throw new Error("Die Importdatei enthält fehlende oder unbekannte Felder.");
     }
-    if (value.schema_version !== "fz-manual-test-result-v1" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "runtime_inventory_confirmed_bundle_not_ui_exposed") {
+    if (value.schema_version !== "fz-manual-test-result-v2" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "current_merged_runtime_validated_build_not_publicly_versioned" || value.suite_id !== suiteId) {
       throw new Error("Schema oder Indikatoridentität passt nicht.");
     }
     if (typeof value.notes_included !== "boolean" || !Array.isArray(value.results) || value.results.length > 100) {
@@ -142,7 +151,7 @@
   }
 
   function markdownResult(result) {
-    var lines = ["# Fractal Zones – manueller Teststand", "", "- Schema: `" + result.schema_version + "`", "- Indikatorversion: `" + result.indicator_version_state + "`", "- Exportzeit (UTC): `" + result.exported_at_utc + "`", "- Notizen enthalten: `" + String(result.notes_included) + "`", "", "| Test | Status | Notiz |", "|---|---|---|"];
+    var lines = ["# Fractal Zones – manueller Teststand", "", "- Schema: `" + result.schema_version + "`", "- Suite: `" + result.suite_id + "`", "- Indikatorversion: `" + result.indicator_version_state + "`", "- Exportzeit (UTC): `" + result.exported_at_utc + "`", "- Notizen enthalten: `" + String(result.notes_included) + "`", "", "| Test | Status | Notiz |", "|---|---|---|"];
     result.results.forEach(function (item) {
       var note = (item.note || "").replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
       lines.push("| " + item.test_id + " | " + item.status + " | " + note + " |");
@@ -156,7 +165,11 @@
     if (!root || !catalog.length) {
       return;
     }
-    var state = loadState(catalog);
+    var suiteId = root.dataset.suiteId;
+    if (suiteId !== "FZMT" && suiteId !== "FZV2-RM") {
+      return;
+    }
+    var state = loadState(catalog, suiteId);
     var message = document.getElementById("fz-test-message");
     var progress = document.getElementById("fz-test-progress");
     var progressText = document.getElementById("fz-test-progress-text");
@@ -186,7 +199,7 @@
       var select = document.createElement("select");
       select.className = "fz-status-select";
       select.setAttribute("aria-label", "Status für " + test.id);
-      [["Offen", "open"], ["Bestanden", "pass"], ["Fehlgeschlagen", "fail"], ["Blockiert", "blocked"]].forEach(function (entry) {
+      [["Offen", "open"], ["Bestanden", "pass"], ["Fehlgeschlagen", "fail"], ["Blockiert", "blocked"], ["Verbesserung", "improvement"]].forEach(function (entry) {
         var option = document.createElement("option");
         option.value = entry[1];
         option.textContent = entry[0];
@@ -196,7 +209,7 @@
       select.addEventListener("change", function () {
         state[test.id].status = select.value;
         card.dataset.status = select.value;
-        saveState(state);
+        saveState(state, suiteId);
         updateProgress();
         announce(test.id + " wurde als " + select.options[select.selectedIndex].text + " gespeichert.");
       });
@@ -233,7 +246,7 @@
         try {
           state[test.id].note = sanitizeNote(note.value, false);
           note.value = state[test.id].note;
-          saveState(state);
+          saveState(state, suiteId);
           announce("Notiz für " + test.id + " wurde nur lokal gespeichert.");
         } catch (error) {
           note.value = state[test.id].note;
@@ -246,8 +259,8 @@
 
     document.getElementById("fz-export-json").addEventListener("click", function () {
       try {
-        var result = buildResult(catalog, state, includeNotes.checked);
-        download("fractal-zones-manual-tests.json", "application/json", JSON.stringify(result, null, 2) + "\n");
+        var result = buildResult(catalog, state, includeNotes.checked, suiteId);
+        download("fractal-zones-" + suiteId.toLowerCase() + "-tests.json", "application/json", JSON.stringify(result, null, 2) + "\n");
         announce("JSON wurde lokal erzeugt. Es wurden keine Daten übertragen.");
       } catch (error) {
         announce(error.message);
@@ -255,8 +268,8 @@
     });
     document.getElementById("fz-export-markdown").addEventListener("click", function () {
       try {
-        var result = buildResult(catalog, state, includeNotes.checked);
-        download("fractal-zones-manual-tests.md", "text/markdown", markdownResult(result));
+        var result = buildResult(catalog, state, includeNotes.checked, suiteId);
+        download("fractal-zones-" + suiteId.toLowerCase() + "-tests.md", "text/markdown", markdownResult(result));
         announce("Markdown wurde lokal erzeugt. Es wurden keine Daten übertragen.");
       } catch (error) {
         announce(error.message);
@@ -275,11 +288,11 @@
       var reader = new FileReader();
       reader.addEventListener("load", function () {
         try {
-          var imported = validateImport(JSON.parse(String(reader.result)), catalog);
+          var imported = validateImport(JSON.parse(String(reader.result)), catalog, suiteId);
           imported.results.forEach(function (result) {
             state[result.test_id] = { status: result.status, note: result.note || "" };
           });
-          saveState(state);
+          saveState(state, suiteId);
           announce("Import validiert und nur lokal gespeichert. Seite wird aktualisiert.");
           window.setTimeout(function () { window.location.reload(); }, 250);
         } catch (error) {
@@ -291,7 +304,7 @@
     });
     document.getElementById("fz-reset-tests").addEventListener("click", function () {
       if (window.confirm("Nur den lokalen Testfortschritt dieses Browsers zurücksetzen?")) {
-        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(storageKey(suiteId));
         window.location.reload();
       }
     });
