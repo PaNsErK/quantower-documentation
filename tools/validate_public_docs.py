@@ -207,6 +207,28 @@ def validate_workflow(root: Path = ROOT) -> None:
             if uses and not re.fullmatch(r"[^@]+@[0-9a-f]{40}", uses):
                 fail(f"workflow action is not SHA-pinned: {uses}")
 
+    build_commands = [
+        line.strip()
+        for step in jobs["build"].get("steps", [])
+        for line in str(step.get("run", "")).splitlines()
+        if line.strip()
+    ]
+    expected_order = [
+        "python tools/validate_public_docs.py source",
+        "python -m unittest discover -s tests -p 'test_*.py' -v",
+        "python -m mkdocs build --strict",
+        "python -m mkdocs build --strict -f mkdocs.offline.yml",
+        "python tools/validate_public_docs.py generated --site-root site --offline-root site-offline",
+    ]
+    for command in expected_order:
+        if build_commands.count(command) != 1:
+            fail(f"workflow validation command inventory differs: {command}")
+    if any(command.startswith("python tools/validate_public_docs.py all") for command in build_commands):
+        fail("workflow must keep source and generated validation in separate ordered stages")
+    positions = [build_commands.index(command) for command in expected_order]
+    if positions != sorted(positions):
+        fail("workflow validation and build order differs")
+
 
 class ResourceHTMLParser(HTMLParser):
     RESOURCE_ATTRIBUTES = {"script":"src","img":"src","source":"src","iframe":"src","link":"href"}
