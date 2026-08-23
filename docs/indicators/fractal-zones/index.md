@@ -1,51 +1,37 @@
-# Fractal Zones
+# Fractal Zones v2
 
-!!! warning "Beta-Status"
-    Diese inoffizielle Dokumentation ist technisch validiert und zum Lernen nutzbar. Der vollständige manuelle Quantower-Abnahmetest ist noch offen; deshalb bleibt der öffentliche Status `public_beta_manual_acceptance_pending`.
+Fractal Zones erkennt zeitnormalisierte Swing-Extrema aus kanonischen Ein-Minuten-Daten und zeichnet daraus segmenttreue horizontale Level. Es sind **keine Pivot Points**: Ein Kandidat entsteht aus einem strikten lokalen Hoch oder Tief und reift über reale offene Sessionminuten links und rechts.
 
-<div class="fz-safety" role="note" aria-label="Sicherheitsgrenze">
-<strong>Nicht-tradender Indikator:</strong> Fractal Zones berechnet und zeichnet Chart-Level. Er platziert, ändert oder storniert keine Orders und verändert weder Konto noch Position, Portfolio, Verbindung oder Strategie.
-</div>
+## Das Wichtigste in einem Bild
 
-<section markdown="1" class="fz-topic" data-topic="FZT-01" data-modes="understand">
+```text
+Candidate → Provisional/Dot → Active/Solid → BreakPending
+                                      ↓ bestätigt
+                               BrokenWatch/Dash
+                                      ↓ Retest
+                      RoleChange oder RoleReaffirmation
+                                      ↓
+                                Active/Solid
+                                      ↓ terminaler Bruch
+                                   Ended
+```
 
-## Zweck und Sicherheitsgrenze
+- Frühere Segmente werden nicht rückwirkend umgestylt.
+- Top-Ursprung bleibt grün, Bottom-Ursprung rot – auch nach Rollenwechsel.
+- Linien werden nicht geclustert, gemergt, gesampelt oder unterdrückt.
+- Berechnung ist timeframe-unabhängig; der Chart-Timeframe ist nur die Ansicht.
+- Datenlücken, Sidecar-Fehler und Quotenprobleme degradieren fail-closed statt unvollständige Ergebnisse als vollständig zu veröffentlichen.
 
-<div markdown="1" class="fz-depth" data-depth="short">
+## Drei Tiefen
 
-Fractal Zones findet zeitnormalisierte Swing-Hochs und Swing-Tiefs und führt daraus horizontale Level mit nachvollziehbarem Lebenszyklus fort.
+=== "Kurz"
+    Starte mit [Erste 15 Minuten](learning/first-15-minutes.md) und [Current State](current-state.md).
 
-</div>
+=== "Praxis"
+    Nutze [Alle Einstellungen](configure/index.md), die Simulatoren und die [interaktive Testsuite](test/manual-suite.md).
 
-<div markdown="1" class="fz-depth" data-depth="practice">
+=== "Technik"
+    Lies [Break Engine](understand/break-engine.md), [Recovery](understand/recovery.md) und [Runtime-Acceptance](test/runtime-acceptance.md).
 
-Eine Linie beginnt **provisorisch**, wird nach zeitlicher Reife **aktiv**, kann nach bestätigten Brüchen **historisch beobachtet**, durch einen Retest wieder **aktiviert** und schließlich exakt **beendet** werden. Der Chart-Timeframe ändert die zugrunde liegende MIN1-Entscheidungslogik nicht.
-
-Die Farben kennzeichnen den Ursprung: Top standardmäßig Grün, Bottom standardmäßig Rot. Ein späterer Rollenwechsel ändert die Farbe absichtlich nicht.
-
-</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">
-
-Die öffentliche Dokumentation trennt drei Ebenen:
-
-- **Produktsemantik:** MIN1-Slots, Sessionkalender, Fraktal-, Break-, Retest-, Rollen- und Endzustände.
-- **Chartprojektion:** segmenttreue Linien, Marker, Viewport-Index und Render-Plan-Cache ohne Semantikverlust.
-- **Betriebssicherheit:** ContinuityDataEpoch, Offscreen-Replay, atomarer Generation-Swap, Sidecar-Restore und Deep Verify.
-
-</div>
-
-</section>
-
-## Schnellstart
-
-1. Starte mit dem Lernpfad [Erste 15 Minuten](learning/first-15-minutes.md).
-2. Lies danach [Zeit- und Fraktallogik](understand/time-and-fractals.md) und den [Zustandsablauf](understand/lifecycle.md).
-3. Prüfe vor manuellen Änderungen [alle Einstellungen](configure/index.md).
-4. Nutze die weiteren [geführten Lernpfade](learning/index.md) oder arbeite die [interaktive Testsuite](test/manual-suite.md) in einem sicheren, nicht-tradenden Chart ab.
-
---8<-- "docs/includes/diagrams/lifecycle.md"
-
-<div class="fz-inventory-pending" role="status">
-<strong>Inventarstatus:</strong> Bestätigt sind 29 produktseitige Setting-Zeilen, 6 LineOptions-Zeilen, 11 geerbte Quantower-Basiszeilen und zusammen bis zu 66 atomare Bedienelemente. Zwei begrenzte Runtime-Residuals bleiben transparent dokumentiert.
-</div>
+!!! warning "Sicherheitsgrenze"
+    Fractal Zones ist ein nicht-tradender Indikator. Tests bleiben auf Chart- und Indikatoroberflächen.

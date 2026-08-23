@@ -1,21 +1,13 @@
-# Geführte Lernpfade
+# Lernpfade
 
-Diese Wege führen dich mit überschaubaren Etappen durch Fractal Zones. Jeder Pfad nennt Ziel, Dauer, sichere Beispielwerte, erwartete Beobachtungen und den Weg zurück zu den Standardwerten. Die Beispiele sind Lernkonfigurationen, keine Trading-Empfehlungen.
+Wähle die Tiefe, die zu deinem Ziel passt. Jede Route endet mit einem überprüfbaren Ergebnis.
 
-| Lernpfad | Dauer | Ziel | Einstieg |
-|---|---:|---|---|
-| 1. Erste 15 Minuten | 15 min | Oberfläche, Zustände und Sicherheitsgrenze verstehen | [Starten](first-15-minutes.md) |
-| 2. Bruchdistanz vergleichen | 20–30 min | ATR, Prozent und Fixed ticks sauber unterscheiden | [Starten](break-modes.md#lernpfad-2-bruchdistanz-vergleichen) |
-| 3. Lifecycle beobachten | 25–40 min | BreakPending, BrokenWatch, Retest, Rolle und Ended lesen | [Starten](break-modes.md#lernpfad-3-lifecycle-beobachten) |
-| 4. Rendering und Historie | 20–30 min | Darstellung von Berechnung und Rebuild trennen | [Starten](rendering-history.md) |
-| 5. Recovery verstehen | 25–45 min | Incomplete, Gap, Sidecar und Deep Verify einordnen | [Starten](recovery.md) |
+| Ziel | Lernpfad | Dauer |
+|---|---|---:|
+| schnell sicher starten | [Erste 15 Minuten](first-15-minutes.md) | 15 min |
+| Brüche verstehen und abstimmen | [Break-Modi und Lifecycle](break-modes.md) | 20–30 min |
+| viele Level übersichtlich darstellen | [Rendering und Historie](rendering-history.md) | 20 min |
+| Datenlücken und Neustarts verstehen | [Recovery lernen](recovery.md) | 20 min |
+| jede Einstellung nachschlagen | [Alle Einstellungen](../configure/index.md) | nach Bedarf |
 
-## Lernregel
-
-1. Notiere die Ausgangswerte oder nutze die hier genannten Defaults.
-2. Ändere pro Beobachtung nur **eine** Ursache.
-3. Beurteile keine Strategiequalität; prüfe nur dokumentiertes Indikatorverhalten.
-4. Führe Tests ausschließlich auf einer neutralen, nicht-tradenden Chartoberfläche durch.
-5. Stelle am Ende die Ausgangswerte wieder her.
-
-Für eine vollständige formale Prüfung nutze später die [interaktive manuelle Testsuite](../test/manual-suite.md).
+Die Beispiele sind Lernkonfigurationen, keine Trading-Empfehlungen. Beginne mit Standardwerten, ändere jeweils nur eine Ursache und notiere die sichtbare Wirkung.

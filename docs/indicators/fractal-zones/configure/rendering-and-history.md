@@ -1,155 +1,44 @@
-# Rendering, Marker und Historie einstellen
+# Rendering, Marker und Historie konfigurieren
 
-<section markdown="1" class="fz-topic" data-topic="FZT-30" data-modes="configure">
+## Rendering-Modi
 
-## Rendering und Marker konfigurieren
+- **Adaptive** (Standard): Viewport-Index und Cache wählen den effizienten Renderplan.
+- **Full**: direkte Vollprojektion als Referenzweg.
+- **Active focus**: Provisional und BrokenWatch erhalten die konfigurierbare Inaktiv-Deckkraft; Active bleibt voll sichtbar.
 
-<div markdown="1" class="fz-depth" data-depth="short">Rendering verändert Darstellung, niemals Levelidentität oder Zustandsentscheidungen.</div>
+Alle Modi bewahren dieselben sichtbaren Segmente und aktivierten Annotationen. Es gibt kein Clustering, Merging, Sampling oder Suppression.
 
-<div markdown="1" class="fz-depth" data-depth="practice">Teste Adaptive, Full und Active focus am selben Chart. Anzahl und Zeitgrenzen müssen identisch bleiben.</div>
+<div data-fz-simulator="rendering-modes"></div>
 
-<div markdown="1" class="fz-depth" data-depth="technical">Render-Plan-Key bindet Generation, Viewport, Modus, Style und Annotationseinstellungen. Ein Cache-Hit darf keine Rebuild-Anforderung auslösen.</div>
+## Status und Preisfilter
 
-</section>
+`Show status overlay` zeigt Loading, Recalculating, Ready, Incomplete oder Error auch bei leerer Projektion. Der Preisfilter ist standardmäßig aus. Aktiv blendet er Elemente außerhalb des symmetrischen, inklusiven Bereichs um den aktuellen Marktpreis nur in der Anzeigeabfrage aus. Ausschalten bringt sie unverändert zurück; StateIdentity, Replay und Checkpoints bleiben gleich.
 
-<div class="fz-setting-card" id="setting-rendering-mode">
+## Offene Linien
 
-### Rendering mode · `RenderingMode`
+`Open line end` endet offene Linien finite am Ende der aktuellen Bar, nach 1–10.080 Wall-Clock-Minuten oder nach 1–500 zeitbasierten Chartkerzen. Auf nicht zeitbasierten Charts fällt Chart candles sicher auf Current bar end zurück. Linienende-Marker bleiben an der aktuellen Candle verankert und wandern nicht zum projizierten Zukunftsende.
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Adaptive</div><div><strong>Optionen:</strong> Adaptive · Full · Active focus</div><div><strong>Sichtbar:</strong> immer</div></div>
+## Marker
 
-Wählt den Darstellungsplan. Beispiel: Active focus ist für dichte Charts hilfreich, Full eignet sich als Referenzvergleich. Kein Modus darf Linien clustern, zusammenlegen oder unterdrücken.
+End, Break und Role-change haben eigene Sichtbarkeiten und Farben. Marker können am Ereignis und/oder am aktuellen Linienende erscheinen. Event und Line-end besitzen getrennte X-Modi:
 
-</div>
+- **DPI pixels**: ungefähr konstanter Bildschirmabstand.
+- **Chart candles**: zeitbasierter Candle-Abstand, timeframe-stabil.
 
-<div class="fz-setting-card" id="setting-inactive-state-opacity">
+Y-Offsets bleiben DPI-basiert. `0` bei Font size verwendet die Hostschrift; explizite Größen sind 6–32 pt. Line-end X startet bei **+1 Chart candle**, Event X bei 0 DPI-Pixel.
 
-### Inactive state opacity · `InactiveStateOpacity`
+## Calculation range
 
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 0,35</div><div><strong>Bereich:</strong> 0,10–1,00</div><div><strong>Sichtbar:</strong> nur Active focus</div></div>
+| Modus | Aktive Unterfelder | Verhalten |
+|---|---|---|
+| Fixed lookback days | Fixed lookback, Standard 90 | kalenderbasierter Ursprung, beim Append eingefroren |
+| Fixed calculation start | Calculation start | Anzeige in Plattformzeitzone, intern UTC, Änderung mit Bestätigung |
+| Chart loaded range plus warm-up | Warm-up mode; bei Manual Additional days | Standard für neue Instanzen |
 
-Deckkraft von Provisional und BrokenWatch in Active focus. Beispiel: 0,20 stellt aktive Solid-Segmente stärker heraus. Active wird nicht ausgeblendet.
+Automatic Warm-up verwendet ein Drittel der geladenen Chartdauer, auf ganze Tage aufgerundet und auf 2–30 Kalendertage begrenzt. Manual akzeptiert 0–3.650 zusätzliche Tage; der frühere Wert aus manuellem Warm-up und zwingendem Session-Slot-Preroll gewinnt.
 
-<p><strong>Runtime bestätigt:</strong> Active focus zeigt den Standard <code>0,35</code> mit zwei Dezimalstellen. Ein Spinner-Schritt führt zu <code>0,40</code>, der Rückweg wieder zu <code>0,35</code>. Dabei ändern sich nur die Deckkraft der dafür vorgesehenen Provisional- und BrokenWatch-Segmente, nicht Linienauswahl, Level oder Zustandssemantik.</p>
+<div data-fz-simulator="history-range"></div>
 
-</div>
+## Checkpoint und Deep Verify
 
-<div class="fz-setting-card" id="setting-show-end-marker">
-
-### Show end marker · `ShowEndMarker`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> true</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Zeigt den exakten terminalen Endpunkt. Das Umschalten ist reine Darstellung und löst kein fachliches Replay aus.
-
-</div>
-
-<div class="fz-setting-card" id="setting-show-break-markers">
-
-### Show break markers · `ShowBreakMarkers`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> false</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Zeigt committed breaks. Standardmäßig aus, um dichte Charts nicht unnötig zu überladen.
-
-</div>
-
-<div class="fz-setting-card" id="setting-show-role-change-markers">
-
-### Show role-change markers · `ShowRoleChangeMarkers`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> true</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Markiert bestätigte RoleChanges. RoleReaffirmation und Rollenwechsel müssen semantisch unterscheidbar bleiben, auch wenn beide zu Active/Solid führen.
-
-</div>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-31" data-modes="configure">
-
-## Historie und Start konfigurieren
-
-<div markdown="1" class="fz-depth" data-depth="short">Standard sind 90 Tage. Alternativ rechnet der Chartbereich plus automatischer Warm-up oder ein expliziter Start.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Für den normalen Vergleich 90 Tage belassen. Chart loaded range plus warm-up kann bei kurzem sichtbarem Ausschnitt schneller sein. Expliziter Start ist für reproduzierbare Untersuchungen.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">CalculationStartTime wird in Plattformzeit dargestellt, in UTC gebunden und deaktiviert InitialHistoryDays. Zu unterscheiden sind unset vor Bootstrap, ein abgeleiteter eingefrorener Start und ein expliziter Start. Source-identical timeframe reuse verhindert unnötige Neuaufbauten.</div>
-
-</section>
-
-<div class="fz-setting-card" id="setting-calculation-range-mode">
-
-### Calculation range mode · `CalculationRangeMode`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Fixed initial history days</div><div><strong>Optionen:</strong> Fixed · Chart loaded plus warm-up</div><div><strong>Sichtbar:</strong> immer</div></div>
-
-Wählt die Startlogik. Beispiel: Ein 5‑Tage-Chart kann mit Chart loaded range plus warm-up nur den benötigten Ausschnitt und linken Warm-up berechnen.
-
-</div>
-
-<div class="fz-setting-card" id="setting-initial-history-days">
-
-### Initial range (days) · `InitialHistoryDays`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> 90</div><div><strong>Bereich:</strong> 1–36.500</div><div><strong>Sichtbar:</strong> nur Fixed; bei explizitem Start deaktiviert</div></div>
-
-Kalendertage zur Ableitung des initialen Rechenstarts. Beispiel: 365 erweitert historische Sicht, erhöht aber Bootstrap- und Speicherarbeit.
-
-</div>
-
-<div class="fz-setting-card" id="setting-calculation-start-time">
-
-### Calculation start · `CalculationStartTime`
-
-<div class="fz-setting-meta"><div><strong>Quellstandard:</strong> unset</div><div><strong>Typ:</strong> DateTime in Plattformzeit</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
-
-Der Start besitzt drei unterscheidbare Zustände:
-
-1. **Unset vor Bootstrap:** Die Quelle enthält noch keinen festen Zeitpunkt.
-2. **Abgeleitet und eingefroren:** Nach dem Bootstrap kann Quantower bereits einen berechneten Startwert anzeigen; `Initial range` ist dann deaktiviert.
-3. **Explizit gesetzt:** Ein bewusst gewählter Plattformzeitpunkt wird intern deterministisch nach UTC gebunden.
-
-Quantower BusinessLayer 1.146.17.0 zeigt den DateTime-Editor und bewahrt seinen aktuellen Wert; bei aktivem Start ist `Initial range` deaktiviert. Der im Produktcode konfigurierte Enable-Toggler wird vom Host nicht als separates Bedienelement dargestellt. Das ist eine bestätigte Hostdarstellungsgrenze, kein abweichendes Berechnungsverhalten. Deshalb nicht nach einem unsichtbaren Schalter suchen oder den Start zum Testen über ein nicht vorhandenes Control löschen. UTC-, Clear- und Roundtrip-Semantik sind durch Hosttests abgedeckt; vor jeder tatsächlichen Änderung trotzdem den Ausgangswert protokollieren und exakt wiederherstellen.
-
-</div>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-32" data-modes="configure test">
-
-## Checkpoint und Deep Verify bedienen
-
-<div markdown="1" class="fz-depth" data-depth="short">Checkpoint beschleunigt optional; Deep Verify prüft die Historie asynchron und kann sicher abgebrochen werden.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Checkpoint erst in einem getrennten Restart-Test aktivieren. Verify nicht mehrfach klicken; der Single-Flight-Schutz antwortet sicher.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Restore ist hash-, StateIdentity- und ReplayGeneration-gebunden. Dirty Verify-Blöcke gehen durch denselben Offscreen-Replaypfad; ein sauberer Verify erzeugt keine neue Generation.</div>
-
-</section>
-
-<div class="fz-setting-card" id="setting-enable-replay-checkpoint">
-
-### Enable semantic replay checkpoint · `EnableReplayCheckpoint`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> false</div><div><strong>Typ:</strong> Boolean</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
-
-Aktiviert die semantische Sidecar- und Crash-Restore-Beschleunigung. Wichtig: Eine ältere Implementierungsnotiz nannte fälschlich `true`; der aktuelle Produktstandard ist eindeutig `false`.
-
-</div>
-
-<div class="fz-setting-card" id="setting-verify-full-history">
-
-### Verify full history now… · `VerifyFullHistoryNow`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Ausführung:</strong> asynchron, Single-Flight</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
-
-Startet eine Vollhistorienprüfung. Beispiel: Nach Datenanbieter-Revisionsverdacht einmal auslösen und Fortschritt/Diagnostik beobachten.
-
-</div>
-
-<div class="fz-setting-card" id="setting-cancel-full-history">
-
-### Cancel full-history verify · `CancelFullHistoryVerify`
-
-<div class="fz-setting-meta"><div><strong>Standard:</strong> Action</div><div><strong>Wirkung:</strong> nur optionaler manueller Verify</div><div><strong>Sichtbar:</strong> nur Fixed initial history days</div></div>
-
-Fordert einen sicheren Abbruch an. Pflicht-Recovery wird niemals abgebrochen, und ein Teilresultat wird nicht als vollständige Generation veröffentlicht.
-
-</div>
+`Enable semantic replay checkpoint` ist standardmäßig an. Current und Previous werden fail-closed validiert; stale oder corrupt führt zum Raw Rebuild aus MIN1. `Verify full history now…` startet einen asynchronen Single-Flight-Job. Er publiziert bei sauberem Ergebnis keine neue Generation; Dirty Blocks laufen über den normalen Offscreen-Replay. `Cancel` beendet nur den optionalen Job und niemals eine zwingende Recovery.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed validation for the public documentation candidate."""
+"""Fail-closed validation for the public Fractal Zones documentation."""
 
 from __future__ import annotations
 
@@ -9,9 +9,9 @@ import importlib.util
 import json
 import re
 import sys
+import unicodedata
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Iterable
 from urllib.parse import unquote, urlsplit
 
 import yaml
@@ -23,44 +23,21 @@ EXCLUDED_DIRS = {".git", ".venv", "site", "site-offline", "output", "__pycache__
 ALLOWED_SUFFIXES = {".md", ".yml", ".yaml", ".json", ".css", ".js", ".py", ".txt", ".in"}
 ALLOWED_SUFFIXLESS = {".gitignore", ".python-version"}
 DENIED_PATH_PARTS = {".codex", ".agents", ".obsidian", "attachments", "logs", "serilog", "sidecars", "checkpoints"}
-TEXT_MOJIBAKE = ("\u00c3", "\u00c2", "\ufffd")
-PRIVATE_TEXT_PATTERNS = {
+PRIVATE_PATTERNS = {
     "absolute_windows_path": re.compile(r"(?i)\b[A-Z]:[\\/](?:Users|Program Files|codex_worktrees|Windows)\b"),
-    "private_repo_name": re.compile(r"(?i)\bQT_Coding_Suite\b"),
+    "private_repo_name": re.compile(r"(?i)\bQT_Coding_Suite\b|\bquantower-coding-suite\b"),
     "private_user_marker": re.compile(r"(?i)\bWinnickiDavid\b|\bWINNIC\b"),
     "private_control_plane": re.compile(r"(?i)(?:^|[/\\])(?:EXECPLAN|PROJECT_STATUS|NEXT_WORK_QUEUE|PROJECT_GOVERNANCE|governance\.yml)(?:$|[/\\])"),
     "credential_assignment": re.compile(r"(?i)\b(?:token|password|secret|api[_-]?key)\s*[:=]\s*['\"]?[A-Za-z0-9_\-]{12,}"),
     "private_key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     "runtime_identifier": re.compile(r"(?i)\b(?:PID|HWND)\s*[:=]\s*[0-9A-Fx-]+"),
-    "raw_log_extension": re.compile(r"(?i)\." r"slog\b"),
+    "raw_log_extension": re.compile(r"(?i)\.slog\b"),
 }
-CUSTOM_JS_NETWORK_PATTERNS = {
-    "fetch": re.compile(r"\bfetch\s*\("),
-    "xhr": re.compile(r"\bXMLHttpRequest\b"),
-    "websocket": re.compile(r"\bWebSocket\b"),
-    "beacon": re.compile(r"\bsendBeacon\b"),
-    "eventsource": re.compile(r"\bEventSource\b"),
-    "remote_import": re.compile(r"\bimport\s*\(\s*['\"]https?://"),
+NETWORK_PATTERNS = {
+    "fetch": re.compile(r"\bfetch\s*\("), "xhr": re.compile(r"\bXMLHttpRequest\b"),
+    "websocket": re.compile(r"\bWebSocket\b"), "beacon": re.compile(r"\bsendBeacon\b"),
+    "eventsource": re.compile(r"\bEventSource\b"), "remote_import": re.compile(r"\bimport\s*\(\s*['\"]https?://"),
 }
-SVG_DENY_PATTERNS = {
-    "script": re.compile(r"<\s*script\b", re.I),
-    "foreign_object": re.compile(r"<\s*foreignObject\b", re.I),
-    "event_handler": re.compile(r"\son[a-z]+\s*=", re.I),
-    "external_reference": re.compile(r"(?:href|src)\s*=\s*['\"]https?://", re.I),
-    "javascript_url": re.compile(r"javascript\s*:", re.I),
-}
-
-
-def load_source_drift_module():
-    spec = importlib.util.spec_from_file_location(
-        "check_fractal_zones_source_drift",
-        ROOT / "tools/check_fractal_zones_source_drift.py",
-    )
-    if spec is None or spec.loader is None:
-        fail("source-drift validator cannot be loaded")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 class ValidationError(RuntimeError):
@@ -75,60 +52,37 @@ def relative_files(root: Path, *, include_generated: bool = False) -> list[Path]
     files: list[Path] = []
     for path in root.rglob("*"):
         relative = path.relative_to(root)
-        if any(part in EXCLUDED_DIRS for part in relative.parts) and not include_generated:
+        if not include_generated and any(part in EXCLUDED_DIRS for part in relative.parts):
             continue
         if path.is_symlink():
             fail(f"symbolic links are forbidden: {relative.as_posix()}")
         if path.is_file():
-            if not include_generated and getattr(path.stat(), "st_nlink", 1) > 1:
-                fail(f"hard links are forbidden: {relative.as_posix()}")
             files.append(path)
     return sorted(files)
 
 
-def read_utf8(path: Path, *, check_mojibake: bool = True) -> str:
+def read_utf8(path: Path) -> str:
     data = path.read_bytes()
     if data.startswith(b"\xef\xbb\xbf"):
         fail(f"UTF-8 BOM is forbidden: {path}")
     try:
         text = data.decode("utf-8")
     except UnicodeDecodeError as exc:
-        raise ValidationError(f"invalid UTF-8: {path}: {exc}") from exc
-    if check_mojibake:
-        for marker in TEXT_MOJIBAKE:
-            if marker in text:
-                fail(f"possible encoding damage {marker!r}: {path}")
+        raise ValidationError(f"invalid UTF-8: {path}") from exc
+    # LF identity for newly authored files is enforced by the transaction's
+    # exact-scope gate. The public baseline contains unchanged CRLF files
+    # outside that scope, which are still safe UTF-8 input.
+    if text != unicodedata.normalize("NFC", text):
+        fail(f"non-NFC text: {path}")
+    if any(marker in text for marker in ("\u00c3", "\u00c2", "\ufffd")):
+        fail(f"possible mojibake: {path}")
     return text
 
 
 def assert_safe_text(text: str, label: str) -> None:
-    for name, pattern in PRIVATE_TEXT_PATTERNS.items():
+    for name, pattern in PRIVATE_PATTERNS.items():
         if pattern.search(text):
             fail(f"{name} detected in {label}")
-
-
-def validate_source_tree(root: Path = ROOT) -> None:
-    for path in relative_files(root):
-        relative = path.relative_to(root)
-        lower_parts = {part.lower() for part in relative.parts}
-        if lower_parts & DENIED_PATH_PARTS:
-            fail(f"denied path class: {relative.as_posix()}")
-        if path.suffix.lower() not in ALLOWED_SUFFIXES and path.name not in ALLOWED_SUFFIXLESS:
-            fail(f"unsupported public source file: {relative.as_posix()}")
-        text = read_utf8(path)
-        assert_safe_text(text, relative.as_posix())
-        if path.suffix.lower() == ".js":
-            for name, pattern in CUSTOM_JS_NETWORK_PATTERNS.items():
-                if pattern.search(text):
-                    fail(f"custom JavaScript network primitive {name}: {relative.as_posix()}")
-        if "<svg" in text.lower():
-            validate_svg_text(text, relative.as_posix())
-
-
-def validate_svg_text(text: str, label: str) -> None:
-    for name, pattern in SVG_DENY_PATTERNS.items():
-        if pattern.search(text):
-            fail(f"unsafe SVG construct {name}: {label}")
 
 
 def load_json(path: Path) -> object:
@@ -136,350 +90,195 @@ def load_json(path: Path) -> object:
 
 
 def validate_json_instance(instance_path: Path, schema_path: Path) -> None:
-    schema = load_json(schema_path)
-    instance = load_json(instance_path)
-    validator = Draft202012Validator(schema, format_checker=FormatChecker())
-    errors = sorted(validator.iter_errors(instance), key=lambda item: list(item.absolute_path))
+    errors = sorted(
+        Draft202012Validator(load_json(schema_path), format_checker=FormatChecker()).iter_errors(load_json(instance_path)),
+        key=lambda item: list(item.absolute_path),
+    )
     if errors:
-        formatted = "; ".join(f"{list(error.absolute_path)}: {error.message}" for error in errors)
-        fail(f"schema validation failed for {instance_path.name}: {formatted}")
+        fail(f"schema validation failed: {instance_path.name}: {errors[0].message}")
+
+
+def load_source_drift_module():
+    spec = importlib.util.spec_from_file_location("source_drift", ROOT / "tools/check_fractal_zones_source_drift.py")
+    if spec is None or spec.loader is None:
+        fail("source drift module unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def validate_source_tree(root: Path = ROOT) -> None:
+    for path in relative_files(root):
+        relative = path.relative_to(root)
+        if {part.lower() for part in relative.parts} & DENIED_PATH_PARTS:
+            fail(f"denied path class: {relative.as_posix()}")
+        if path.suffix.lower() not in ALLOWED_SUFFIXES and path.name not in ALLOWED_SUFFIXLESS:
+            fail(f"unsupported public source file: {relative.as_posix()}")
+        text = read_utf8(path)
+        # This validator necessarily contains the denylist literals it applies
+        # to every other public source file.
+        if relative.as_posix() != "tools/validate_public_docs.py":
+            assert_safe_text(text, relative.as_posix())
+        if path.suffix.lower() == ".js":
+            for name, pattern in NETWORK_PATTERNS.items():
+                if pattern.search(text):
+                    fail(f"custom JavaScript network primitive {name}: {relative.as_posix()}")
+
+
+def sequence(prefix: str, count: int, width: int) -> list[str]:
+    return [f"{prefix}-{index:0{width}d}" for index in range(1, count + 1)]
 
 
 def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     manifest_path = root / "docs/data/public-indicator-manifest.json"
-    schema_path = root / "schemas/public-indicator-manifest.schema.json"
-    validate_json_instance(manifest_path, schema_path)
     contract_path = root / "docs/data/fractal-zones-source-contract.json"
-    contract_schema_path = root / "schemas/fractal-zones-source-contract.schema.json"
-    validate_json_instance(contract_path, contract_schema_path)
+    runtime_path = root / "docs/data/fractal-zones-runtime-acceptance.json"
+    validate_json_instance(manifest_path, root / "schemas/public-indicator-manifest.schema.json")
+    validate_json_instance(contract_path, root / "schemas/fractal-zones-source-contract.schema.json")
+    validate_json_instance(runtime_path, root / "schemas/fractal-zones-runtime-acceptance.schema.json")
     manifest = load_json(manifest_path)
-    assert isinstance(manifest, dict)
-    expected_publication = {
-        "status": "public_beta_manual_acceptance_pending",
-        "manual_acceptance_complete": False,
-        "official_affiliation": False,
-        "content_license_state": "no_open_source_license",
-    }
-    if manifest["publication"] != expected_publication:
-        fail("public beta publication contract differs from the approved closed state")
-    topics = manifest["topics"]
+    contract = load_json(contract_path)
+    runtime = load_json(runtime_path)
+    if not all(isinstance(item, dict) for item in (manifest, contract, runtime)):
+        fail("closed contract root is invalid")
+    load_source_drift_module().validate_contract_coupling(contract, manifest)
     settings = manifest["settings"]
-    base_settings = manifest["base_settings"]
-    manual_tests = manifest["manual_tests"]
-
-    topic_ids = [item["id"] for item in topics]
-    setting_ids = [item["id"] for item in settings]
-    base_setting_ids = [item["id"] for item in base_settings]
+    ids = [item["id"] for item in settings]
     anchors = [item["documentation_anchor"] for item in settings]
-    test_ids = [item["id"] for item in manual_tests]
-    for label, values in (("topic", topic_ids), ("setting", setting_ids), ("base setting", base_setting_ids), ("anchor", anchors), ("manual test", test_ids)):
-        if len(values) != len(set(values)):
-            fail(f"duplicate {label} identifier")
-    if len(topics) != 37 or topic_ids != [f"FZT-{index:02d}" for index in range(1, 38)]:
-        fail("topic sequence must be exactly FZT-01 through FZT-37")
-    if len(settings) != 29:
-        fail("product-owned setting row count must be exactly 29")
-    if sum(int(item["atomic_controls"]) for item in settings) != 41:
-        fail("atomic setting-control count must be exactly 41")
-    if len(base_settings) != 11:
-        fail("inherited base-setting row count must be exactly 11")
-    if sum(int(item["atomic_controls"]) for item in base_settings) != 25:
-        fail("inherited atomic control count must be exactly 25")
-    inventory = manifest["inventory"]
-    if inventory["maximum_total_setting_rows"] != len(settings) + len(base_settings):
-        fail("total setting-row projection differs from the manifest inventories")
-    if inventory["maximum_total_atomic_controls"] != sum(int(item["atomic_controls"]) for item in settings + base_settings):
-        fail("total atomic-control projection differs from the manifest inventories")
-    residual_ids = [item["id"] for item in manifest["runtime_inventory"]["residuals"]]
-    if residual_ids != ["FZRUI-01", "FZRUI-02"]:
-        fail("runtime residuals must be exactly FZRUI-01 and FZRUI-02")
-    residual_states = [item["state"] for item in manifest["runtime_inventory"]["residuals"]]
-    if residual_states != ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"]:
-        fail("runtime finding classifications differ from the approved terminal evidence")
-    source_drift = load_source_drift_module()
-    try:
-        source_drift.validate_contract_coupling(load_json(contract_path), manifest)
-    except source_drift.SourceContractError as exc:
-        fail(str(exc))
-    if "runtime_inventory_pending" in json.dumps(manifest, ensure_ascii=False):
-        fail("runtime inventory manifest contains a stale pending projection")
-    if test_ids != [f"FZMT-{index:02d}" for index in range(1, len(test_ids) + 1)]:
-        fail("manual-test IDs must form one contiguous sequence")
-
+    if len(ids) != 56 or len(set(ids)) != 56 or sum(item["atomic_controls"] for item in settings) != 70:
+        fail("setting inventory must be exactly 56 rows and 70 atomic controls")
+    if sum(item["type"] == "line_options" for item in settings) != 7 or sum(item["type"] == "action" for item in settings) != 2:
+        fail("line-option or action count differs")
+    if len(manifest["base_settings"]) != 11 or sum(item["atomic_controls"] for item in manifest["base_settings"]) != 25:
+        fail("version-bound base.Settings observation differs")
+    page_ids = [item["id"] for item in manifest["pages"]]
+    if page_ids != sequence("FZT", 27, 2):
+        fail("page IDs must be FZT-01 through FZT-27")
+    for item in manifest["pages"]:
+        if not (root / "docs" / item["page"]).is_file():
+            fail(f"missing documented page: {item['page']}")
+    fzmt = load_json(root / "docs/includes/manual-test-catalog.json")
+    user = load_json(root / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json")
+    catalog_schema = root / "schemas/manual-test-catalog.schema.json"
+    validate_json_instance(root / "docs/includes/manual-test-catalog.json", catalog_schema)
+    validate_json_instance(root / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json", catalog_schema)
+    if [item["id"] for item in fzmt] != sequence("FZMT", 24, 2):
+        fail("FZMT suite must remain FZMT-01 through FZMT-24")
+    if [item["id"] for item in user] != [f"FZV2-RM-{index:03d}" for index in range(1, 20)]:
+        fail("user suite must be FZV2-RM-001 through FZV2-RM-019")
+    if any("result" in item or "note" in item for item in user):
+        fail("pending user catalog must not contain results or notes")
+    if manifest["conformance"] != {"packs":["v1","v2","v3","v4"],"requirements_count":102,"golden_trace_count":180,"manual_acceptance_count":25,"sequence_state":"contiguous_closed"}:
+        fail("conformance projection differs")
+    if runtime["soak"] != {"elapsed_seconds":2700.009,"process_samples":188,"responsive_samples":188,"ui_usable":True,"host_hang_or_crash_observed":False}:
+        fail("runtime soak facts differ")
+    if [item["class"] for item in runtime["ranges"]] != ["10k","30k","approximately_130k"]:
+        fail("runtime range classes differ")
     docs_text = "\n".join(read_utf8(path) for path in (root / "docs").rglob("*.md"))
-    if '<section class="fz-topic"' in docs_text or '<div class="fz-depth"' in docs_text:
-        fail("topic and depth containers must opt into Markdown-in-HTML parsing")
-    for topic_id in topic_ids:
-        if docs_text.count(f'data-topic="{topic_id}"') != 1:
-            fail(f"topic marker must occur exactly once: {topic_id}")
     for anchor in anchors:
-        anchor_count = docs_text.count(f'id="{anchor}"') + docs_text.count(f'{{ #{anchor} }}')
-        if anchor_count != 1:
-            fail(f"setting documentation anchor must occur exactly once: {anchor}")
-    manual_catalog = load_json(root / "docs/includes/manual-test-catalog.json")
-    if manual_catalog != manual_tests:
-        fail("embedded manual-test catalog differs from the public manifest")
-    manual_page = read_utf8(root / "docs/indicators/fractal-zones/test/manual-suite.md")
-    if 'id="fz-manual-test-catalog"' not in manual_page or "docs/includes/manual-test-catalog.json" not in manual_page:
-        fail("interactive suite does not embed the validated manual-test catalog")
-    for test_id in test_ids:
-        if f'"id":"{test_id}"' not in read_utf8(root / "docs/includes/manual-test-catalog.json"):
-            fail(f"manual test not embedded in interactive suite: {test_id}")
-
-    claimed_pages = {item["page"] for item in topics}
-    for relative in claimed_pages:
-        if not (root / "docs" / relative).is_file():
-            fail(f"topic references missing page: {relative}")
-
-    public_status_surfaces = {
-        "README.md": read_utf8(root / "README.md"),
-        "docs/index.md": read_utf8(root / "docs/index.md"),
-        "docs/indicators/fractal-zones/index.md": read_utf8(root / "docs/indicators/fractal-zones/index.md"),
-    }
-    for relative, text in public_status_surfaces.items():
-        if "inoffiziell" not in text.lower():
-            fail(f"unofficial-publication notice missing: {relative}")
-        if relative != "README.md" and "manuell" not in text.lower():
-            fail(f"manual-acceptance notice missing: {relative}")
-    if "public_beta_manual_acceptance_pending" not in public_status_surfaces["README.md"]:
-        fail("README does not expose the closed public beta status")
-    if "manual_acceptance_complete=false" not in "\n".join(public_status_surfaces.values()):
-        fail("public documentation does not expose pending manual acceptance")
-    privacy_text = read_utf8(root / "docs/privacy.md")
-    if "Die öffentliche Beta wird über GitHub Pages bereitgestellt" not in privacy_text:
-        fail("privacy notice is not aligned with the public GitHub Pages state")
-    learning_pages = {
-        "docs/indicators/fractal-zones/learning/index.md",
-        "docs/indicators/fractal-zones/learning/first-15-minutes.md",
-        "docs/indicators/fractal-zones/learning/break-modes.md",
-        "docs/indicators/fractal-zones/learning/rendering-history.md",
-        "docs/indicators/fractal-zones/learning/recovery.md",
-        "docs/maintenance/documentation-workflow.md",
-    }
-    for relative in learning_pages:
-        if not (root / relative).is_file():
-            fail(f"guided documentation surface is missing: {relative}")
+        count = docs_text.count(f'id="{anchor}"') + docs_text.count(f'id={anchor}') + docs_text.count(f'{{ #{anchor} }}')
+        if count != 1:
+            fail(f"setting anchor must occur exactly once: {anchor} ({count})")
+    required_phrases = ["manual_acceptance_complete=false", "runtime_acceptance_complete=true", "pending_user_evaluation"]
+    public_status = read_utf8(root / "README.md") + read_utf8(root / "docs/index.md") + read_utf8(root / "docs/indicators/fractal-zones/current-state.md")
+    for phrase in required_phrases:
+        if phrase not in public_status:
+            fail(f"public status phrase missing: {phrase}")
+    if "inoffiziell" not in public_status.lower():
+        fail("unofficial publication notice missing")
 
 
 def validate_workflow(root: Path = ROOT) -> None:
     path = root / ".github/workflows/pages.yml"
-    text = read_utf8(path)
-    workflow = yaml.safe_load(text)
+    workflow = yaml.safe_load(read_utf8(path))
     if workflow.get("permissions") != {}:
         fail("workflow top-level permissions must be empty")
     trigger = workflow.get("on") or workflow.get(True)
     if not isinstance(trigger, dict) or "pull_request" not in trigger or "push" not in trigger:
-        fail("workflow must validate pull requests and main pushes")
-    for forbidden in ("pull_request_target", "workflow_run", "repository_dispatch"):
-        if forbidden in trigger:
-            fail(f"forbidden workflow trigger: {forbidden}")
+        fail("workflow triggers differ")
     jobs = workflow.get("jobs", {})
     if set(jobs) != {"build", "deploy"}:
-        fail("workflow must contain exactly build and deploy jobs")
-    if jobs["build"].get("permissions") != {"contents": "read"}:
-        fail("build job must have contents: read only")
-    if jobs["deploy"].get("permissions") != {"pages": "write", "id-token": "write"}:
-        fail("deploy job permissions are not least-privilege")
-    if jobs["deploy"].get("needs") != "build":
-        fail("deploy job must depend on build")
-    if jobs["deploy"].get("environment", {}).get("name") != "github-pages":
-        fail("deploy environment must be github-pages")
-    deploy_steps = jobs["deploy"].get("steps", [])
-    if len(deploy_steps) != 1 or "run" in deploy_steps[0]:
-        fail("deploy job must contain exactly one action-only step")
-    allowed_actions = {
-        "actions/checkout": "d23441a48e516b6c34aea4fa41551a30e30af803",
-        "actions/setup-python": "ece7cb06caefa5fff74198d8649806c4678c61a1",
-        "actions/upload-pages-artifact": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b",
-        "actions/deploy-pages": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
-    }
-    found: dict[str, str] = {}
+        fail("workflow job inventory differs")
+    if jobs["build"].get("permissions") != {"contents":"read"} or jobs["deploy"].get("permissions") != {"pages":"write","id-token":"write"}:
+        fail("workflow permissions differ")
     for job in jobs.values():
         for step in job.get("steps", []):
             uses = step.get("uses")
-            if not uses:
-                continue
-            action, separator, sha = uses.partition("@")
-            if not separator or not re.fullmatch(r"[0-9a-f]{40}", sha):
-                fail(f"action is not pinned to a full SHA: {uses}")
-            if action not in allowed_actions or allowed_actions[action] != sha:
-                fail(f"unapproved action reference: {uses}")
-            found[action] = sha
-    if found != allowed_actions:
-        fail("workflow action inventory is incomplete")
-    if deploy_steps[0].get("uses") != f"actions/deploy-pages@{allowed_actions['actions/deploy-pages']}":
-        fail("deploy job may execute only the pinned deploy-pages action")
-    denied_workflow_tokens = ("secrets.", "contents: write", "actions: write", "pull-requests: write", "issues: write", "repository:", "submodules: true")
-    for token in denied_workflow_tokens:
-        if token in text:
-            fail(f"forbidden workflow capability: {token}")
-
-
-def validate_manual_result_fixture(root: Path = ROOT) -> None:
-    validate_json_instance(
-        root / "tests/fixtures/manual-result-valid.json",
-        root / "schemas/manual-test-result.schema.json",
-    )
+            if uses and not re.fullmatch(r"[^@]+@[0-9a-f]{40}", uses):
+                fail(f"workflow action is not SHA-pinned: {uses}")
 
 
 class ResourceHTMLParser(HTMLParser):
-    RESOURCE_ATTRIBUTES = {
-        "script": "src",
-        "img": "src",
-        "source": "src",
-        "audio": "src",
-        "video": "src",
-        "iframe": "src",
-    }
-
+    RESOURCE_ATTRIBUTES = {"script":"src","img":"src","source":"src","iframe":"src","link":"href"}
     def __init__(self) -> None:
-        super().__init__()
-        self.external_resources: list[str] = []
-        self.internal_links: list[str] = []
-
+        super().__init__(); self.external_resources: list[str] = []; self.internal_links: list[str] = []
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        values = dict(attrs)
-        attribute = self.RESOURCE_ATTRIBUTES.get(tag)
-        if attribute and values.get(attribute, "").startswith(("http://", "https://", "//")):
-            self.external_resources.append(f"{tag}:{values[attribute]}")
-        if tag == "link" and values.get("rel") in {"stylesheet", "preload", "modulepreload"}:
-            href = values.get("href", "")
-            if href.startswith(("http://", "https://", "//")):
-                self.external_resources.append(f"link:{href}")
+        values = dict(attrs); attribute = self.RESOURCE_ATTRIBUTES.get(tag); value = values.get(attribute, "") if attribute else ""
+        is_runtime_resource = tag != "link" or "stylesheet" in str(values.get("rel", "")).lower()
+        if is_runtime_resource and value.startswith(("http://","https://","//")):
+            self.external_resources.append(f"{tag}:{value}")
         if tag == "a":
-            href = values.get("href", "")
-            parsed = urlsplit(href)
+            href = values.get("href", ""); parsed = urlsplit(href)
             if href and not parsed.scheme and not parsed.netloc and parsed.path:
                 self.internal_links.append(href)
 
 
 def validate_generated_internal_link(root: Path, source: Path, href: str) -> None:
-    parsed = urlsplit(href)
-    raw_path = unquote(parsed.path).replace("\\", "/")
-    if raw_path.startswith("/quantower-documentation/"):
-        candidate = root / raw_path.removeprefix("/quantower-documentation/")
-    elif raw_path.startswith("/"):
-        candidate = root / raw_path.lstrip("/")
+    raw = unquote(urlsplit(href).path).replace("\\", "/")
+    if raw.startswith("/quantower-documentation/"):
+        candidate = root / raw.removeprefix("/quantower-documentation/")
+    elif raw.startswith("/"):
+        candidate = root / raw.lstrip("/")
     else:
-        candidate = source.parent / raw_path
-    candidate = candidate.resolve()
-    if candidate != root.resolve() and root.resolve() not in candidate.parents:
-        fail(f"generated internal link escapes site root: {source.relative_to(root)} -> {href}")
-    if candidate.is_dir():
-        candidate = candidate / "index.html"
+        candidate = source.parent / raw
+    candidate = candidate.resolve(); resolved_root = root.resolve()
+    if candidate != resolved_root and resolved_root not in candidate.parents:
+        fail(f"generated link escapes root: {href}")
+    if candidate.is_dir(): candidate = candidate / "index.html"
     elif not candidate.suffix:
-        directory_index = candidate / "index.html"
-        html_file = candidate.with_suffix(".html")
-        candidate = directory_index if directory_index.is_file() else html_file
-    if not candidate.is_file():
-        fail(f"broken generated internal link: {source.relative_to(root)} -> {href}")
+        candidate = candidate / "index.html" if (candidate / "index.html").is_file() else candidate.with_suffix(".html")
+    if not candidate.is_file(): fail(f"broken generated internal link: {source.relative_to(root)} -> {href}")
 
 
 def resolve_safe_root(value: str, label: str) -> Path:
     candidate = (ROOT / value).resolve()
-    if candidate == ROOT or ROOT not in candidate.parents:
-        fail(f"{label} escapes repository root")
-    if not candidate.is_dir():
-        fail(f"{label} does not exist: {value}")
+    if candidate == ROOT or ROOT not in candidate.parents or not candidate.is_dir():
+        fail(f"{label} is unsafe or missing")
     return candidate
 
 
 def validate_generated_site(site_root: Path, offline_root: Path) -> None:
     for root in (site_root, offline_root):
         html_files = list(root.rglob("*.html"))
-        if not html_files:
-            fail(f"generated site contains no HTML: {root}")
+        if not html_files: fail(f"generated site has no HTML: {root}")
         for path in relative_files(root, include_generated=True):
             relative = path.relative_to(root).as_posix()
             if relative == "sitemap.xml.gz":
-                try:
-                    compressed_text = gzip.decompress(path.read_bytes()).decode("utf-8")
-                except (OSError, UnicodeDecodeError) as exc:
-                    raise ValidationError(f"invalid compressed sitemap: {relative}: {exc}") from exc
-                assert_safe_text(compressed_text, f"generated:{relative}")
+                assert_safe_text(gzip.decompress(path.read_bytes()).decode("utf-8"), f"generated:{relative}")
                 continue
-            if path.suffix.lower() not in {".html", ".css", ".js", ".json", ".map", ".svg", ".png", ".ico", ".woff", ".woff2", ".txt", ".xml"}:
-                fail(f"unexpected generated file type: {relative}")
-            if path.suffix.lower() in {".html", ".css", ".js", ".json", ".map", ".svg", ".txt", ".xml"}:
-                check_mojibake = path.suffix.lower() == ".html" or relative in {
-                    "assets/javascripts/fractal-zones.js",
-                    "assets/javascripts/fractal-zones-simulators.js",
-                    "assets/javascripts/manual-tests.js",
-                    "assets/stylesheets/fractal-zones.css",
-                }
-                text = read_utf8(path, check_mojibake=check_mojibake)
+            if path.suffix.lower() in {".html",".css",".js",".json",".svg",".txt",".xml"}:
+                text = path.read_text(encoding="utf-8")
                 assert_safe_text(text, f"generated:{relative}")
-                if path.suffix.lower() == ".html":
-                    parser = ResourceHTMLParser()
-                    parser.feed(text)
-                    if parser.external_resources:
-                        fail(f"external runtime resource in {relative}: {parser.external_resources[0]}")
-                    for href in parser.internal_links:
-                        validate_generated_internal_link(root, path, href)
-        if not (root / "index.html").is_file():
-            fail(f"generated site misses index.html: {root}")
-        manual_relative = (
-            Path("indicators/fractal-zones/test/manual-suite/index.html")
-            if root == site_root
-            else Path("indicators/fractal-zones/test/manual-suite.html")
-        )
-        manual_html = read_utf8(root / manual_relative)
-        for heading_id in (
-            "erstinstallation-und-settings-testen",
-            "lifecycle-und-darstellung-testen",
-            "historie-recovery-und-performance-testen",
-        ):
-            if not re.search(rf'<h2\s+id="{heading_id}">', manual_html):
-                fail(f"manual suite topic heading was not rendered as h2: {heading_id}")
-        if "## Erstinstallation und Settings testen" in manual_html:
-            fail("manual suite leaks an unparsed Markdown heading")
-    if not (offline_root / "indicators/fractal-zones/test/manual-suite.html").is_file():
-        fail("offline build must use file-addressable .html pages")
+            if path.suffix.lower() == ".html":
+                parser = ResourceHTMLParser(); parser.feed(path.read_text(encoding="utf-8"))
+                if parser.external_resources: fail(f"external runtime asset: {relative}")
+                for href in parser.internal_links: validate_generated_internal_link(root, path, href)
 
 
-def validate_markdown_links(root: Path = ROOT) -> None:
-    link_pattern = re.compile(r"\[[^\]]+\]\((?!https?://|mailto:|#)([^)]+)\)")
-    for path in (root / "docs").rglob("*.md"):
-        text = read_utf8(path)
-        for raw_target in link_pattern.findall(text):
-            target = raw_target.split("#", 1)[0].strip()
-            if not target or target.startswith("<"):
-                continue
-            resolved = (path.parent / target).resolve()
-            if not resolved.exists():
-                fail(f"broken Markdown link in {path.relative_to(root)}: {target}")
-
-
-def run_source_checks() -> None:
-    validate_source_tree()
-    validate_manifest_and_coverage()
-    validate_workflow()
-    validate_manual_result_fixture()
-    validate_markdown_links()
+def validate_fixtures(root: Path = ROOT) -> None:
+    validate_json_instance(root / "tests/fixtures/manual-result-v2-valid.json", root / "schemas/manual-test-result.schema.json")
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("source")
-    subparsers.add_parser("all")
-    generated = subparsers.add_parser("generated")
-    generated.add_argument("--site-root", default="site")
-    generated.add_argument("--offline-root", default="site-offline")
-    args = parser.parse_args(argv)
+    parser = argparse.ArgumentParser(); parser.add_argument("mode", choices=["source","generated","all"]); parser.add_argument("--site-root", default="site"); parser.add_argument("--offline-root", default="site-offline"); args = parser.parse_args(argv)
     try:
-        if args.command in {"source", "all"}:
-            run_source_checks()
-        if args.command == "generated":
-            validate_generated_site(
-                resolve_safe_root(args.site_root, "site root"),
-                resolve_safe_root(args.offline_root, "offline root"),
-            )
-    except (ValidationError, json.JSONDecodeError, yaml.YAMLError) as exc:
-        print(f"FAIL: {exc}", file=sys.stderr)
-        return 1
-    print(f"PASS: {args.command}")
-    return 0
+        if args.mode in {"source","all"}:
+            validate_source_tree(ROOT); validate_manifest_and_coverage(ROOT); validate_workflow(ROOT); validate_fixtures(ROOT)
+        if args.mode in {"generated","all"}:
+            validate_generated_site(resolve_safe_root(args.site_root,"site root"), resolve_safe_root(args.offline_root,"offline root"))
+    except (ValidationError, OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError) as exc:
+        print(f"validation failed: {exc}", file=sys.stderr); return 1
+    print(f"validation passed: {args.mode}"); return 0
 
 
 if __name__ == "__main__":

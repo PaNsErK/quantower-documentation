@@ -12,10 +12,10 @@ Dieser Workflow hält die öffentliche Fractal-Zones-Dokumentation aktuell, ohne
 ## Lokaler Ablauf
 
 1. Verwende einen berechtigten lokalen Checkout der Produktquelle ausschließlich read-only.
-2. Starte den Update-Runner mit `--source-root` auf diesen Checkout.
+2. Erzeuge außerhalb des öffentlichen Repositorys eine geschlossene, sanitisiert geprüfte Inventarkapsel oder validiere den bereits gebundenen Public Contract.
 3. Bei `documentation_drift` passe zuerst das geschlossene Manifest, den Source Contract und die betroffenen Seiten konsistent an.
 4. Führe den Runner erneut aus. Erst danach darf ein Dokumentations-PR entstehen.
-5. Der manuelle Quantower-Abnahmestatus bleibt unverändert, bis die interaktive Testsuite tatsächlich vollständig abgeschlossen wurde.
+5. Halte technische Runtime-Abnahme, FZMT-Regression und FZV2-RM-Benutzerabnahme als drei getrennte Zustände. Der manuelle Status ändert sich erst nach tatsächlicher Benutzerprüfung.
 
 Der Runner gibt ausschließlich geschlossene Zustände aus:
 
@@ -33,10 +33,12 @@ Erlaubt sind aggregierte Produktfakten, öffentliche Dokumentation, geschlossene
 
 - [ ] Public Manifest und Source Contract sind schema-validiert und digest-gekoppelt.
 - [ ] Alle betroffenen Settings und Lernpfade wurden aktualisiert.
-- [ ] `manual_acceptance_complete=false` bleibt bestehen, solange die manuelle Suite offen ist.
+- [ ] `runtime_acceptance_complete=true` ist durch geschlossene Runtime-Evidenz gedeckt.
+- [ ] `manual_acceptance_complete=false` bleibt bestehen, solange FZV2-RM-001…019 offen sind.
+- [ ] FZMT und FZV2-RM besitzen getrennte Suite-IDs und LocalStorage-Schlüssel.
 - [ ] Online- und Offline-Build sind strict grün.
 - [ ] Interne Links, responsive Darstellung und Tastatur-/Accessibility-Grundfunktionen sind geprüft.
 - [ ] Der generierte Site-Baum enthält keine externen Runtime-Assets oder private Metadaten.
 - [ ] Der PR verändert nur öffentliche Dokumentationsflächen.
 
-FZRUI-01 und FZRUI-02 sind als geschlossene, sanitisiert dokumentierte Runtime-Befunde im Vertrag verankert. Der Workflow kann spätere Neuklassifizierungen synchronisieren, repariert aber weiterhin keinen Indikatorcode und ersetzt keinen vollständigen manuellen Quantower-Abnahmetest.
+Der aktuelle Vertrag umfasst 56 Produktzeilen, sieben LineOptions, 70 atomare Produkt-Controls, zwei Actions und FZCP v1–v4. Der Workflow repariert keinen Indikatorcode und ersetzt keinen vollständigen manuellen Quantower-Abnahmetest.

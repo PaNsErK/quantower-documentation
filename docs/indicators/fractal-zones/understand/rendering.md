@@ -1,69 +1,19 @@
 # Darstellung und Marker
 
-## Interaktiver Renderingvergleich
+Die Rendering-Modi ändern nur den Renderplan, nicht die berechneten Levels.
 
-Wechsle zwischen Adaptive, Full und Active focus und verschiebe den Beispiel-Viewport. Linienidentität und sichtbare Segmentzahl bleiben gleich; nur Renderweg beziehungsweise Deckkraft ändern sich.
+| Modus | Darstellung | Zweck |
+|---|---|---|
+| Adaptive | effizienter Viewport-Index und Cache | Standard für Alltag und große Historien |
+| Full | vollständiger Referenzpfad | Vergleich und Diagnose |
+| Active focus | inaktive Zustände mit konfigurierbarer Deckkraft | aktive Levels hervorheben |
 
-<div class="fz-simulator" data-fz-simulator="rendering-modes">
-<p><strong>Ohne JavaScript:</strong> Adaptive und Full müssen semantisch dasselbe Ergebnis zeigen. Active focus verändert nur die Deckkraft von Provisional und BrokenWatch.</p>
-</div>
+Es gibt ausdrücklich **kein Clustering, Zusammenlegen, Sampling oder Unterdrücken**. Der optionale Preisbereichsfilter ist rein visuell und löscht nichts.
 
-*Schematischer Rendervergleich mit synthetischen Segmenten; keine Laufzeitmessung.*
+Offene Linien können bis zum aktuellen Kerzenende oder um Minuten/Kerzen nach rechts projiziert werden. Der Line-End-Marker sitzt dagegen auf der aktuellen Kerze plus seinem eigenen Offset – nicht am projizierten Zukunftsende.
 
-<section markdown="1" class="fz-topic" data-topic="FZT-18" data-modes="understand configure">
+Marker für Break, RoleChange, Event und End besitzen getrennte Sichtbarkeit, Farben, X/Y-Offsets und Schriftgrößen. `Font size=0` bedeutet Hoststandard.
 
-## Ursprungsstabile Farben
+<div data-fz-simulator="rendering-modes"></div>
 
-<div markdown="1" class="fz-depth" data-depth="short">Top bleibt in der gewählten Top-Farbe, Bottom in der Bottom-Farbe – auch nach Rollenwechsel.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Die Farbe beantwortet „Wo entstand das Level?“. Linienart und Segment beantworten „Welchen Zustand hat es jetzt?“.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Farbe hängt an `OriginType`, nicht an `CurrentRole`. Dadurch bleibt die komplette Segmentgeschichte visuell konsistent und die Rolle wird nicht durch rückwirkende Farbwechsel verfälscht.</div>
-
-</section>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-19" data-modes="understand configure">
-
-## Rendering-Modi
-
-<div markdown="1" class="fz-depth" data-depth="short">Adaptive ist Standard, Full zeigt den vollständigen Stil, Active focus reduziert nur die Deckkraft inaktiver Zustände.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">
-
-- **Adaptive:** optimierter Render-Plan bei vollständigem Inhalt.
-- **Full:** direkte Vollprojektion als Vergleichs- und Diagnosemodus.
-- **Active focus:** Active bleibt klar, Provisional und BrokenWatch werden mit einstellbarer Deckkraft gezeichnet.
-
-</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Viewport-Segment- und Annotation-Indizes, Cache und source-identical timeframe reuse sind reine Performancepfade. Der semantische Vergleich gegen Full muss identisch bleiben.</div>
-
-</section>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-20" data-modes="understand test">
-
-## No-cluster-Vertrag
-
-<div markdown="1" class="fz-depth" data-depth="short">Kein Clustering, Zusammenlegen, Sampling, Löschen oder Unterdrücken.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Auch wenn viele Linien nah beieinanderliegen, bleibt jede einzelne Linie erhalten. Eine spätere Zonenbildung ist ein eigener Produkt-Slice.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Performanceoptimierung darf nur Kandidaten außerhalb des Viewports schneller ausschließen oder einen identischen Render-Plan wiederverwenden. Anzahl und Identität sichtbarer Segmente bleiben unverändert.</div>
-
-</section>
-
-<section markdown="1" class="fz-topic" data-topic="FZT-21" data-modes="understand configure">
-
-## Marker und Segmentgeschichte
-
-<div markdown="1" class="fz-depth" data-depth="short">Standard: End- und Rollenwechselmarker an, Bruchmarker aus.</div>
-
-<div markdown="1" class="fz-depth" data-depth="practice">Marker erklären Ereignisse, die eine Linie allein nicht vollständig zeigt. DATA GAP und EPOCH kennzeichnen Datenkontinuität; sie sind keine Trading-Signale.</div>
-
-<div markdown="1" class="fz-depth" data-depth="technical">Marker sind indexierte Annotationen. Reine Sichtbarkeitsschalter dürfen weder Reducer, ReplayGeneration noch Levelsemantik verändern.</div>
-
-</section>
-
-## Linienarten
-
-Fractal Zones bietet bewusst nur `Solid`, `Dash`, `Dot` und den in der UI als `Dash dot` bezeichneten Enum-Wert `DashDot`. Quantower kennt weitere `LineStyle`-Werte, sie passen aber nicht zum horizontalen Segmentvertrag dieses Indikators.
+Weiter: [Rendering, Marker und Historie konfigurieren](../configure/rendering-and-history.md).

@@ -7,7 +7,9 @@
     "role-ended": initRoleEnded,
     "timeframe-parity": initTimeframeParity,
     "lifecycle": initLifecycle,
-    "rendering-modes": initRenderingModes
+    "rendering-modes": initRenderingModes,
+    "break-source": initBreakSource,
+    "history-range": initHistoryRange
   };
 
   function html(tag, className, text) {
@@ -573,6 +575,55 @@
       control.addEventListener("input", render);
       control.addEventListener("change", render);
     });
+    render();
+  }
+
+  function initBreakSource(root) {
+    var controls = html("div", "fz-simulator__controls");
+    var source = selectControl([["close", "Close"], ["highlow", "High/Low"]], "close");
+    var confirmation = rangeControl(0, 5, 1, 2);
+    controls.append(field("Preisquelle", source), field("Bestätigung: 2 Minuten", confirmation));
+    var output = html("div");
+    root.replaceChildren(controls, output);
+    function render() {
+      confirmation.parentElement.querySelector("span").textContent = "Bestätigung: " + confirmation.value + " Minuten";
+      var node = chart("Break-Preisquelle und Bestätigung");
+      addGrid(node, 800, 350, 65, 25, 770, 300);
+      var boundary = 135;
+      addLine(node, 65, boundary, 770, boundary, "", { stroke: "#ffca28", "stroke-width": 3, "stroke-dasharray": "8 5" });
+      addText(node, 70, boundary - 8, "Break-Grenze", "fz-chart-muted");
+      var values = [-0.2, 0.1, 0.35, 0.2, 0.5, 0.65, 0.72, 0.78];
+      drawCandles(node, values, { left: 80, right: 750, top: 35, bottom: 290, minimum: -0.5, maximum: 1 });
+      var qualifies = source.value === "highlow" ? "Docht kann qualifizieren" : "Nur Schlusskurs qualifiziert";
+      var timing = Number(confirmation.value) === 0 ? "erster qualifizierender Slot" : confirmation.value + " fortlaufende Slots";
+      output.replaceChildren(node, statusRow([["Preisquelle", qualifies], ["Commit", timing], ["Neutralzone", "setzt den Timer strikt zurück"]]));
+    }
+    [source, confirmation].forEach(function (control) { control.addEventListener("input", render); control.addEventListener("change", render); });
+    render();
+  }
+
+  function initHistoryRange(root) {
+    var controls = html("div", "fz-simulator__controls");
+    var mode = selectControl([["loaded", "Chart loaded range + warm-up"], ["rolling", "Rolling lookback days"], ["fixed", "Fixed calculation start"]], "loaded");
+    var warmup = rangeControl(2, 30, 1, 10);
+    controls.append(field("Berechnungsbereich", mode), field("Warm-up: 10 Tage", warmup));
+    var output = html("div");
+    root.replaceChildren(controls, output);
+    function render() {
+      warmup.parentElement.querySelector("span").textContent = "Warm-up: " + warmup.value + " Tage";
+      var node = chart("Berechnungsbereich und Warm-up", "0 0 800 250");
+      addLine(node, 70, 130, 750, 130, "fz-chart-grid");
+      var start = mode.value === "fixed" ? 100 : mode.value === "rolling" ? 250 : 390;
+      if (mode.value === "loaded") {
+        addLine(node, 270, 130, 390, 130, "", { stroke: "#ffca28", "stroke-width": 12, opacity: 0.45 });
+      }
+      addLine(node, start, 130, 735, 130, "", { stroke: "#35c57a", "stroke-width": 12, opacity: 0.8 });
+      addText(node, start, 105, "Berechnungsstart", "", { "text-anchor": "middle" });
+      addText(node, 735, 105, "Jetzt", "", { "text-anchor": "middle" });
+      var detail = mode.value === "fixed" ? "expliziter UTC-Anker" : mode.value === "rolling" ? "rollierendes Fenster (z. B. 90 Tage)" : "geladener Chartbereich plus Vorlauf";
+      output.replaceChildren(node, statusRow([["Modus", detail], ["Semantik", "gemeinsamer Zeitraum bleibt source-identisch"], ["Darstellung", "kein Level-Clustering oder Löschen"]]));
+    }
+    [mode, warmup].forEach(function (control) { control.addEventListener("input", render); control.addEventListener("change", render); });
     render();
   }
 

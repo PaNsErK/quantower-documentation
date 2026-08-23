@@ -1,0 +1,18 @@
+{
+  "schema_version": "fz-runtime-acceptance-public-v1",
+  "indicator_id": "fractal-zones",
+  "state": "terminal_technical_acceptance_with_nonblocking_warning",
+  "runtime_environment": {"businesslayer_version":"1.146.18.0","target_framework":"net10.0"},
+  "validation": {"release_build":"pass","complete_test_runner":"pass","conformance_packs":["v1","v2","v3","v4"],"requirements":"FZ-001..FZ-102","golden_traces":"GT-01..GT-180","manual_acceptance_contract":"MVA-01..MVA-25","deployment":"9_of_9_manifest_hash_parity"},
+  "runtime_manual_acceptance": {"ids":"MVA-17..MVA-25","state":"pass_with_one_nonblocking_warning","manual_acceptance_complete":false,"user_evaluation":"pending_user_evaluation"},
+  "ranges": [
+    {"class":"10k","effective_bars":14400,"approximate_load_seconds":10,"working_set_mib":691,"state":"pass"},
+    {"class":"30k","effective_bars":28800,"approximate_load_seconds":15,"working_set_mib":678,"state":"pass"},
+    {"class":"approximately_130k","effective_bars":129600,"approximate_load_seconds_upper_bound":30,"working_set_mib":981,"state":"pass"}
+  ],
+  "soak": {"elapsed_seconds":2700.009,"process_samples":188,"responsive_samples":188,"ui_usable":true,"host_hang_or_crash_observed":false},
+  "restart_restore": {"graceful_restart":"pass","safe_raw_rebuild":"observed","current_restore":"accepted","duplicate_replay_indicator_seen":false},
+  "residual_warning": {"classification":"accepted_persistence_quota_and_efficiency_risk","blocking":false,"effect":"Optional sidecar writes may pause above quota while calculation, rendering and safe raw rebuild remain available.","root_persistent_bytes_max":6836499433,"unique_persistent_bytes_max":5424513781,"state_persistent_bytes_max":210281555,"quota_exceeded_diagnostic_count":227,"history_limit_exceeded_seen":false,"incomplete_seen":false},
+  "earlier_user_tests": {"count":15,"state":"intentionally_not_repeated","details_persisted":false},
+  "privacy": {"raw_logs":false,"process_identifiers":false,"window_identifiers":false,"coordinates":false,"trading_or_account_data":false}
+}

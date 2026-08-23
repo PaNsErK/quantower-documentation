@@ -1,28 +1,19 @@
 # Inoffizielle Quantower-Dokumentation
 
-!!! warning "Öffentliche Beta – manueller Abnahmetest noch offen"
-    Diese inoffizielle Dokumentation steht in keiner Verbindung zu Quantower und wird nicht von Quantower unterstützt oder herausgegeben. Die Inhalte und das Runtime-Inventar sind technisch validiert und bereits zum Lernen nutzbar. Der vollständige manuelle Quantower-Abnahmetest ist noch nicht abgeschlossen (`manual_acceptance_complete=false`).
+Diese öffentliche Beta erklärt Fractal Zones v2 vom ersten sichtbaren Fraktal bis zu Break, Rollenwechsel, Recovery und Sidecar-Verhalten.
 
-Diese Website erklärt Quantower-Erweiterungen so, dass du jederzeit weißt, **wo du bist**, **was du gerade prüfst** und **wie tief du einsteigen möchtest**.
+`runtime_acceptance_complete=true` · `manual_acceptance_complete=false` · `pending_user_evaluation`
 
-## Aktuell verfügbar
+## Wähle deinen Einstieg
 
-- [Fractal Zones – Überblick](indicators/fractal-zones/index.md)
-- [Geführte Lernpfade](indicators/fractal-zones/learning/index.md)
-- [Alle Einstellungen](indicators/fractal-zones/configure/index.md)
-- [Interaktive manuelle Testsuite](indicators/fractal-zones/test/manual-suite.md)
-- [Fehlerbilder und Diagnose](indicators/fractal-zones/troubleshoot/index.md)
+| Ziel | Einstieg |
+|---|---|
+| In 15 Minuten verstehen | [Erste 15 Minuten](indicators/fractal-zones/learning/first-15-minutes.md) |
+| Aktuellen technischen Stand sehen | [Current State](indicators/fractal-zones/current-state.md) |
+| Eine konkrete Einstellung nachschlagen | [Alle 56 Settings](indicators/fractal-zones/configure/index.md) |
+| Technische Abnahme prüfen | [Runtime-Acceptance](indicators/fractal-zones/test/runtime-acceptance.md) |
+| Die 19 offenen Fälle bewerten | [Benutzer-Testmatrix](indicators/fractal-zones/test/v2-remediation-user-matrix.md) |
+| Ein Problem eingrenzen | [Diagnoseweg](indicators/fractal-zones/troubleshoot/index.md) |
 
-!!! info "Runtime-Inventar bestätigt – beide gezielten UI-Befunde geschlossen"
-    Erfasst sind **29 Produktzeilen**, **11 geerbte Basiszeilen** und zusammen bis zu **66 atomare Controls**. Die geladene Bundle-Version ist bekannt, wird in Quantower aber nicht separat angezeigt; `HelpLink` ist leer. FZRUI-01 ist in Quantower mit zweistelliger Dezimaldarstellung und unveränderter Liniensemantik bestätigt. FZRUI-02 ist als Hostdarstellungsgrenze bestätigt: Quantower BusinessLayer 1.146.17.0 zeigt den DateTime-Editor, aber keinen separaten nativen Enable-Toggler. Der vollständige manuelle Abnahmetest bleibt davon unabhängig offen.
-
-## So funktioniert die Navigation
-
-Auf jeder Fractal-Zones-Seite erscheint eine kompakte Leiste:
-
-1. **Kurz** zeigt nur Entscheidung und Kernaussage.
-2. **Praxis** ergänzt Beispiele und Bedienhinweise und ist der Standard.
-3. **Technik** ergänzt deterministische Semantik, Daten- und Recovery-Details.
-4. **Verstehen / Einstellen / Testen / Fehlerbilder** führt direkt in den passenden Arbeitsmodus.
-
-Ohne JavaScript bleiben alle Inhalte sichtbar und die Dokumentation vollständig lesbar.
+!!! warning "Inoffiziell und nicht-tradend"
+    Diese Dokumentation ist nicht mit Quantower LLC verbunden. Fractal Zones ist ein darstellender Indikator ohne Order-, Konto-, Positions- oder Strategieaktionen.

@@ -1,183 +1,27 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://panserk.github.io/quantower-documentation/schemas/public-indicator-manifest.schema.json",
-  "title": "Public indicator documentation manifest",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schema_version", "publication", "source_contract", "indicator", "inventory", "runtime_inventory", "topics", "settings", "base_settings", "manual_tests"],
-  "properties": {
-    "schema_version": {"const": "fz-public-manifest-v1"},
-    "publication": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "manual_acceptance_complete", "official_affiliation", "content_license_state"],
-      "properties": {
-        "status": {"const": "public_beta_manual_acceptance_pending"},
-        "manual_acceptance_complete": {"const": false},
-        "official_affiliation": {"const": false},
-        "content_license_state": {"const": "no_open_source_license"}
-      }
-    },
-    "source_contract": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "schema_version", "validation_mode", "setting_fact_digest", "contract_digest"],
-      "properties": {
-        "status": {"const": "current_source_validated_sanitized"},
-        "schema_version": {"const": "fz-public-source-contract-v1"},
-        "validation_mode": {"const": "local_read_only_only"},
-        "setting_fact_digest": {"pattern": "^[0-9a-f]{64}$"},
-        "contract_digest": {"pattern": "^[0-9a-f]{64}$"}
-      }
-    },
-    "indicator": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "name", "product_kind", "trading_capability", "indicator_version", "indicator_version_ui_state", "help_link_state", "documentation_route", "source_status"],
-      "properties": {
-        "id": {"const": "fractal-zones"},
-        "name": {"const": "Fractal Zones"},
-        "product_kind": {"const": "non-trading-indicator"},
-        "trading_capability": {"const": false},
-        "indicator_version": {"const": "1.0.0+90389555f55237713593a16f63195c900972a898"},
-        "indicator_version_ui_state": {"const": "not_exposed"},
-        "help_link_state": {"const": "not_available_empty_getter"},
-        "documentation_route": {"const": "/indicators/fractal-zones/"},
-        "source_status": {"const": "confirmed_current_product_source_and_runtime_ui"}
-      }
-    },
-    "inventory": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["product_owned_setting_rows", "product_owned_actions", "line_option_rows", "maximum_atomic_controls", "inherited_setting_rows", "inherited_atomic_controls", "maximum_total_setting_rows", "maximum_total_atomic_controls", "base_settings_union", "full_ui_completeness_claim"],
-      "properties": {
-        "product_owned_setting_rows": {"const": 29},
-        "product_owned_actions": {"const": 2},
-        "line_option_rows": {"const": 6},
-        "maximum_atomic_controls": {"const": 41},
-        "inherited_setting_rows": {"const": 11},
-        "inherited_atomic_controls": {"const": 25},
-        "maximum_total_setting_rows": {"const": 40},
-        "maximum_total_atomic_controls": {"const": 66},
-        "base_settings_union": {"const": "runtime_inventory_confirmed"},
-        "full_ui_completeness_claim": {"const": false}
-      }
-    },
-    "runtime_inventory": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "quantower_businesslayer_version", "loaded_bundle_product_version", "visibility_branches", "residuals"],
-      "properties": {
-        "status": {"const": "confirmed_with_residuals"},
-        "quantower_businesslayer_version": {"const": "1.146.17.0"},
-        "loaded_bundle_product_version": {"const": "1.0.0+90389555f55237713593a16f63195c900972a898"},
-        "visibility_branches": {
-          "type": "array",
-          "minItems": 8,
-          "maxItems": 8,
-          "uniqueItems": true,
-          "items": {"enum": ["break_one_minute_atr", "break_percent_of_level", "break_fixed_ticks", "rendering_adaptive", "rendering_full", "rendering_active_focus", "history_fixed_initial", "history_chart_loaded_warmup"]}
-        },
-        "residuals": {
-          "type": "array",
-          "minItems": 2,
-          "maxItems": 2,
-          "items": {"$ref": "#/$defs/runtimeResidual"}
-        }
-      }
-    },
-    "topics": {
-      "type": "array",
-      "minItems": 37,
-      "maxItems": 37,
-      "uniqueItems": true,
-      "items": {"$ref": "#/$defs/topic"}
-    },
-    "settings": {
-      "type": "array",
-      "minItems": 29,
-      "maxItems": 29,
-      "items": {"$ref": "#/$defs/setting"}
-    },
-    "base_settings": {
-      "type": "array",
-      "minItems": 11,
-      "maxItems": 11,
-      "items": {"$ref": "#/$defs/baseSetting"}
-    },
-    "manual_tests": {
-      "type": "array",
-      "minItems": 20,
-      "items": {"$ref": "#/$defs/manualTest"}
-    }
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://panserk.github.io/quantower-documentation/schemas/public-indicator-manifest.schema.json",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","publication","source_contract","indicator","inventory","runtime_acceptance","pages","settings","base_settings","test_suites","conformance","privacy"],
+  "properties":{
+    "schema_version":{"const":"fz-public-manifest-v2"},
+    "publication":{"type":"object","additionalProperties":false,"required":["status","manual_acceptance_complete","runtime_acceptance_complete","user_evaluation","official_affiliation","content_license_state"],"properties":{"status":{"const":"public_beta_user_evaluation_pending"},"manual_acceptance_complete":{"const":false},"runtime_acceptance_complete":{"const":true},"user_evaluation":{"const":"pending_user_evaluation"},"official_affiliation":{"const":false},"content_license_state":{"const":"no_open_source_license"}}},
+    "source_contract":{"type":"object","additionalProperties":false,"required":["status","schema_version","validation_mode","setting_fact_digest","contract_digest"],"properties":{"status":{"const":"current_source_validated_sanitized"},"schema_version":{"const":"fz-public-source-contract-v2"},"validation_mode":{"const":"sanitized_inventory_or_contract_only"},"setting_fact_digest":{"pattern":"^[0-9a-f]{64}$"},"contract_digest":{"pattern":"^[0-9a-f]{64}$"}}},
+    "indicator":{"type":"object","additionalProperties":false,"required":["id","name","generation","product_kind","trading_capability","version_state","version_ui_state","help_link_state","documentation_route"],"properties":{"id":{"const":"fractal-zones"},"name":{"const":"Fractal Zones"},"generation":{"const":"Fractal Zones v2"},"product_kind":{"const":"non-trading-indicator"},"trading_capability":{"const":false},"version_state":{"const":"current_merged_runtime_validated_build_not_publicly_versioned"},"version_ui_state":{"const":"not_exposed"},"help_link_state":{"const":"not_available_empty_getter"},"documentation_route":{"const":"/indicators/fractal-zones/"}}},
+    "inventory":{"type":"object","additionalProperties":false,"required":["product_owned_setting_rows","product_owned_actions","line_option_rows","atomic_product_controls","inherited_setting_rows","inherited_atomic_controls","maximum_total_setting_rows","maximum_total_atomic_controls","base_settings_union","base_settings_observed_businesslayer","full_1_146_18_host_inventory_claim"],"properties":{"product_owned_setting_rows":{"const":56},"product_owned_actions":{"const":2},"line_option_rows":{"const":7},"atomic_product_controls":{"const":70},"inherited_setting_rows":{"const":11},"inherited_atomic_controls":{"const":25},"maximum_total_setting_rows":{"const":67},"maximum_total_atomic_controls":{"const":95},"base_settings_union":{"const":"version_bound_observation"},"base_settings_observed_businesslayer":{"const":"1.146.17.0"},"full_1_146_18_host_inventory_claim":{"const":false}}},
+    "runtime_acceptance":{"type":"object","additionalProperties":false,"required":["state","businesslayer_version","build","complete_tests","conformance_packs","deployment_manifest_files","deployment_hash_parity","manual_acceptance_ids","manual_acceptance_state","user_evaluation","evidence_document"],"properties":{"state":{"const":"terminal_technical_acceptance_with_nonblocking_warning"},"businesslayer_version":{"const":"1.146.18.0"},"build":{"const":"pass"},"complete_tests":{"const":"pass"},"conformance_packs":{"const":["v1","v2","v3","v4"]},"deployment_manifest_files":{"const":9},"deployment_hash_parity":{"const":"9_of_9"},"manual_acceptance_ids":{"const":"MVA-17..MVA-25"},"manual_acceptance_state":{"const":"pass_with_one_nonblocking_warning"},"user_evaluation":{"const":"pending_user_evaluation"},"evidence_document":{"const":"fractal-zones-runtime-acceptance.json"}}},
+    "pages":{"type":"array","minItems":27,"maxItems":27,"items":{"$ref":"#/$defs/page"}},
+    "settings":{"type":"array","minItems":56,"maxItems":56,"items":{"$ref":"#/$defs/setting"}},
+    "base_settings":{"type":"array","minItems":11,"maxItems":11,"items":{"$ref":"#/$defs/baseSetting"}},
+    "test_suites":{"type":"array","prefixItems":[{"$ref":"#/$defs/fzmtSuite"},{"$ref":"#/$defs/fzv2Suite"}],"items":false},
+    "conformance":{"type":"object","additionalProperties":false,"required":["packs","requirements_count","golden_trace_count","manual_acceptance_count","sequence_state"],"properties":{"packs":{"const":["v1","v2","v3","v4"]},"requirements_count":{"const":102},"golden_trace_count":{"const":180},"manual_acceptance_count":{"const":25},"sequence_state":{"const":"contiguous_closed"}}},
+    "privacy":{"type":"object","additionalProperties":false,"required":["absolute_paths_persisted","source_text_persisted","repository_metadata_persisted","raw_source_hashes_persisted","sensitive_runtime_data_persisted","analytics_or_telemetry","runtime_network_api"],"properties":{"absolute_paths_persisted":{"const":false},"source_text_persisted":{"const":false},"repository_metadata_persisted":{"const":false},"raw_source_hashes_persisted":{"const":false},"sensitive_runtime_data_persisted":{"const":false},"analytics_or_telemetry":{"const":false},"runtime_network_api":{"const":false}}}
   },
-  "$defs": {
-    "topic": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "title", "mode", "page", "summary"],
-      "properties": {
-        "id": {"pattern": "^FZT-[0-9]{2}$"},
-        "title": {"type": "string", "minLength": 3, "maxLength": 120},
-        "mode": {"enum": ["understand", "configure", "test", "troubleshoot"]},
-        "page": {"pattern": "^indicators/fractal-zones/.+\\.md$"},
-        "summary": {"type": "string", "minLength": 10, "maxLength": 280}
-      }
-    },
-    "setting": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "label", "group", "type", "default", "range_or_options", "visibility", "atomic_controls", "documentation_anchor"],
-      "properties": {
-        "id": {"pattern": "^[A-Za-z][A-Za-z0-9]+$"},
-        "label": {"type": "string", "minLength": 2, "maxLength": 100},
-        "group": {"enum": ["Fractal Maturity", "Break Engine", "Lifecycle", "Provisional Line Settings", "Active Line Settings", "Historical Line Settings", "Rendering", "Markers", "History"]},
-        "type": {"enum": ["integer", "double", "selector", "boolean", "datetime", "line_options", "action"]},
-        "default": {"type": ["string", "number", "boolean", "null"]},
-        "range_or_options": {"type": "string", "minLength": 1, "maxLength": 240},
-        "visibility": {"type": "string", "minLength": 1, "maxLength": 240},
-        "atomic_controls": {"type": "integer", "minimum": 1, "maximum": 3},
-        "documentation_anchor": {"pattern": "^setting-[a-z0-9-]+$"}
-      }
-    },
-    "baseSetting": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "label", "group", "type", "current_value", "range_or_options", "atomic_controls"],
-      "properties": {
-        "id": {"pattern": "^Base[A-Za-z0-9]+$"},
-        "label": {"type": "string", "minLength": 2, "maxLength": 120},
-        "group": {"enum": ["VIEW", "TIMEFRAME VISIBILITY", "BASE"]},
-        "type": {"enum": ["selector", "boolean", "timeframe_range", "action"]},
-        "current_value": {"type": ["string", "boolean"]},
-        "range_or_options": {"type": "string", "minLength": 1, "maxLength": 240},
-        "atomic_controls": {"type": "integer", "minimum": 1, "maximum": 3}
-      }
-    },
-    "runtimeResidual": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "area", "state", "summary"],
-      "properties": {
-        "id": {"pattern": "^FZRUI-[0-9]{2}$"},
-        "area": {"enum": ["rendering", "history"]},
-        "state": {"enum": ["runtime_confirmed_fixed", "host_presentation_limitation_confirmed"]},
-        "summary": {"type": "string", "minLength": 20, "maxLength": 300}
-      }
-    },
-    "manualTest": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "title", "category", "risk", "steps", "expected", "restoration"],
-      "properties": {
-        "id": {"pattern": "^FZMT-[0-9]{2}$"},
-        "title": {"type": "string", "minLength": 4, "maxLength": 140},
-        "category": {"enum": ["settings", "lifecycle", "rendering", "history", "recovery", "performance", "privacy"]},
-        "risk": {"enum": ["safe_non_trading"]},
-        "steps": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3, "maxLength": 300}},
-        "expected": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 3, "maxLength": 300}},
-        "restoration": {"type": "string", "minLength": 3, "maxLength": 300}
-      }
-    }
+  "$defs":{
+    "page":{"type":"object","additionalProperties":false,"required":["id","title","page","mode"],"properties":{"id":{"pattern":"^FZT-[0-9]{2}$"},"title":{"type":"string","minLength":3},"page":{"pattern":"^indicators/fractal-zones/.+\\.md$"},"mode":{"enum":["understand","configure","learn","test","troubleshoot","reference"]}}},
+    "setting":{"type":"object","additionalProperties":false,"required":["id","label","group","type","default","range_or_options","visibility","atomic_controls","documentation_anchor"],"properties":{"id":{"pattern":"^[A-Za-z][A-Za-z0-9]+$"},"label":{"type":"string","minLength":2},"group":{"type":"string","minLength":3},"type":{"enum":["integer","double","selector","boolean","datetime","line_options","action","color"]},"default":{"type":["string","number","boolean","null"]},"range_or_options":{"type":"string","minLength":1},"visibility":{"type":"string","minLength":3},"atomic_controls":{"type":"integer","minimum":1,"maximum":3},"documentation_anchor":{"pattern":"^setting-[a-z0-9-]+$"}}},
+    "baseSetting":{"type":"object","additionalProperties":false,"required":["id","label","group","type","observed_value","range_or_options","atomic_controls"],"properties":{"id":{"pattern":"^Base[A-Za-z0-9]+$"},"label":{"type":"string"},"group":{"enum":["VIEW","TIMEFRAME VISIBILITY","BASE"]},"type":{"enum":["selector","boolean","timeframe_range","action"]},"observed_value":{"type":["string","boolean"]},"range_or_options":{"type":"string"},"atomic_controls":{"type":"integer","minimum":1,"maximum":3}}},
+    "fzmtSuite":{"type":"object","additionalProperties":false,"required":["suite_id","title","catalog","count","state"],"properties":{"suite_id":{"const":"FZMT"},"title":{"type":"string"},"catalog":{"const":"includes/manual-test-catalog.json"},"count":{"const":24},"state":{"const":"available_local_only"}}},
+    "fzv2Suite":{"type":"object","additionalProperties":false,"required":["suite_id","title","catalog","count","state"],"properties":{"suite_id":{"const":"FZV2-RM"},"title":{"type":"string"},"catalog":{"const":"includes/fractal-zones-v2-remediation-user-test-catalog.json"},"count":{"const":19},"state":{"const":"pending_user_evaluation"}}}
   }
 }

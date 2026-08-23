@@ -1,17 +1,14 @@
-# Interaktive Regression und Lernen
+# Offene Benutzer-Testmatrix
 
-Die 24 FZMT-Fälle unterstützen Lernen und wiederholbare Beobachtung. Fortschritt und Notizen bleiben ausschließlich im lokalen Browser. Export enthält nur die geschlossene Suite, Statuswerte und deine optionalen Notizen.
+`manual_acceptance_complete=false` · `pending_user_evaluation`
 
-<div data-manual-test-suite="fzmt-regression-v2"></div>
+Diese 19 Fälle prüfen visuelle Lesbarkeit, Bedienbarkeit und subjektive Erwartung der aktuellen V2-Oberfläche. Sie wurden absichtlich nicht aus automatisierten oder älteren FZMT-Ergebnissen vorausgefüllt.
 
-## Datenschutz und Migration
+<div data-manual-test-suite="fzv2-remediation-v1"></div>
 
-- Keine Netzwerkübertragung durch das benutzerdefinierte JavaScript.
-- Import wird gegen das geschlossene Schema validiert.
-- Der alte FZMT-v1-Stand darf nur in die FZMT-Suite migriert werden.
-- FZV2-RM bleibt ein eigener Namespace und erhält niemals automatisch Ergebnisse aus FZMT.
+## Ergebnisregel
 
-Die 19 neuen subjektiven Fälle stehen separat unter [Offene Benutzer-Testmatrix](v2-remediation-user-matrix.md).
+Ein Fall erhält erst durch deine tatsächliche Beobachtung `pass`, `fail`, `blocked` oder `improvement`. Export und Import bleiben lokal und suitespezifisch. Die technische Runtime-Abnahme bleibt davon getrennt.
 
 <div class="fz-safety" role="note"><strong>Lokale, nicht-tradende Testhilfe:</strong> Status und Notizen bleiben im Browserprofil. Keine Konto-, Order-, Positions-, Pfad-, Prozess- oder Logdaten eintragen.</div>
 
@@ -29,8 +26,8 @@ Die 19 neuen subjektiven Fälle stehen separat unter [Offene Benutzer-Testmatrix
 </div>
 <p class="fz-live-message" id="fz-test-message" role="status" aria-live="polite"></p>
 
-<div id="fz-manual-test-app" class="fz-test-grid" data-suite-id="FZMT"></div>
+<div id="fz-manual-test-app" class="fz-test-grid" data-suite-id="FZV2-RM"></div>
 
 <script type="application/json" id="fz-manual-test-catalog">
---8<-- "docs/includes/manual-test-catalog.json"
+--8<-- "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json"
 </script>
