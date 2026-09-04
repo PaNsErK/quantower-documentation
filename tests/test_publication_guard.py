@@ -68,6 +68,20 @@ class PublicationGuardTests(unittest.TestCase):
         for simulator in ("break-boundary", "role-ended", "timeframe-parity", "lifecycle", "rendering-modes", "break-source", "history-range", "dynamic-history", "multiblock-history"):
             self.assertIn(f'"{simulator}"', script)
 
+    def test_product_title_and_version_axes_are_unambiguous(self) -> None:
+        overview = validator.read_utf8(ROOT / "docs/indicators/fractal-zones/index.md")
+        current_state = validator.read_utf8(ROOT / "docs/indicators/fractal-zones/current-state.md")
+        self.assertTrue(overview.startswith("# Fractal Zones\n"))
+        self.assertNotIn("# Fractal Zones v2", overview)
+        for expected in (
+            "Sichtbarer Produktname",
+            "Interne Produktgeneration",
+            "Öffentlicher Dokumentationsvertrag",
+            "Aktuellster FZCP Source Contract",
+            "Öffentliche Buildversion",
+        ):
+            self.assertIn(expected, current_state)
+
     def test_source_tree_rejects_private_or_network_content(self) -> None:
         with self.assertRaises(validator.ValidationError):
             validator.assert_safe_text("C:" + "/Users/Example/private.txt", "fixture")

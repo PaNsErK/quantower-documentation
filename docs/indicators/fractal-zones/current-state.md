@@ -1,16 +1,31 @@
 # Aktueller Stand
 
-Die Dokumentation enthält die aktuelle, quellvalidierte öffentliche Beschreibung von **Fractal Zones v2**. Sie trennt bewusst historische Runtime-Evidenz von aktuellen Source-Contract-Erweiterungen.
+Die Dokumentation enthält die aktuelle, quellvalidierte öffentliche Beschreibung von **Fractal Zones**. Der frühere Zusatz „v2“ in der Hauptüberschrift bezeichnete nur die interne Produktgeneration und nicht das Alter der Dokumentation. Die Versionsachsen werden deshalb getrennt ausgewiesen.
+
+## Versionsachsen
+
+| Achse | Aktueller Stand | Bedeutung |
+|---|---|---|
+| Sichtbarer Produktname | **Fractal Zones** | Name des Indikators in Quantower und Titel dieser Dokumentation |
+| Interne Produktgeneration | **v2** | Architektur-/Generationsbezeichnung; keine öffentliche Buildnummer und kein Aktualitätsstand der Dokumentation |
+| Öffentlicher Dokumentationsvertrag | **V3** | Schema von Manifest und Source Contract (`fz-public-manifest-v3`, `fz-public-source-contract-v3`) |
+| Aktuellster FZCP Source Contract | **FZCP-v6** | Neueste Anforderungs- und Testspezifikation; keine Produktversionsnummer |
+| Historische Runtime-Evidenz | **FZCP v1–v4** | FZ-001..FZ-102, GT-01..GT-180 und MVA-01..MVA-25; erhalten und nicht umgedeutet |
+| Aktuelle Runtime-Evidenz | **FZCP-v5/v6 ausstehend** | Quellvalidiert, aber noch `sourceValidatedRuntimePending` |
+| Öffentliche Buildversion | **nicht ausgewiesen** | In der sanitisierten Runtime-Evidenz wurde kein belastbarer Versionswert erfasst; es wird keine Versionsnummer erfunden |
+| Benutzerabnahme | **offen** | `manual_acceptance_complete=false` |
+
+Diese Achsen sind unabhängig: **FZCP-v6** macht den Indikator nicht zu „Fractal Zones v6“, und Dokumentationsvertrag **V3** macht ihn nicht zu „Fractal Zones v3“.
+
+## Abdeckungs- und Inventarstatus
 
 | Fläche | Zustand |
 |---|---|
 | Produktinventar | 56 Setting-Zeilen, 7 LineOptions, 70 atomare Controls, 2 Aktionen |
-| Historische Runtime-Evidenz | FZCP v1–v4: FZ-001..FZ-102, GT-01..GT-180, MVA-01..MVA-25; erhalten, nicht umgedeutet |
 | Aktueller Source Contract | FZCP-v5: FZ-103..FZ-112, GT-181..GT-220, FZCP-v5/MVA-26..37 |
 | Aktueller Source Contract | FZCP-v6: FZ-113..FZ-116, GT-221..GT-234, FZCP-v6/MVA-38..45 |
 | Aktueller Runtime-Status | `sourceValidatedRuntimePending` |
 | UI-Inventur | `runtime_inventory_partial_confirmed_with_residuals` |
-| Benutzerabnahme | `manual_acceptance_complete=false` |
 
 `runtime_acceptance_complete=false` heißt nicht, dass die historische Evidenz verschwunden wäre. Es verhindert lediglich, dass V5/V6 ohne eine eigene Runtime-Prüfung als bestanden ausgegeben werden. MVA-IDs sind immer `suite_qualified`, damit gleichlautende Nummern aus verschiedenen Suites nicht verwechselt werden.
 
