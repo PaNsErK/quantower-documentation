@@ -80,6 +80,14 @@
     return button;
   }
 
+  function headingLabel(heading) {
+    var copy = heading.cloneNode(true);
+    copy.querySelectorAll(".headerlink").forEach(function (permalink) {
+      permalink.remove();
+    });
+    return (copy.textContent || "").replace(/\s+/g, " ").trim() || "Fractal Zones";
+  }
+
   function init() {
     var main = document.querySelector("article.md-content__inner");
     var heading = main && main.querySelector("h1");
@@ -98,7 +106,7 @@
     var label = document.createElement("strong");
     label.textContent = "Du bist hier";
     var page = document.createElement("span");
-    page.textContent = heading.textContent || "Fractal Zones";
+    page.textContent = headingLabel(heading);
     where.append(label, page);
 
     var controls = document.createElement("div");

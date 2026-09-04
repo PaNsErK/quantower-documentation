@@ -71,7 +71,7 @@ class PublicationGuardTests(unittest.TestCase):
     def test_product_title_and_version_axes_are_unambiguous(self) -> None:
         overview = validator.read_utf8(ROOT / "docs/indicators/fractal-zones/index.md")
         current_state = validator.read_utf8(ROOT / "docs/indicators/fractal-zones/current-state.md")
-        self.assertTrue(overview.startswith("# Fractal Zones\n"))
+        self.assertEqual("# Fractal Zones", overview.splitlines()[0])
         self.assertNotIn("# Fractal Zones v2", overview)
         for expected in (
             "Sichtbarer Produktname",
@@ -81,6 +81,14 @@ class PublicationGuardTests(unittest.TestCase):
             "Öffentliche Buildversion",
         ):
             self.assertIn(expected, current_state)
+
+    def test_statusbar_excludes_heading_permalink_text(self) -> None:
+        script = validator.read_utf8(ROOT / "docs/assets/javascripts/fractal-zones.js")
+        self.assertIn("function headingLabel(heading)", script)
+        self.assertIn('copy.querySelectorAll(".headerlink")', script)
+        self.assertIn("permalink.remove();", script)
+        self.assertIn("page.textContent = headingLabel(heading);", script)
+        self.assertNotIn("page.textContent = heading.textContent", script)
 
     def test_source_tree_rejects_private_or_network_content(self) -> None:
         with self.assertRaises(validator.ValidationError):
