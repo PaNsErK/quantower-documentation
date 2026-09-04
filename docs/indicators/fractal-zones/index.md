@@ -1,6 +1,9 @@
-# Fractal Zones v2
+# Fractal Zones
 
 Fractal Zones erkennt zeitnormalisierte Swing-Extrema aus kanonischen Ein-Minuten-Daten und zeichnet daraus segmenttreue horizontale Level. Es sind **keine Pivot Points**: Ein Kandidat entsteht aus einem strikten lokalen Hoch oder Tief und reift über reale offene Sessionminuten links und rechts.
+
+!!! info "Versionen richtig lesen"
+    **Fractal Zones** ist der sichtbare Produktname. Produktgeneration, Dokumentationsvertrag, FZCP-Spezifikation und Runtime-Evidenz besitzen getrennte Versionsachsen. Der [aktuelle Stand](current-state.md) weist sie einzeln aus.
 
 ## Das Wichtigste in einem Bild
 
