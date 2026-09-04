@@ -1,0 +1,24 @@
+{
+  "schema_version": "fz-current-validation-v1",
+  "indicator_id": "fractal-zones",
+  "state": "current_source_validated_runtime_pending",
+  "source_validated_suites": [
+    {"suite_id":"FZCP-v5","state":"sourceValidatedRuntimePending","requirements":"FZ-103..FZ-112","golden_traces":"GT-181..GT-220","manual_namespace":"FZCP-v5/MVA-26..MVA-37"},
+    {"suite_id":"FZCP-v6","state":"sourceValidatedRuntimePending","requirements":"FZ-113..FZ-116","golden_traces":"GT-221..GT-234","manual_namespace":"FZCP-v6/MVA-38..MVA-45"}
+  ],
+  "runtime_ui_inventory": {
+    "state":"runtime_inventory_partial_confirmed_with_residuals",
+    "product_owned_settings":"confirmed",
+    "line_options":"confirmed",
+    "visibility_branches":"confirmed",
+    "calculation_range_modes":"confirmed_all_four",
+    "calculation_start_field":"confirmed_visible_in_fixed_calculation_start",
+    "prestate_restoration":"confirmed",
+    "base_settings_union":"not_captured_in_sanitized_evidence",
+    "indicator_version":"not_captured_in_sanitized_evidence",
+    "help_link":"confirmed_disabled_current_host_context_not_executed"
+  },
+  "manual_acceptance_complete": false,
+  "tooltip_vs_engine_residual": {"state":"source_confirmed_runtime_ui_pending","canonical_engine":"expected_side_v2"},
+  "privacy": {"private_source":false,"raw_logs":false,"runtime_identifiers":false}
+}

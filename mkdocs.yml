@@ -81,6 +81,8 @@ nav:
           - Bruchlogik: indicators/fractal-zones/understand/break-engine.md
           - Retest, Rollenwechsel und Ende: indicators/fractal-zones/understand/role-and-ended.md
           - Darstellung und Marker: indicators/fractal-zones/understand/rendering.md
+          - Dynamische Historie: indicators/fractal-zones/understand/dynamic-history.md
+          - Mehrblock-Historie: indicators/fractal-zones/understand/multiblock-history.md
           - Kontinuität und Wiederherstellung: indicators/fractal-zones/understand/recovery.md
       - Einstellen:
           - Alle Einstellungen: indicators/fractal-zones/configure/index.md
@@ -98,6 +100,7 @@ nav:
           - Regression und Lernen: indicators/fractal-zones/test/manual-suite.md
           - Technische Runtime-Abnahme: indicators/fractal-zones/test/runtime-acceptance.md
           - Offene Benutzer-Testmatrix: indicators/fractal-zones/test/v2-remediation-user-matrix.md
+          - Aktuelle V5/V6-Testmatrix: indicators/fractal-zones/test/current-user-matrix.md
       - Fehlerbilder:
           - Diagnoseweg: indicators/fractal-zones/troubleshoot/index.md
           - Daten, Start und Projektion: indicators/fractal-zones/troubleshoot/data-and-projection.md

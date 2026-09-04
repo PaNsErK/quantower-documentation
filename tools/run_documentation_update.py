@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
         passed, _ = run(step, command)
         if not passed:
             print(json.dumps({"status":"documentation_drift","failed_step":step,"sanitization":"passed"}, sort_keys=True)); return 2
-    print(json.dumps({"status":"no_drift","setting_rows":56,"line_option_rows":7,"atomic_product_controls":70,"manual_acceptance_complete":False,"runtime_acceptance_complete":True,"user_evaluation":"pending_user_evaluation","sanitization":"passed"}, sort_keys=True)); return 0
+    print(json.dumps({"status":"no_drift","setting_rows":56,"line_option_rows":7,"atomic_product_controls":70,"manual_acceptance_complete":False,"runtime_acceptance_complete":False,"current_runtime_state":"sourceValidatedRuntimePending","user_evaluation":"pending_user_evaluation","sanitization":"passed"}, sort_keys=True)); return 0
 
 
 if __name__ == "__main__":

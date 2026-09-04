@@ -3,7 +3,7 @@
 ## Was die Website speichert
 
 - Dokumentationstiefe und zuletzt gewählter Modus im lokalen Browserprofil.
-- Status und optionale Notizen der manuellen Tests im lokalen Browserprofil, getrennt nach FZMT und FZV2-RM.
+- Status und optionale Notizen der manuellen Tests im lokalen Browserprofil, getrennt nach FZMT, FZV2-RM und FZCURRENT.
 
 ## Was die Website nicht tut
 
@@ -13,7 +13,7 @@
 - keine Konto-, Order-, Positions-, Portfolio-, Verbindungs- oder Strategiedaten;
 - keine lokalen Pfade, Prozesskennungen, Fensterkennungen, Screenshots oder vollständigen Logs.
 
-Notizen werden nur exportiert, wenn die Checkbox ausdrücklich aktiviert wurde. Importdateien werden lokal auf Größe, Schema v2, exakt passende Suite-ID, bekannte Test-IDs, Statuswerte und sensible Datenmuster geprüft. Ein alter FZMT-v1-Stand darf ausschließlich in den FZMT-Namespace migriert werden; die neue Benutzerabnahme wird nie vorausgefüllt.
+Notizen werden nur exportiert, wenn die Checkbox ausdrücklich aktiviert wurde. Importdateien werden lokal auf Größe, das geschlossene V2-/V3-Schema, exakt passende Suite-ID, bekannte Test-IDs, Statuswerte und sensible Datenmuster geprüft. Ein alter FZMT-v1/v2-Stand darf ausschließlich in den FZMT-Namespace migriert werden; historische und aktuelle Benutzerabnahmen werden nie vorausgefüllt.
 
 ## Plattformhinweis
 

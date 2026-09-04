@@ -1,14 +1,14 @@
-# Offene Benutzer-Testmatrix
+# Historische V2-Benutzer-Testmatrix
 
 `manual_acceptance_complete=false` · `pending_user_evaluation`
 
-Diese 19 Fälle prüfen visuelle Lesbarkeit, Bedienbarkeit und subjektive Erwartung der aktuellen V2-Oberfläche. Sie wurden absichtlich nicht aus automatisierten oder älteren FZMT-Ergebnissen vorausgefüllt.
+Diese 19 Fälle bleiben als historische V2-Remediation erhalten. Sie wurden absichtlich nicht aus automatisierten oder älteren FZMT-Ergebnissen vorausgefüllt und werden nicht als aktuelle V5/V6-Runtime-Abnahme ausgegeben.
 
 <div data-manual-test-suite="fzv2-remediation-v1"></div>
 
 ## Ergebnisregel
 
-Ein Fall erhält erst durch deine tatsächliche Beobachtung `pass`, `fail`, `blocked` oder `improvement`. Export und Import bleiben lokal und suitespezifisch. Die technische Runtime-Abnahme bleibt davon getrennt.
+Ein Fall erhält erst durch deine tatsächliche Beobachtung `pass`, `fail`, `blocked` oder `improvement`. Export und Import bleiben lokal und suitespezifisch. Die historische technische Runtime-Evidenz sowie die aktuelle V5/V6-Source-Validierung bleiben davon getrennt.
 
 <div class="fz-safety" role="note"><strong>Lokale, nicht-tradende Testhilfe:</strong> Status und Notizen bleiben im Browserprofil. Keine Konto-, Order-, Positions-, Pfad-, Prozess- oder Logdaten eintragen.</div>
 

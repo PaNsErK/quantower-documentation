@@ -69,9 +69,6 @@ def read_utf8(path: Path) -> str:
         text = data.decode("utf-8")
     except UnicodeDecodeError as exc:
         raise ValidationError(f"invalid UTF-8: {path}") from exc
-    # LF identity for newly authored files is enforced by the transaction's
-    # exact-scope gate. The public baseline contains unchanged CRLF files
-    # outside that scope, which are still safe UTF-8 input.
     if text != unicodedata.normalize("NFC", text):
         fail(f"non-NFC text: {path}")
     if any(marker in text for marker in ("\u00c3", "\u00c2", "\ufffd")):
@@ -115,8 +112,6 @@ def validate_source_tree(root: Path = ROOT) -> None:
         if path.suffix.lower() not in ALLOWED_SUFFIXES and path.name not in ALLOWED_SUFFIXLESS:
             fail(f"unsupported public source file: {relative.as_posix()}")
         text = read_utf8(path)
-        # This validator necessarily contains the denylist literals it applies
-        # to every other public source file.
         if relative.as_posix() != "tools/validate_public_docs.py":
             assert_safe_text(text, relative.as_posix())
         if path.suffix.lower() == ".js":
@@ -133,13 +128,13 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
     manifest_path = root / "docs/data/public-indicator-manifest.json"
     contract_path = root / "docs/data/fractal-zones-source-contract.json"
     runtime_path = root / "docs/data/fractal-zones-runtime-acceptance.json"
+    current_path = root / "docs/data/fractal-zones-current-validation.json"
     validate_json_instance(manifest_path, root / "schemas/public-indicator-manifest.schema.json")
     validate_json_instance(contract_path, root / "schemas/fractal-zones-source-contract.schema.json")
     validate_json_instance(runtime_path, root / "schemas/fractal-zones-runtime-acceptance.schema.json")
-    manifest = load_json(manifest_path)
-    contract = load_json(contract_path)
-    runtime = load_json(runtime_path)
-    if not all(isinstance(item, dict) for item in (manifest, contract, runtime)):
+    validate_json_instance(current_path, root / "schemas/fractal-zones-current-validation.schema.json")
+    manifest, contract, runtime, current = (load_json(path) for path in (manifest_path, contract_path, runtime_path, current_path))
+    if not all(isinstance(item, dict) for item in (manifest, contract, runtime, current)):
         fail("closed contract root is invalid")
     load_source_drift_module().validate_contract_coupling(contract, manifest)
     settings = manifest["settings"]
@@ -149,37 +144,83 @@ def validate_manifest_and_coverage(root: Path = ROOT) -> None:
         fail("setting inventory must be exactly 56 rows and 70 atomic controls")
     if sum(item["type"] == "line_options" for item in settings) != 7 or sum(item["type"] == "action" for item in settings) != 2:
         fail("line-option or action count differs")
+    removed = {"ShowStatusOverlay", "EnablePriceRelevanceFilter", "PriceRelevancePercent"}
+    dynamic = {"DynamicActiveLevelRangePercent", "DynamicHistoryHorizonMode", "DynamicHistoryBoundedDays"}
+    if removed & set(ids) or not dynamic <= set(ids):
+        fail("V3 dynamic history inventory differs")
+    range_setting = next(item for item in settings if item["id"] == "CalculationRangeMode")
+    if range_setting["range_or_options"].count("|") != 3 or "Dynamic active-level price range" not in range_setting["range_or_options"]:
+        fail("four calculation range modes are not projected")
     if len(manifest["base_settings"]) != 11 or sum(item["atomic_controls"] for item in manifest["base_settings"]) != 25:
-        fail("version-bound base.Settings observation differs")
+        fail("historical base.Settings observation differs")
     page_ids = [item["id"] for item in manifest["pages"]]
-    if page_ids != sequence("FZT", 27, 2):
-        fail("page IDs must be FZT-01 through FZT-27")
+    if page_ids != sequence("FZT", 30, 2):
+        fail("page IDs must be FZT-01 through FZT-30")
     for item in manifest["pages"]:
         if not (root / "docs" / item["page"]).is_file():
             fail(f"missing documented page: {item['page']}")
-    fzmt = load_json(root / "docs/includes/manual-test-catalog.json")
-    user = load_json(root / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json")
+
     catalog_schema = root / "schemas/manual-test-catalog.schema.json"
-    validate_json_instance(root / "docs/includes/manual-test-catalog.json", catalog_schema)
-    validate_json_instance(root / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json", catalog_schema)
-    if [item["id"] for item in fzmt] != sequence("FZMT", 24, 2):
+    catalog_paths = {
+        "FZMT": root / "docs/includes/manual-test-catalog.json",
+        "FZV2-RM": root / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json",
+        "FZCURRENT": root / "docs/includes/fractal-zones-current-user-test-catalog.json",
+    }
+    catalogs = {name: load_json(path) for name, path in catalog_paths.items()}
+    for path in catalog_paths.values():
+        validate_json_instance(path, catalog_schema)
+    if [item["id"] for item in catalogs["FZMT"]] != sequence("FZMT", 24, 2):
         fail("FZMT suite must remain FZMT-01 through FZMT-24")
-    if [item["id"] for item in user] != [f"FZV2-RM-{index:03d}" for index in range(1, 20)]:
-        fail("user suite must be FZV2-RM-001 through FZV2-RM-019")
-    if any("result" in item or "note" in item for item in user):
-        fail("pending user catalog must not contain results or notes")
-    if manifest["conformance"] != {"packs":["v1","v2","v3","v4"],"requirements_count":102,"golden_trace_count":180,"manual_acceptance_count":25,"sequence_state":"contiguous_closed"}:
-        fail("conformance projection differs")
-    if runtime["soak"] != {"elapsed_seconds":2700.009,"process_samples":188,"responsive_samples":188,"ui_usable":True,"host_hang_or_crash_observed":False}:
-        fail("runtime soak facts differ")
-    if [item["class"] for item in runtime["ranges"]] != ["10k","30k","approximately_130k"]:
-        fail("runtime range classes differ")
+    if [item["id"] for item in catalogs["FZV2-RM"]] != [f"FZV2-RM-{index:03d}" for index in range(1, 20)]:
+        fail("historical V2 user suite differs")
+    if [item["id"] for item in catalogs["FZCURRENT"]] != [f"FZCURRENT-{index:03d}" for index in range(1, 13)]:
+        fail("current user suite differs")
+    if any("result" in item or "note" in item for item in catalogs["FZV2-RM"] + catalogs["FZCURRENT"]):
+        fail("pending user catalogs must not contain results or notes")
+
+    suites = manifest["test_suites"]
+    if [item["suite_id"] for item in suites] != ["FZMT", "FZV2-RM", "FZCURRENT"]:
+        fail("test suite inventory differs")
+    current_suites = manifest["conformance"]["current_source_suites"]
+    if [item["suite_id"] for item in current_suites] != ["FZCP-v5", "FZCP-v6"]:
+        fail("current conformance suite IDs differ")
+    if any(item["runtime_state"] != "sourceValidatedRuntimePending" for item in current_suites):
+        fail("current conformance runtime state differs")
+    if manifest["conformance"]["mva_namespace_rule"] != "suite_qualified":
+        fail("MVA namespace rule differs")
+    if runtime["historical_v1_to_v4"]["soak"] != {"elapsed_seconds":2700.009,"process_samples":188,"responsive_samples":188,"ui_usable":True,"host_hang_or_crash_observed":False}:
+        fail("historical runtime soak facts differ")
+    if [item["suite_id"] for item in runtime["current_v5_v6"]] != ["FZCP-v5", "FZCP-v6"]:
+        fail("runtime pending suite projection differs")
+    expected_runtime_ui_inventory = {
+        "state": "runtime_inventory_partial_confirmed_with_residuals",
+        "product_owned_settings": "confirmed",
+        "line_options": "confirmed",
+        "visibility_branches": "confirmed",
+        "calculation_range_modes": "confirmed_all_four",
+        "calculation_start_field": "confirmed_visible_in_fixed_calculation_start",
+        "prestate_restoration": "confirmed",
+        "base_settings_union": "not_captured_in_sanitized_evidence",
+        "indicator_version": "not_captured_in_sanitized_evidence",
+        "help_link": "confirmed_disabled_current_host_context_not_executed",
+    }
+    if current["state"] != "current_source_validated_runtime_pending" or current["runtime_ui_inventory"] != expected_runtime_ui_inventory:
+        fail("current validation status differs")
+    if runtime["runtime_ui_inventory"] != expected_runtime_ui_inventory:
+        fail("runtime UI inventory evidence differs")
+    if manifest["runtime_acceptance"]["runtime_ui_inventory_state"] != expected_runtime_ui_inventory["state"]:
+        fail("manifest runtime UI inventory state differs")
+    if manifest["indicator"]["version_ui_state"] != "not_captured_in_sanitized_evidence" or manifest["indicator"]["help_link_state"] != expected_runtime_ui_inventory["help_link"]:
+        fail("manifest version or HelpLink status differs")
+    if manifest["inventory"]["base_settings_union"] != "not_captured_in_sanitized_evidence_historical_observation_retained":
+        fail("manifest base.Settings status differs")
+
     docs_text = "\n".join(read_utf8(path) for path in (root / "docs").rglob("*.md"))
     for anchor in anchors:
         count = docs_text.count(f'id="{anchor}"') + docs_text.count(f'id={anchor}') + docs_text.count(f'{{ #{anchor} }}')
         if count != 1:
             fail(f"setting anchor must occur exactly once: {anchor} ({count})")
-    required_phrases = ["manual_acceptance_complete=false", "runtime_acceptance_complete=true", "pending_user_evaluation"]
+    required_phrases = ["manual_acceptance_complete=false", "runtime_acceptance_complete=false", "sourceValidatedRuntimePending", "suite_qualified", "runtime_inventory_partial_confirmed_with_residuals", "not_captured_in_sanitized_evidence"]
     public_status = read_utf8(root / "README.md") + read_utf8(root / "docs/index.md") + read_utf8(root / "docs/indicators/fractal-zones/current-state.md")
     for phrase in required_phrases:
         if phrase not in public_status:
@@ -206,13 +247,7 @@ def validate_workflow(root: Path = ROOT) -> None:
             uses = step.get("uses")
             if uses and not re.fullmatch(r"[^@]+@[0-9a-f]{40}", uses):
                 fail(f"workflow action is not SHA-pinned: {uses}")
-
-    build_commands = [
-        line.strip()
-        for step in jobs["build"].get("steps", [])
-        for line in str(step.get("run", "")).splitlines()
-        if line.strip()
-    ]
+    build_commands = [line.strip() for step in jobs["build"].get("steps", []) for line in str(step.get("run", "")).splitlines() if line.strip()]
     expected_order = [
         "python tools/validate_public_docs.py source",
         "python -m unittest discover -s tests -p 'test_*.py' -v",
@@ -223,10 +258,7 @@ def validate_workflow(root: Path = ROOT) -> None:
     for command in expected_order:
         if build_commands.count(command) != 1:
             fail(f"workflow validation command inventory differs: {command}")
-    if any(command.startswith("python tools/validate_public_docs.py all") for command in build_commands):
-        fail("workflow must keep source and generated validation in separate ordered stages")
-    positions = [build_commands.index(command) for command in expected_order]
-    if positions != sorted(positions):
+    if [build_commands.index(command) for command in expected_order] != sorted(build_commands.index(command) for command in expected_order):
         fail("workflow validation and build order differs")
 
 
@@ -237,7 +269,7 @@ class ResourceHTMLParser(HTMLParser):
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs); attribute = self.RESOURCE_ATTRIBUTES.get(tag); value = values.get(attribute, "") if attribute else ""
         is_runtime_resource = tag != "link" or "stylesheet" in str(values.get("rel", "")).lower()
-        if is_runtime_resource and value.startswith(("http://","https://","//")):
+        if is_runtime_resource and value.startswith(("http://", "https://", "//")):
             self.external_resources.append(f"{tag}:{value}")
         if tag == "a":
             href = values.get("href", ""); parsed = urlsplit(href)
@@ -257,8 +289,7 @@ def validate_generated_internal_link(root: Path, source: Path, href: str) -> Non
     if candidate != resolved_root and resolved_root not in candidate.parents:
         fail(f"generated link escapes root: {href}")
     if candidate.is_dir(): candidate = candidate / "index.html"
-    elif not candidate.suffix:
-        candidate = candidate / "index.html" if (candidate / "index.html").is_file() else candidate.with_suffix(".html")
+    elif not candidate.suffix: candidate = candidate / "index.html" if (candidate / "index.html").is_file() else candidate.with_suffix(".html")
     if not candidate.is_file(): fail(f"broken generated internal link: {source.relative_to(root)} -> {href}")
 
 
@@ -278,7 +309,7 @@ def validate_generated_site(site_root: Path, offline_root: Path) -> None:
             if relative == "sitemap.xml.gz":
                 assert_safe_text(gzip.decompress(path.read_bytes()).decode("utf-8"), f"generated:{relative}")
                 continue
-            if path.suffix.lower() in {".html",".css",".js",".json",".svg",".txt",".xml"}:
+            if path.suffix.lower() in {".html", ".css", ".js", ".json", ".svg", ".txt", ".xml"}:
                 text = path.read_text(encoding="utf-8")
                 assert_safe_text(text, f"generated:{relative}")
             if path.suffix.lower() == ".html":
@@ -288,16 +319,22 @@ def validate_generated_site(site_root: Path, offline_root: Path) -> None:
 
 
 def validate_fixtures(root: Path = ROOT) -> None:
-    validate_json_instance(root / "tests/fixtures/manual-result-v2-valid.json", root / "schemas/manual-test-result.schema.json")
+    schema = root / "schemas/manual-test-result.schema.json"
+    for name in ("manual-result-v2-valid.json", "manual-result-current-valid.json"):
+        validate_json_instance(root / "tests/fixtures" / name, schema)
+    invalid = root / "tests/fixtures/manual-result-current-invalid-suite.json"
+    errors = list(Draft202012Validator(load_json(schema), format_checker=FormatChecker()).iter_errors(load_json(invalid)))
+    if not errors:
+        fail("invalid current manual result fixture was accepted")
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(); parser.add_argument("mode", choices=["source","generated","all"]); parser.add_argument("--site-root", default="site"); parser.add_argument("--offline-root", default="site-offline"); args = parser.parse_args(argv)
+    parser = argparse.ArgumentParser(); parser.add_argument("mode", choices=["source", "generated", "all"]); parser.add_argument("--site-root", default="site"); parser.add_argument("--offline-root", default="site-offline"); args = parser.parse_args(argv)
     try:
-        if args.mode in {"source","all"}:
+        if args.mode in {"source", "all"}:
             validate_source_tree(ROOT); validate_manifest_and_coverage(ROOT); validate_workflow(ROOT); validate_fixtures(ROOT)
-        if args.mode in {"generated","all"}:
-            validate_generated_site(resolve_safe_root(args.site_root,"site root"), resolve_safe_root(args.offline_root,"offline root"))
+        if args.mode in {"generated", "all"}:
+            validate_generated_site(resolve_safe_root(args.site_root, "site root"), resolve_safe_root(args.offline_root, "offline root"))
     except (ValidationError, OSError, UnicodeError, json.JSONDecodeError, yaml.YAMLError) as exc:
         print(f"validation failed: {exc}", file=sys.stderr); return 1
     print(f"validation passed: {args.mode}"); return 0

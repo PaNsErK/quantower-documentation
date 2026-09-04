@@ -11,8 +11,8 @@
 
 1. Exakt die erwarteten Dateien und ein flaches Layout prüfen.
 2. Quantower starten und Status `Ready` abwarten.
-3. Fixed Start, Preisquelle, Marker-Offsets, Boundary und Range-Modus kontrollieren.
-4. Bei Bedarf die [Benutzer-Testmatrix](../test/v2-remediation-user-matrix.md) verwenden.
+3. Fixed Start, Preisquelle, Marker-Offsets, Boundary, Range-Modus und bei Bedarf die dynamischen Unterfelder kontrollieren.
+4. Bei Bedarf die [aktuelle V5/V6-Testmatrix](../test/current-user-matrix.md) verwenden; die V2-Matrix bleibt historisch.
 
 ## Rollback
 

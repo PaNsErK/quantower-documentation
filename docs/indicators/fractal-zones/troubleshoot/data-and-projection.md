@@ -2,15 +2,15 @@
 
 ## Keine Linien
 
-Prüfe zuerst, ob genügend gültige MIN1-Historie für Maturity und Warm-up vorhanden ist. `ChartLoadedRangePlusWarmup` berechnet nur geladenen Bereich plus Vorlauf; ein enger Chart kann deshalb bewusst weniger Historie enthalten als RollingLookbackDays.
+Prüfe zuerst, ob genügend gültige MIN1-Historie für Maturity und Warm-up vorhanden ist. `Chart loaded range plus warm-up` berechnet nur geladenen Bereich plus Vorlauf; ein enger Chart kann daher bewusst weniger Historie enthalten als `Fixed lookback days`. Im dynamischen Modus begrenzen offene Active/Solid-Levels zusätzlich den Scope.
 
 ## Weniger Linien als erwartet
 
-Schalte den Preisbereichsfilter aus. Er ist rein visuell. Vergleiche Adaptive mit Full; beide müssen dieselben Levels zeigen. Prüfe außerdem, ob du nur Active focus betrachtest und inaktive Segmente durch niedrige Deckkraft übersiehst.
+Vergleiche Adaptive mit Full; beide müssen dieselben Levels zeigen. Prüfe außerdem, ob Active focus inaktive Segmente durch niedrige Deckkraft schwerer lesbar macht. Dynamische Historie ist kein visueller Filter und darf keine Linie durch Clustering, Merging, Sampling oder Suppression entfernen.
 
-## CalculationStart
+## Calculation start
 
-Bei `FixedStartUtc` wird die Auswahl im Host in Plattformzeitzone präsentiert, intern aber eindeutig nach UTC konvertiert. Clear entfernt den Wert. Ein unset-Wert darf den Bootstrap nicht dauerhaft blockieren.
+Bei `Fixed calculation start` wird die Auswahl im Host in Plattformzeitzone präsentiert, intern aber eindeutig nach UTC konvertiert. Clear entfernt den Wert. Ein unset-Wert darf den Bootstrap nicht dauerhaft blockieren. Die Runtime-Inventur liest diesen Wert nur; sie ändert ihn nicht.
 
 ## Datenlücke
 

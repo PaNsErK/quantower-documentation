@@ -1,0 +1,9 @@
+{
+  "schema_version": "fz-manual-test-result-v3",
+  "indicator_id": "fractal-zones",
+  "indicator_version_state": "current_source_validated_runtime_inventory_pending",
+  "suite_id": "FZCURRENT",
+  "exported_at_utc": "2026-09-03T12:00:00Z",
+  "notes_included": false,
+  "results": [{"test_id":"FZV2-RM-001","status":"open"}]
+}

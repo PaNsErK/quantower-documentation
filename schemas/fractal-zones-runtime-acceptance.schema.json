@@ -1,5 +1,15 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,
-  "required":["schema_version","indicator_id","state","runtime_environment","validation","runtime_manual_acceptance","ranges","soak","restart_restore","residual_warning","earlier_user_tests","privacy"],
-  "properties":{"schema_version":{"const":"fz-runtime-acceptance-public-v1"},"indicator_id":{"const":"fractal-zones"},"state":{"const":"terminal_technical_acceptance_with_nonblocking_warning"},"runtime_environment":{"type":"object"},"validation":{"type":"object"},"runtime_manual_acceptance":{"type":"object"},"ranges":{"type":"array","minItems":3,"maxItems":3},"soak":{"type":"object"},"restart_restore":{"type":"object"},"residual_warning":{"type":"object"},"earlier_user_tests":{"type":"object"},"privacy":{"type":"object"}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "indicator_id", "state", "historical_v1_to_v4", "current_v5_v6", "runtime_ui_inventory", "privacy"],
+  "properties": {
+    "schema_version": {"const": "fz-runtime-acceptance-public-v2"},
+    "indicator_id": {"const": "fractal-zones"},
+    "state": {"const": "historical_v1_to_v4_retained_current_v5_v6_runtime_pending"},
+    "historical_v1_to_v4": {"type": "object", "additionalProperties": false, "required": ["state", "runtime_environment", "validation", "runtime_manual_acceptance", "ranges", "soak", "restart_restore", "residual_warning", "earlier_user_tests"], "properties": {"state": {"const": "terminal_technical_acceptance_with_nonblocking_warning"}, "runtime_environment": {"type": "object"}, "validation": {"type": "object"}, "runtime_manual_acceptance": {"type": "object"}, "ranges": {"type": "array", "minItems": 3, "maxItems": 3}, "soak": {"type": "object"}, "restart_restore": {"type": "object"}, "residual_warning": {"type": "object"}, "earlier_user_tests": {"type": "object"}}},
+    "current_v5_v6": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["suite_id", "state"], "properties": {"suite_id": {"enum": ["FZCP-v5", "FZCP-v6"]}, "state": {"const": "sourceValidatedRuntimePending"}}}},
+    "runtime_ui_inventory": {"type": "object", "additionalProperties": false, "required": ["state", "product_owned_settings", "line_options", "visibility_branches", "calculation_range_modes", "calculation_start_field", "prestate_restoration", "base_settings_union", "indicator_version", "help_link"], "properties": {"state": {"const": "runtime_inventory_partial_confirmed_with_residuals"}, "product_owned_settings": {"const": "confirmed"}, "line_options": {"const": "confirmed"}, "visibility_branches": {"const": "confirmed"}, "calculation_range_modes": {"const": "confirmed_all_four"}, "calculation_start_field": {"const": "confirmed_visible_in_fixed_calculation_start"}, "prestate_restoration": {"const": "confirmed"}, "base_settings_union": {"const": "not_captured_in_sanitized_evidence"}, "indicator_version": {"const": "not_captured_in_sanitized_evidence"}, "help_link": {"const": "confirmed_disabled_current_host_context_not_executed"}}},
+    "privacy": {"type": "object", "additionalProperties": false, "required": ["raw_logs", "process_identifiers", "window_identifiers", "coordinates", "trading_or_account_data"], "properties": {"raw_logs": {"const": false}, "process_identifiers": {"const": false}, "window_identifiers": {"const": false}, "coordinates": {"const": false}, "trading_or_account_data": {"const": false}}}
+  }
 }

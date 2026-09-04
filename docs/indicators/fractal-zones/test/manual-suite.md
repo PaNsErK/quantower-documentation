@@ -2,16 +2,16 @@
 
 Die 24 FZMT-Fälle unterstützen Lernen und wiederholbare Beobachtung. Fortschritt und Notizen bleiben ausschließlich im lokalen Browser. Export enthält nur die geschlossene Suite, Statuswerte und deine optionalen Notizen.
 
-<div data-manual-test-suite="fzmt-regression-v2"></div>
+<div data-manual-test-suite="fzmt-regression-v3"></div>
 
 ## Datenschutz und Migration
 
 - Keine Netzwerkübertragung durch das benutzerdefinierte JavaScript.
 - Import wird gegen das geschlossene Schema validiert.
-- Der alte FZMT-v1-Stand darf nur in die FZMT-Suite migriert werden.
-- FZV2-RM bleibt ein eigener Namespace und erhält niemals automatisch Ergebnisse aus FZMT.
+- Der alte FZMT-v1/v2-Stand darf nur in die FZMT-Suite migriert werden.
+- FZV2-RM und FZCURRENT bleiben eigene Namespaces und erhalten niemals automatisch Ergebnisse aus FZMT.
 
-Die 19 neuen subjektiven Fälle stehen separat unter [Offene Benutzer-Testmatrix](v2-remediation-user-matrix.md).
+Die historische V2-Matrix steht separat unter [Offene Benutzer-Testmatrix](v2-remediation-user-matrix.md); die aktuelle V5/V6-Matrix unter [Aktuelle V5/V6-Testmatrix](current-user-matrix.md).
 
 <div class="fz-safety" role="note"><strong>Lokale, nicht-tradende Testhilfe:</strong> Status und Notizen bleiben im Browserprofil. Keine Konto-, Order-, Positions-, Pfad-, Prozess- oder Logdaten eintragen.</div>
 

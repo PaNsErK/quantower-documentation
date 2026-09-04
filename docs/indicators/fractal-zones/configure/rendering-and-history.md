@@ -6,38 +6,32 @@
 - **Full**: direkte Vollprojektion als Referenzweg.
 - **Active focus**: Provisional und BrokenWatch erhalten die konfigurierbare Inaktiv-Deckkraft; Active bleibt voll sichtbar.
 
-Alle Modi bewahren dieselben sichtbaren Segmente und aktivierten Annotationen. Es gibt kein Clustering, Merging, Sampling oder Suppression.
+Alle Modi bewahren dieselben vorhandenen Segmente und aktivierten Annotationen. Es gibt kein Clustering, Merging, Sampling oder Suppression.
 
 <div data-fz-simulator="rendering-modes"></div>
 
-## Status und Preisfilter
+## Status und offene Linien
 
-`Show status overlay` zeigt Loading, Recalculating, Ready, Incomplete oder Error auch bei leerer Projektion. Der Preisfilter ist standardmäßig aus. Aktiv blendet er Elemente außerhalb des symmetrischen, inklusiven Bereichs um den aktuellen Marktpreis nur in der Anzeigeabfrage aus. Ausschalten bringt sie unverändert zurück; StateIdentity, Replay und Checkpoints bleiben gleich.
-
-## Offene Linien
-
-`Open line end` endet offene Linien finite am Ende der aktuellen Bar, nach 1–10.080 Wall-Clock-Minuten oder nach 1–500 zeitbasierten Chartkerzen. Auf nicht zeitbasierten Charts fällt Chart candles sicher auf Current bar end zurück. Linienende-Marker bleiben an der aktuellen Candle verankert und wandern nicht zum projizierten Zukunftsende.
+Der Host-Status ist über den Indikatornamen bzw. die Statusdarstellung einsehbar; ein produktseitiger `ShowStatusOverlay`-Schalter gehört nicht zum aktuellen Inventar. Offene Linien enden finite an der aktuellen Bar, nach Minuten oder nach zeitbasierten Chartkerzen. Der Line-End-Marker bleibt an der aktuellen Candle verankert.
 
 ## Marker
 
-End, Break und Role-change haben eigene Sichtbarkeiten und Farben. Marker können am Ereignis und/oder am aktuellen Linienende erscheinen. Event und Line-end besitzen getrennte X-Modi:
-
-- **DPI pixels**: ungefähr konstanter Bildschirmabstand.
-- **Chart candles**: zeitbasierter Candle-Abstand, timeframe-stabil.
-
-Y-Offsets bleiben DPI-basiert. `0` bei Font size verwendet die Hostschrift; explizite Größen sind 6–32 pt. Line-end X startet bei **+1 Chart candle**, Event X bei 0 DPI-Pixel.
+End, Break und Role-change haben eigene Sichtbarkeiten und Farben. Marker können am Ereignis und/oder am aktuellen Linienende erscheinen. Event und Line-end besitzen getrennte X-Modi. `DPI pixels` hält den Bildschirmabstand ungefähr konstant; `Chart candles` hält den zeitbasierten Candle-Abstand. `Font size=0` nutzt die Hostschrift.
 
 ## Calculation range
 
 | Modus | Aktive Unterfelder | Verhalten |
 |---|---|---|
 | Fixed lookback days | Fixed lookback, Standard 90 | kalenderbasierter Ursprung, beim Append eingefroren |
-| Fixed calculation start | Calculation start | Anzeige in Plattformzeitzone, intern UTC, Änderung mit Bestätigung |
+| Fixed calculation start | Calculation start | Plattformzeitzone in der UI, intern UTC; nicht für die Inventur ändern |
 | Chart loaded range plus warm-up | Warm-up mode; bei Manual Additional days | Standard für neue Instanzen |
+| Dynamic active-level price range | Active-level price range, Dynamic history horizon, optional Dynamic history days | Scope an offenen Solid-Levels und Providerhistorie ausrichten |
 
-Automatic Warm-up verwendet ein Drittel der geladenen Chartdauer, auf ganze Tage aufgerundet und auf 2–30 Kalendertage begrenzt. Manual akzeptiert 0–3.650 zusätzliche Tage; der frühere Wert aus manuellem Warm-up und zwingendem Session-Slot-Preroll gewinnt.
+Automatic Warm-up verwendet ein Drittel der geladenen Chartdauer, auf ganze Tage aufgerundet und auf 2–30 Kalendertage begrenzt. Die dynamische Range ist kein optischer Filter: Sie verändert weder die segmenttreue Renderregel noch die No-Cluster-Regel.
 
 <div data-fz-simulator="history-range"></div>
+
+Für die genaue Scope-Entscheidung siehe [Dynamische Historie](../understand/dynamic-history.md); der Umgang mit großen zusammenhängenden Lücken ist unter [Mehrblock-Historie](../understand/multiblock-history.md) beschrieben.
 
 ## Checkpoint und Deep Verify
 

@@ -6,7 +6,7 @@ Adaptive nutzt Viewport-Indizes und Render-Plan-Cache; Full ist der Referenzweg.
 
 ## Persistenzwachstum
 
-Das Sidecar speichert content-addressed Chunks und dedupliziert identische Inhalte. Aktuelle Standardhüllen sind 512 MiB pro StateIdentity und 4 GiB pro Root. StateIdentity bleibt über reine Darstellungsänderungen stabil.
+Das Sidecar speichert content-addressed Chunks und dedupliziert identische Inhalte. Aktuelle Standardhüllen sind 256 MiB Live-State pro Identity, 1 GiB pro Prozess, 512 MiB Persistenz pro Identity und 4 GiB pro Root. StateIdentity bleibt über reine Darstellungsänderungen stabil.
 
 ## QuotaExceeded
 

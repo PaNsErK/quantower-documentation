@@ -13,7 +13,7 @@ Hashes, StateIdentity, ReplayGeneration und Tagged Unions werden fail-closed gep
 
 ## Quoten und Degradierung
 
-Das content-addressed Sidecar nutzt Deduplication und geschützte Wurzeln. Standard sind 512 MiB Persistenz pro StateIdentity und 4 GiB pro Sidecar-Root. Wird die Quote erreicht, pausieren nur optionale Restore-Point-Schreibvorgänge. Berechnung, Rendering, aktuelle Generation und bestmögliche Crashrotation laufen weiter; Levels werden nicht reduziert.
+Das content-addressed Sidecar nutzt Deduplication und geschützte Wurzeln. Standard sind 256 MiB Live-State pro Identity, 1 GiB pro Prozess, 512 MiB Persistenz pro StateIdentity und 4 GiB pro Sidecar-Root. Wird die Quote erreicht, pausieren nur optionale Restore-Point-Schreibvorgänge. Berechnung, Rendering, aktuelle Generation und bestmögliche Crashrotation laufen weiter; Levels werden nicht reduziert.
 
 ## Deep Verify
 

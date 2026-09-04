@@ -1,23 +1,801 @@
 {
-  "schema_version": "fz-public-source-contract-v2",
+  "schema_version": "fz-public-source-contract-v3",
   "indicator_id": "fractal-zones",
   "indicator_generation": "Fractal Zones v2",
-  "source_state": "current_merged_product_source_runtime_validated",
-  "inventory": {"product_setting_rows":56,"product_actions":2,"line_option_rows":7,"atomic_product_controls":70},
-  "setting_ids": [
-    "MaturityBeforeMinutes","MaturityAfterMinutes","BreakDistanceMode","BreakPriceSource","AtrPeriodMinutes","BreakAtrMultiplier","MinimumBreakDistanceTicks","BreakDistancePercent","FixedBreakDistanceTicks","BreakConfirmationMinutes","MinimumMinutesBetweenBreaks","RetestConfirmationMinutes","TerminateOnCurrentRoleBreakNumber","ShowProvisionalLines","ProvisionalTopLineOptions","ProvisionalBottomLineOptions","ActiveTopLineOptions","ActiveBottomLineOptions","ShowBreakBoundaryLine","BreakBoundaryLineOptions","ShowBreakBoundaryConnector","ShowHistoricalLines","HistoricalTopLineOptions","HistoricalBottomLineOptions","RenderingMode","InactiveStateOpacity","ShowStatusOverlay","EnablePriceRelevanceFilter","PriceRelevancePercent","OpenLineProjectionMode","OpenLineProjectionMinutes","OpenLineProjectionCandles","ShowEndMarker","TerminationMarkerColor","ShowBreakMarkers","BreakMarkerColor","ShowRoleChangeMarkers","RoleMarkerColor","ShowMarkersAtEvent","ShowMarkersAtLineEnd","EventMarkerOffsetMode","EventMarkerOffsetX","EventMarkerOffsetY","LineEndMarkerOffsetMode","LineEndMarkerOffsetX","LineEndMarkerOffsetY","EventMarkerFontSize","LineEndMarkerFontSize","CalculationRangeMode","InitialHistoryDays","CalculationStartTime","WarmupMode","AdditionalWarmupDays","EnableReplayCheckpoint","VerifyFullHistoryNow","CancelFullHistoryVerify"
-  ],
-  "line_option_ids": ["ProvisionalTopLineOptions","ProvisionalBottomLineOptions","ActiveTopLineOptions","ActiveBottomLineOptions","BreakBoundaryLineOptions","HistoricalTopLineOptions","HistoricalBottomLineOptions"],
-  "action_ids": ["VerifyFullHistoryNow","CancelFullHistoryVerify"],
-  "visibility_branches": ["break_one_minute_atr","break_percent_of_level","break_fixed_ticks","rendering_active_focus","price_relevance_enabled","projection_minutes","projection_chart_candles","history_fixed_lookback","history_fixed_start","history_chart_loaded_warmup_automatic","history_chart_loaded_warmup_manual"],
-  "conformance": {
-    "packs": ["v1","v2","v3","v4"],
-    "requirements": {"first":"FZ-001","last":"FZ-102","count":102},
-    "golden_traces": {"first":"GT-01","last":"GT-180","count":180},
-    "manual_acceptance": {"first":"MVA-01","last":"MVA-25","count":25}
+  "source_state": "current_source_validated_v5_v6_runtime_pending",
+  "inventory": {
+    "product_setting_rows": 56,
+    "product_actions": 2,
+    "line_option_rows": 7,
+    "atomic_product_controls": 70
   },
-  "runtime_acceptance": {"state":"terminal_technical_acceptance_with_nonblocking_warning","manual_acceptance_complete":false,"user_evaluation":"pending_user_evaluation","evidence_document":"fractal-zones-runtime-acceptance.json"},
-  "sanitization": {"private_paths":false,"private_repository_metadata":false,"private_source_text":false,"raw_source_hashes":false,"raw_logs":false,"sensitive_runtime_data":false},
-  "setting_fact_digest": "1345d9dce508d04c91c023a2fbb7557cd682d5467f7a6b76bde2b0dd3d3ab924",
-  "contract_digest": "820dec4389d11919f0b0a08920126c241a5e0b40fefa140f5115162fdfb693c1"
+  "setting_ids": [
+    "MaturityBeforeMinutes",
+    "MaturityAfterMinutes",
+    "BreakDistanceMode",
+    "BreakPriceSource",
+    "AtrPeriodMinutes",
+    "BreakAtrMultiplier",
+    "MinimumBreakDistanceTicks",
+    "BreakDistancePercent",
+    "FixedBreakDistanceTicks",
+    "BreakConfirmationMinutes",
+    "MinimumMinutesBetweenBreaks",
+    "RetestConfirmationMinutes",
+    "TerminateOnCurrentRoleBreakNumber",
+    "ShowProvisionalLines",
+    "ProvisionalTopLineOptions",
+    "ProvisionalBottomLineOptions",
+    "ActiveTopLineOptions",
+    "ActiveBottomLineOptions",
+    "ShowBreakBoundaryLine",
+    "BreakBoundaryLineOptions",
+    "ShowBreakBoundaryConnector",
+    "ShowHistoricalLines",
+    "HistoricalTopLineOptions",
+    "HistoricalBottomLineOptions",
+    "RenderingMode",
+    "InactiveStateOpacity",
+    "DynamicActiveLevelRangePercent",
+    "DynamicHistoryHorizonMode",
+    "DynamicHistoryBoundedDays",
+    "OpenLineProjectionMode",
+    "OpenLineProjectionMinutes",
+    "OpenLineProjectionCandles",
+    "ShowEndMarker",
+    "TerminationMarkerColor",
+    "ShowBreakMarkers",
+    "BreakMarkerColor",
+    "ShowRoleChangeMarkers",
+    "RoleMarkerColor",
+    "ShowMarkersAtEvent",
+    "ShowMarkersAtLineEnd",
+    "EventMarkerOffsetMode",
+    "EventMarkerOffsetX",
+    "EventMarkerOffsetY",
+    "LineEndMarkerOffsetMode",
+    "LineEndMarkerOffsetX",
+    "LineEndMarkerOffsetY",
+    "EventMarkerFontSize",
+    "LineEndMarkerFontSize",
+    "CalculationRangeMode",
+    "InitialHistoryDays",
+    "CalculationStartTime",
+    "WarmupMode",
+    "AdditionalWarmupDays",
+    "EnableReplayCheckpoint",
+    "VerifyFullHistoryNow",
+    "CancelFullHistoryVerify"
+  ],
+  "setting_facts": [
+    {
+      "id": "MaturityBeforeMinutes",
+      "label": "Before (minutes)",
+      "group": "Fractal Maturity",
+      "type": "integer",
+      "default": 30,
+      "range_or_options": "1–43.200 Minuten; Schritt 1",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-maturity-before-minutes"
+    },
+    {
+      "id": "MaturityAfterMinutes",
+      "label": "After (minutes)",
+      "group": "Fractal Maturity",
+      "type": "integer",
+      "default": 30,
+      "range_or_options": "1–43.200 Minuten; Schritt 1",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-maturity-after-minutes"
+    },
+    {
+      "id": "BreakDistanceMode",
+      "label": "Break distance mode",
+      "group": "Break Engine",
+      "type": "selector",
+      "default": "One-minute ATR",
+      "range_or_options": "One-minute ATR | Percent of level | Fixed ticks",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-distance-mode"
+    },
+    {
+      "id": "BreakPriceSource",
+      "label": "Break price source",
+      "group": "Break Engine",
+      "type": "selector",
+      "default": "Close",
+      "range_or_options": "Close | High/Low",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-price-source"
+    },
+    {
+      "id": "AtrPeriodMinutes",
+      "label": "ATR period (minutes)",
+      "group": "Break Engine",
+      "type": "integer",
+      "default": 60,
+      "range_or_options": "1–43.200 Minuten; Schritt 1",
+      "visibility": "nur One-minute ATR",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-atr-period-minutes"
+    },
+    {
+      "id": "BreakAtrMultiplier",
+      "label": "ATR multiplier",
+      "group": "Break Engine",
+      "type": "double",
+      "default": 0.5,
+      "range_or_options": "0–1.000.000; Schritt 0,05; 2 Dezimalstellen",
+      "visibility": "nur One-minute ATR",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-atr-multiplier"
+    },
+    {
+      "id": "MinimumBreakDistanceTicks",
+      "label": "Minimum break distance (ticks)",
+      "group": "Break Engine",
+      "type": "integer",
+      "default": 2,
+      "range_or_options": "0–1.000.000 Ticks; Schritt 1",
+      "visibility": "One-minute ATR oder Percent of level",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-minimum-break-distance-ticks"
+    },
+    {
+      "id": "BreakDistancePercent",
+      "label": "Break distance (%)",
+      "group": "Break Engine",
+      "type": "double",
+      "default": 0.05,
+      "range_or_options": "0–100 %; Schritt 0,01; 2 Dezimalstellen",
+      "visibility": "nur Percent of level",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-distance-percent"
+    },
+    {
+      "id": "FixedBreakDistanceTicks",
+      "label": "Fixed break distance (ticks)",
+      "group": "Break Engine",
+      "type": "integer",
+      "default": 2,
+      "range_or_options": "0–1.000.000 Ticks; Schritt 1",
+      "visibility": "nur Fixed ticks",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-fixed-break-distance-ticks"
+    },
+    {
+      "id": "BreakConfirmationMinutes",
+      "label": "Break confirmation (minutes)",
+      "group": "Break Engine",
+      "type": "integer",
+      "default": 5,
+      "range_or_options": "0–43.200 Minuten; Schritt 1",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-confirmation-minutes"
+    },
+    {
+      "id": "MinimumMinutesBetweenBreaks",
+      "label": "Minimum between breaks (minutes)",
+      "group": "Break Engine",
+      "type": "integer",
+      "default": 5,
+      "range_or_options": "0–43.200 Minuten; Schritt 1",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-minimum-minutes-between-breaks"
+    },
+    {
+      "id": "RetestConfirmationMinutes",
+      "label": "Retest confirmation (minutes)",
+      "group": "Lifecycle",
+      "type": "integer",
+      "default": 5,
+      "range_or_options": "1–43.200 offene Sessionminuten",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-retest-confirmation-minutes"
+    },
+    {
+      "id": "TerminateOnCurrentRoleBreakNumber",
+      "label": "End on current-role break number",
+      "group": "Lifecycle",
+      "type": "integer",
+      "default": 3,
+      "range_or_options": "1–1.000; Schritt 1",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-terminate-current-role-break"
+    },
+    {
+      "id": "ShowProvisionalLines",
+      "label": "Show provisional lines",
+      "group": "Line Settings (provisional level)",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-provisional-lines"
+    },
+    {
+      "id": "ProvisionalTopLineOptions",
+      "label": "Top line options",
+      "group": "Line Settings (provisional level)",
+      "type": "line_options",
+      "default": "Dot | 1 | Green",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-provisional-top-line"
+    },
+    {
+      "id": "ProvisionalBottomLineOptions",
+      "label": "Bottom line options",
+      "group": "Line Settings (provisional level)",
+      "type": "line_options",
+      "default": "Dot | 1 | Red",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-provisional-bottom-line"
+    },
+    {
+      "id": "ActiveTopLineOptions",
+      "label": "Top line options",
+      "group": "Line Settings (active level)",
+      "type": "line_options",
+      "default": "Solid | 1 | Green",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-active-top-line"
+    },
+    {
+      "id": "ActiveBottomLineOptions",
+      "label": "Bottom line options",
+      "group": "Line Settings (active level)",
+      "type": "line_options",
+      "default": "Solid | 1 | Red",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-active-bottom-line"
+    },
+    {
+      "id": "ShowBreakBoundaryLine",
+      "label": "Show current break boundary",
+      "group": "Current break boundary",
+      "type": "boolean",
+      "default": false,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-break-boundary-line"
+    },
+    {
+      "id": "BreakBoundaryLineOptions",
+      "label": "Break boundary line options",
+      "group": "Current break boundary",
+      "type": "line_options",
+      "default": "Dot | 1 | Yellow",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-break-boundary-line"
+    },
+    {
+      "id": "ShowBreakBoundaryConnector",
+      "label": "Connect boundary to main line",
+      "group": "Current break boundary",
+      "type": "boolean",
+      "default": false,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-boundary-connector"
+    },
+    {
+      "id": "ShowHistoricalLines",
+      "label": "Show historical lines",
+      "group": "Line Settings (historically continued level)",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-historical-lines"
+    },
+    {
+      "id": "HistoricalTopLineOptions",
+      "label": "Top line options",
+      "group": "Line Settings (historically continued level)",
+      "type": "line_options",
+      "default": "Dash | 1 | Green",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-historical-top-line"
+    },
+    {
+      "id": "HistoricalBottomLineOptions",
+      "label": "Bottom line options",
+      "group": "Line Settings (historically continued level)",
+      "type": "line_options",
+      "default": "Dash | 1 | Red",
+      "range_or_options": "Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 3,
+      "documentation_anchor": "setting-historical-bottom-line"
+    },
+    {
+      "id": "RenderingMode",
+      "label": "Rendering mode",
+      "group": "Rendering",
+      "type": "selector",
+      "default": "Adaptive",
+      "range_or_options": "Adaptive | Full | Active focus",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-rendering-mode"
+    },
+    {
+      "id": "InactiveStateOpacity",
+      "label": "Inactive state opacity",
+      "group": "Rendering",
+      "type": "double",
+      "default": 0.35,
+      "range_or_options": "0,10–1,00; Schritt 0,05; 2 Dezimalstellen",
+      "visibility": "nur Active focus",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-inactive-state-opacity"
+    },
+    {
+      "id": "DynamicActiveLevelRangePercent",
+      "label": "Active-level price range (+/- %)",
+      "group": "History",
+      "type": "double",
+      "default": 10.0,
+      "range_or_options": "0-10,000 %; step 0.5; 2 decimal places",
+      "visibility": "only Dynamic active-level price range",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-dynamic-active-level-range-percent"
+    },
+    {
+      "id": "DynamicHistoryHorizonMode",
+      "label": "Dynamic history horizon",
+      "group": "History",
+      "type": "selector",
+      "default": "All available provider history",
+      "range_or_options": "All available provider history | Bounded days",
+      "visibility": "only Dynamic active-level price range",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-dynamic-history-horizon-mode"
+    },
+    {
+      "id": "DynamicHistoryBoundedDays",
+      "label": "Dynamic history (days)",
+      "group": "History",
+      "type": "integer",
+      "default": 365,
+      "range_or_options": "1-3,650 days; step 1",
+      "visibility": "only Dynamic active-level price range + Bounded days",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-dynamic-history-bounded-days"
+    },
+    {
+      "id": "OpenLineProjectionMode",
+      "label": "Open line end",
+      "group": "Rendering",
+      "type": "selector",
+      "default": "Current bar end",
+      "range_or_options": "Current bar end | Minutes | Chart candles",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-open-line-mode"
+    },
+    {
+      "id": "OpenLineProjectionMinutes",
+      "label": "Projection (minutes)",
+      "group": "Rendering",
+      "type": "integer",
+      "default": 30,
+      "range_or_options": "1–10.080 Minuten; Schritt 1",
+      "visibility": "nur Open line end = Minutes",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-open-line-minutes"
+    },
+    {
+      "id": "OpenLineProjectionCandles",
+      "label": "Projection (chart candles)",
+      "group": "Rendering",
+      "type": "integer",
+      "default": 3,
+      "range_or_options": "1–500 zeitbasierte Chartkerzen; Schritt 1",
+      "visibility": "nur Open line end = Chart candles",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-open-line-candles"
+    },
+    {
+      "id": "ShowEndMarker",
+      "label": "Show end marker",
+      "group": "Markers",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-end-marker"
+    },
+    {
+      "id": "TerminationMarkerColor",
+      "label": "End marker color",
+      "group": "Markers",
+      "type": "color",
+      "default": "OrangeRed",
+      "range_or_options": "Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-end-marker-color"
+    },
+    {
+      "id": "ShowBreakMarkers",
+      "label": "Show break markers",
+      "group": "Markers",
+      "type": "boolean",
+      "default": false,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-break-markers"
+    },
+    {
+      "id": "BreakMarkerColor",
+      "label": "Break marker color",
+      "group": "Markers",
+      "type": "color",
+      "default": "Goldenrod",
+      "range_or_options": "Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-break-marker-color"
+    },
+    {
+      "id": "ShowRoleChangeMarkers",
+      "label": "Show role-change markers",
+      "group": "Markers",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-role-change-markers"
+    },
+    {
+      "id": "RoleMarkerColor",
+      "label": "Role-change marker color",
+      "group": "Markers",
+      "type": "color",
+      "default": "DodgerBlue",
+      "range_or_options": "Color Picker",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-role-marker-color"
+    },
+    {
+      "id": "ShowMarkersAtEvent",
+      "label": "Show markers at event",
+      "group": "Markers",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-markers-at-event"
+    },
+    {
+      "id": "ShowMarkersAtLineEnd",
+      "label": "Show markers at line end",
+      "group": "Markers",
+      "type": "boolean",
+      "default": false,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-show-markers-at-line-end"
+    },
+    {
+      "id": "EventMarkerOffsetMode",
+      "label": "Event marker X offset mode",
+      "group": "Markers",
+      "type": "selector",
+      "default": "DPI pixels",
+      "range_or_options": "DPI pixels | Chart candles",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-event-marker-offset-mode"
+    },
+    {
+      "id": "EventMarkerOffsetX",
+      "label": "Event marker X offset",
+      "group": "Markers",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "-200–200 DPI-Pixel oder Chartkerzen",
+      "visibility": "immer; Einheit folgt Event-X-Modus",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-event-marker-offset-x"
+    },
+    {
+      "id": "EventMarkerOffsetY",
+      "label": "Event marker Y offset",
+      "group": "Markers",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "-200–200 DPI-Pixel",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-event-marker-offset-y"
+    },
+    {
+      "id": "LineEndMarkerOffsetMode",
+      "label": "Line-end marker X offset mode",
+      "group": "Markers",
+      "type": "selector",
+      "default": "Chart candles",
+      "range_or_options": "DPI pixels | Chart candles",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-line-end-marker-offset-mode"
+    },
+    {
+      "id": "LineEndMarkerOffsetX",
+      "label": "Line-end marker X offset",
+      "group": "Markers",
+      "type": "integer",
+      "default": 1,
+      "range_or_options": "-200–200 DPI-Pixel oder Chartkerzen",
+      "visibility": "immer; Einheit folgt Line-end-X-Modus",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-line-end-marker-offset-x"
+    },
+    {
+      "id": "LineEndMarkerOffsetY",
+      "label": "Line-end marker Y offset",
+      "group": "Markers",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "-200–200 DPI-Pixel",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-line-end-marker-offset-y"
+    },
+    {
+      "id": "EventMarkerFontSize",
+      "label": "Event marker font size",
+      "group": "Markers",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "0 = Hostschrift; sonst 6–32 pt",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-event-marker-font-size"
+    },
+    {
+      "id": "LineEndMarkerFontSize",
+      "label": "Line-end marker font size",
+      "group": "Markers",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "0 = Hostschrift; sonst 6–32 pt",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-line-end-marker-font-size"
+    },
+    {
+      "id": "CalculationRangeMode",
+      "label": "Calculation range mode",
+      "group": "History",
+      "type": "selector",
+      "default": "Chart loaded range plus warm-up",
+      "range_or_options": "Fixed lookback days | Fixed calculation start | Chart loaded range plus warm-up | Dynamic active-level price range",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-calculation-range-mode"
+    },
+    {
+      "id": "InitialHistoryDays",
+      "label": "Fixed lookback (days)",
+      "group": "History",
+      "type": "integer",
+      "default": 90,
+      "range_or_options": "1–36.500 Kalendertage; Schritt 1",
+      "visibility": "nur Fixed lookback days",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-initial-history-days"
+    },
+    {
+      "id": "CalculationStartTime",
+      "label": "Calculation start",
+      "group": "History",
+      "type": "datetime",
+      "default": null,
+      "range_or_options": "Plattformzeitzone; intern UTC; Änderung mit Bestätigung",
+      "visibility": "nur Fixed calculation start",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-calculation-start-time"
+    },
+    {
+      "id": "WarmupMode",
+      "label": "Warm-up mode",
+      "group": "History",
+      "type": "selector",
+      "default": "Automatic",
+      "range_or_options": "Automatic | Manual",
+      "visibility": "nur Chart loaded range plus warm-up",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-warmup-mode"
+    },
+    {
+      "id": "AdditionalWarmupDays",
+      "label": "Additional warm-up (days)",
+      "group": "History",
+      "type": "integer",
+      "default": 0,
+      "range_or_options": "0–3.650 Kalendertage; Schritt 1",
+      "visibility": "nur Chart loaded range plus warm-up + Manual",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-additional-warmup-days"
+    },
+    {
+      "id": "EnableReplayCheckpoint",
+      "label": "Enable semantic replay checkpoint",
+      "group": "History",
+      "type": "boolean",
+      "default": true,
+      "range_or_options": "true | false",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-enable-replay-checkpoint"
+    },
+    {
+      "id": "VerifyFullHistoryNow",
+      "label": "Verify full history now…",
+      "group": "History",
+      "type": "action",
+      "default": "action",
+      "range_or_options": "asynchron, Single-Flight, Fortschritt und sicherer Cancel",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-verify-full-history"
+    },
+    {
+      "id": "CancelFullHistoryVerify",
+      "label": "Cancel full-history verify",
+      "group": "History",
+      "type": "action",
+      "default": "action",
+      "range_or_options": "beendet nur den optionalen manuellen Verify",
+      "visibility": "immer",
+      "atomic_controls": 1,
+      "documentation_anchor": "setting-cancel-full-history"
+    }
+  ],
+  "line_option_ids": [
+    "ProvisionalTopLineOptions",
+    "ProvisionalBottomLineOptions",
+    "ActiveTopLineOptions",
+    "ActiveBottomLineOptions",
+    "BreakBoundaryLineOptions",
+    "HistoricalTopLineOptions",
+    "HistoricalBottomLineOptions"
+  ],
+  "action_ids": [
+    "VerifyFullHistoryNow",
+    "CancelFullHistoryVerify"
+  ],
+  "visibility_branches": [
+    "break_one_minute_atr",
+    "break_percent_of_level",
+    "break_fixed_ticks",
+    "rendering_active_focus",
+    "projection_minutes",
+    "projection_chart_candles",
+    "history_fixed_lookback",
+    "history_fixed_start",
+    "history_chart_loaded_warmup_automatic",
+    "history_chart_loaded_warmup_manual",
+    "history_dynamic_active_level",
+    "history_dynamic_all_available",
+    "history_dynamic_bounded_days"
+  ],
+  "conformance": {
+    "historical_v1_to_v4": {
+      "packs": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "requirements": {
+        "first": "FZ-001",
+        "last": "FZ-102",
+        "count": 102
+      },
+      "golden_traces": {
+        "first": "GT-01",
+        "last": "GT-180",
+        "count": 180
+      },
+      "manual_acceptance": {
+        "first": "MVA-01",
+        "last": "MVA-25",
+        "count": 25
+      },
+      "runtime_state": "historical_runtime_evidence_retained"
+    },
+    "current_source_suites": [
+      {
+        "suite_id": "FZCP-v5",
+        "requirements": {
+          "first": "FZ-103",
+          "last": "FZ-112",
+          "count": 10
+        },
+        "golden_traces": {
+          "first": "GT-181",
+          "last": "GT-220",
+          "count": 40
+        },
+        "manual_acceptance": {
+          "namespace": "FZCP-v5/MVA",
+          "first": "MVA-26",
+          "last": "MVA-37",
+          "count": 12
+        },
+        "runtime_state": "sourceValidatedRuntimePending"
+      },
+      {
+        "suite_id": "FZCP-v6",
+        "requirements": {
+          "first": "FZ-113",
+          "last": "FZ-116",
+          "count": 4
+        },
+        "golden_traces": {
+          "first": "GT-221",
+          "last": "GT-234",
+          "count": 14
+        },
+        "manual_acceptance": {
+          "namespace": "FZCP-v6/MVA",
+          "first": "MVA-38",
+          "last": "MVA-45",
+          "count": 8
+        },
+        "runtime_state": "sourceValidatedRuntimePending"
+      }
+    ],
+    "mva_namespace_rule": "suite_qualified"
+  },
+  "runtime_evidence": {
+    "historical_v1_to_v4": "historical_runtime_evidence_retained",
+    "v5": "sourceValidatedRuntimePending",
+    "v6": "sourceValidatedRuntimePending",
+    "tooltip_vs_engine_residual": "source_confirmed_runtime_ui_pending"
+  },
+  "sanitization": {
+    "private_paths": false,
+    "private_repository_metadata": false,
+    "private_source_text": false,
+    "raw_source_hashes": false,
+    "raw_logs": false,
+    "sensitive_runtime_data": false
+  },
+  "setting_fact_digest": "49e51c42c22f4cae088dac49fc7e4a22c90bab4a5659b975db31287bc0b4a334",
+  "contract_digest": "a8818b5f5c9c7218a141fafbd1d12ed951ed7f5320e96434efbaaf4f49801f5e"
 }

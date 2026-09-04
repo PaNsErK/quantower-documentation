@@ -25,9 +25,9 @@ class SourceDriftTests(unittest.TestCase):
         with self.assertRaises(drift.SourceContractError):
             drift.validate_contract_coupling(self.contract, changed)
 
-    def test_sanitized_capsule_is_closed(self) -> None:
-        capsule = {"schema_version":"fz-sanitized-inventory-v2"}
-        for key in ("inventory","setting_ids","line_option_ids","action_ids","visibility_branches","conformance"):
+    def test_sanitized_v3_capsule_is_closed(self) -> None:
+        capsule = {"schema_version": "fz-sanitized-inventory-v3"}
+        for key in ("inventory", "setting_ids", "setting_facts", "line_option_ids", "action_ids", "visibility_branches", "conformance", "runtime_evidence", "sanitization"):
             capsule[key] = self.contract[key]
         drift.validate_sanitized_inventory(capsule, self.contract)
         capsule["private_path"] = "forbidden"

@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object","additionalProperties":false,
+  "required":["schema_version","indicator_id","state","source_validated_suites","runtime_ui_inventory","manual_acceptance_complete","tooltip_vs_engine_residual","privacy"],
+  "properties":{
+    "schema_version":{"const":"fz-current-validation-v1"},
+    "indicator_id":{"const":"fractal-zones"},
+    "state":{"const":"current_source_validated_runtime_pending"},
+    "source_validated_suites":{"type":"array","minItems":2,"maxItems":2,"items":{"type":"object","additionalProperties":false,"required":["suite_id","state","requirements","golden_traces","manual_namespace"],"properties":{"suite_id":{"enum":["FZCP-v5","FZCP-v6"]},"state":{"const":"sourceValidatedRuntimePending"},"requirements":{"type":"string","pattern":"^FZ-[0-9]{3}\\.\\.FZ-[0-9]{3}$"},"golden_traces":{"type":"string","pattern":"^GT-[0-9]{3}\\.\\.GT-[0-9]{3}$"},"manual_namespace":{"pattern":"^FZCP-v[56]/MVA-[0-9]{2}\\.\\.MVA-[0-9]{2}$"}}}},
+    "runtime_ui_inventory":{"type":"object","additionalProperties":false,"required":["state","product_owned_settings","line_options","visibility_branches","calculation_range_modes","calculation_start_field","prestate_restoration","base_settings_union","indicator_version","help_link"],"properties":{"state":{"const":"runtime_inventory_partial_confirmed_with_residuals"},"product_owned_settings":{"const":"confirmed"},"line_options":{"const":"confirmed"},"visibility_branches":{"const":"confirmed"},"calculation_range_modes":{"const":"confirmed_all_four"},"calculation_start_field":{"const":"confirmed_visible_in_fixed_calculation_start"},"prestate_restoration":{"const":"confirmed"},"base_settings_union":{"const":"not_captured_in_sanitized_evidence"},"indicator_version":{"const":"not_captured_in_sanitized_evidence"},"help_link":{"const":"confirmed_disabled_current_host_context_not_executed"}}},
+    "manual_acceptance_complete":{"const":false},
+    "tooltip_vs_engine_residual":{"type":"object","additionalProperties":false,"required":["state","canonical_engine"],"properties":{"state":{"const":"source_confirmed_runtime_ui_pending"},"canonical_engine":{"const":"expected_side_v2"}}},
+    "privacy":{"type":"object","additionalProperties":false,"required":["private_source","raw_logs","runtime_identifiers"],"properties":{"private_source":{"const":false},"raw_logs":{"const":false},"runtime_identifiers":{"const":false}}}
+  }
+}
