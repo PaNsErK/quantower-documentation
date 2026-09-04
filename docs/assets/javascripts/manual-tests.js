@@ -35,7 +35,7 @@
   }
 
   function storageKey(suiteId) {
-    return "fzdocs.manual-test-state.v2." + suiteId;
+    return "fzdocs.manual-test-state.v3." + suiteId;
   }
 
   function loadState(catalog, suiteId) {
@@ -44,6 +44,9 @@
       var raw = window.localStorage.getItem(storageKey(suiteId));
       if (!raw && suiteId === "FZMT") {
         raw = window.localStorage.getItem(legacyStorageKey);
+      }
+      if (!raw && (suiteId === "FZMT" || suiteId === "FZV2-RM")) {
+        raw = window.localStorage.getItem("fzdocs.manual-test-state.v2." + suiteId);
       }
       var parsed = JSON.parse(raw || "{}");
       Object.keys(state).forEach(function (id) {
@@ -81,9 +84,9 @@
 
   function buildResult(catalog, state, includeNotes, suiteId) {
     return {
-      schema_version: "fz-manual-test-result-v2",
+      schema_version: "fz-manual-test-result-v3",
       indicator_id: "fractal-zones",
-      indicator_version_state: "current_merged_runtime_validated_build_not_publicly_versioned",
+      indicator_version_state: "current_source_validated_runtime_inventory_pending",
       suite_id: suiteId,
       exported_at_utc: new Date().toISOString(),
       notes_included: includeNotes,
@@ -109,7 +112,7 @@
     if (JSON.stringify(keys) !== JSON.stringify(expectedKeys)) {
       throw new Error("Die Importdatei enthält fehlende oder unbekannte Felder.");
     }
-    if (value.schema_version !== "fz-manual-test-result-v2" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "current_merged_runtime_validated_build_not_publicly_versioned" || value.suite_id !== suiteId) {
+    if (value.schema_version !== "fz-manual-test-result-v3" || value.indicator_id !== "fractal-zones" || value.indicator_version_state !== "current_source_validated_runtime_inventory_pending" || value.suite_id !== suiteId) {
       throw new Error("Schema oder Indikatoridentität passt nicht.");
     }
     if (typeof value.notes_included !== "boolean" || !Array.isArray(value.results) || value.results.length > 100) {
@@ -166,7 +169,7 @@
       return;
     }
     var suiteId = root.dataset.suiteId;
-    if (suiteId !== "FZMT" && suiteId !== "FZV2-RM") {
+    if (suiteId !== "FZMT" && suiteId !== "FZV2-RM" && suiteId !== "FZCURRENT") {
       return;
     }
     var state = loadState(catalog, suiteId);

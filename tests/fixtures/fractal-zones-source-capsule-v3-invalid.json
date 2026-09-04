@@ -1,237 +1,70 @@
 {
-  "schema_version": "fz-public-manifest-v3",
-  "publication": {
-    "status": "public_beta_user_evaluation_pending",
-    "manual_acceptance_complete": false,
-    "runtime_acceptance_complete": false,
-    "user_evaluation": "pending_user_evaluation",
-    "official_affiliation": false,
-    "content_license_state": "no_open_source_license"
-  },
-  "source_contract": {
-    "status": "current_source_validated_v5_v6_runtime_pending",
-    "schema_version": "fz-public-source-contract-v3",
-    "validation_mode": "sanitized_inventory_or_contract_only",
-    "setting_fact_digest": "49e51c42c22f4cae088dac49fc7e4a22c90bab4a5659b975db31287bc0b4a334",
-    "contract_digest": "a8818b5f5c9c7218a141fafbd1d12ed951ed7f5320e96434efbaaf4f49801f5e"
-  },
-  "indicator": {
-    "id": "fractal-zones",
-    "name": "Fractal Zones",
-    "generation": "Fractal Zones v2",
-    "product_kind": "non-trading-indicator",
-    "trading_capability": false,
-    "version_state": "current_source_validated_runtime_inventory_pending",
-    "version_ui_state": "not_captured_in_sanitized_evidence",
-    "help_link_state": "confirmed_disabled_current_host_context_not_executed",
-    "documentation_route": "/indicators/fractal-zones/"
-  },
+  "schema_version": "fz-sanitized-inventory-v3",
   "inventory": {
-    "product_owned_setting_rows": 56,
-    "product_owned_actions": 2,
+    "product_setting_rows": 56,
+    "product_actions": 2,
     "line_option_rows": 7,
-    "atomic_product_controls": 70,
-    "inherited_setting_rows": 11,
-    "inherited_atomic_controls": 25,
-    "maximum_total_setting_rows": 67,
-    "maximum_total_atomic_controls": 95,
-    "base_settings_union": "not_captured_in_sanitized_evidence_historical_observation_retained",
-    "base_settings_observed_businesslayer": "1.146.17.0",
-    "full_current_host_inventory_claim": false
+    "atomic_product_controls": 70
   },
-  "runtime_acceptance": {
-    "state": "historical_v1_to_v4_retained_current_v5_v6_runtime_pending",
-    "historical_evidence_document": "fractal-zones-runtime-acceptance.json",
-    "current_source_suites": [
-      "FZCP-v5",
-      "FZCP-v6"
-    ],
-    "runtime_ui_inventory_state": "runtime_inventory_partial_confirmed_with_residuals",
-    "user_evaluation": "pending_user_evaluation"
-  },
-  "pages": [
-    {
-      "id": "FZT-01",
-      "title": "Überblick",
-      "page": "indicators/fractal-zones/index.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-02",
-      "title": "Aktueller Stand",
-      "page": "indicators/fractal-zones/current-state.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-03",
-      "title": "Zeit und Fraktale",
-      "page": "indicators/fractal-zones/understand/time-and-fractals.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-04",
-      "title": "Zustandsablauf",
-      "page": "indicators/fractal-zones/understand/lifecycle.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-05",
-      "title": "Break Engine",
-      "page": "indicators/fractal-zones/understand/break-engine.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-06",
-      "title": "Rollenwechsel und Ende",
-      "page": "indicators/fractal-zones/understand/role-and-ended.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-07",
-      "title": "Rendering",
-      "page": "indicators/fractal-zones/understand/rendering.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-08",
-      "title": "Recovery und Persistenz",
-      "page": "indicators/fractal-zones/understand/recovery.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-09",
-      "title": "Alle Einstellungen",
-      "page": "indicators/fractal-zones/configure/index.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-10",
-      "title": "Maturity und Break",
-      "page": "indicators/fractal-zones/configure/maturity-and-break.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-11",
-      "title": "Lifecycle und Linien",
-      "page": "indicators/fractal-zones/configure/lifecycle-and-lines.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-12",
-      "title": "Rendering, Marker und Historie",
-      "page": "indicators/fractal-zones/configure/rendering-and-history.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-13",
-      "title": "Installation",
-      "page": "indicators/fractal-zones/install/index.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-14",
-      "title": "Update und Rollback",
-      "page": "indicators/fractal-zones/install/update-and-rollback.md",
-      "mode": "configure"
-    },
-    {
-      "id": "FZT-15",
-      "title": "Lernpfade",
-      "page": "indicators/fractal-zones/learning/index.md",
-      "mode": "learn"
-    },
-    {
-      "id": "FZT-16",
-      "title": "Erste 15 Minuten",
-      "page": "indicators/fractal-zones/learning/first-15-minutes.md",
-      "mode": "learn"
-    },
-    {
-      "id": "FZT-17",
-      "title": "Break-Modi",
-      "page": "indicators/fractal-zones/learning/break-modes.md",
-      "mode": "learn"
-    },
-    {
-      "id": "FZT-18",
-      "title": "Rendering und Historie",
-      "page": "indicators/fractal-zones/learning/rendering-history.md",
-      "mode": "learn"
-    },
-    {
-      "id": "FZT-19",
-      "title": "Recovery lernen",
-      "page": "indicators/fractal-zones/learning/recovery.md",
-      "mode": "learn"
-    },
-    {
-      "id": "FZT-20",
-      "title": "Teststrategie",
-      "page": "indicators/fractal-zones/test/index.md",
-      "mode": "test"
-    },
-    {
-      "id": "FZT-21",
-      "title": "Regression und Lernen",
-      "page": "indicators/fractal-zones/test/manual-suite.md",
-      "mode": "test"
-    },
-    {
-      "id": "FZT-22",
-      "title": "Technische Runtime-Abnahme",
-      "page": "indicators/fractal-zones/test/runtime-acceptance.md",
-      "mode": "test"
-    },
-    {
-      "id": "FZT-23",
-      "title": "Offene Benutzer-Testmatrix",
-      "page": "indicators/fractal-zones/test/v2-remediation-user-matrix.md",
-      "mode": "test"
-    },
-    {
-      "id": "FZT-24",
-      "title": "Diagnoseweg",
-      "page": "indicators/fractal-zones/troubleshoot/index.md",
-      "mode": "troubleshoot"
-    },
-    {
-      "id": "FZT-25",
-      "title": "Daten und Projektion",
-      "page": "indicators/fractal-zones/troubleshoot/data-and-projection.md",
-      "mode": "troubleshoot"
-    },
-    {
-      "id": "FZT-26",
-      "title": "Performance und Sidecar",
-      "page": "indicators/fractal-zones/troubleshoot/performance-and-sidecar.md",
-      "mode": "troubleshoot"
-    },
-    {
-      "id": "FZT-27",
-      "title": "Inventarstatus",
-      "page": "indicators/fractal-zones/inventory-status.md",
-      "mode": "reference"
-    },
-    {
-      "id": "FZT-28",
-      "title": "Dynamische Historie",
-      "page": "indicators/fractal-zones/understand/dynamic-history.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-29",
-      "title": "Mehrblock-Historie",
-      "page": "indicators/fractal-zones/understand/multiblock-history.md",
-      "mode": "understand"
-    },
-    {
-      "id": "FZT-30",
-      "title": "Aktuelle V5/V6-Testmatrix",
-      "page": "indicators/fractal-zones/test/current-user-matrix.md",
-      "mode": "test"
-    }
+  "setting_ids": [
+    "UnsafeWrongSetting",
+    "MaturityAfterMinutes",
+    "BreakDistanceMode",
+    "BreakPriceSource",
+    "AtrPeriodMinutes",
+    "BreakAtrMultiplier",
+    "MinimumBreakDistanceTicks",
+    "BreakDistancePercent",
+    "FixedBreakDistanceTicks",
+    "BreakConfirmationMinutes",
+    "MinimumMinutesBetweenBreaks",
+    "RetestConfirmationMinutes",
+    "TerminateOnCurrentRoleBreakNumber",
+    "ShowProvisionalLines",
+    "ProvisionalTopLineOptions",
+    "ProvisionalBottomLineOptions",
+    "ActiveTopLineOptions",
+    "ActiveBottomLineOptions",
+    "ShowBreakBoundaryLine",
+    "BreakBoundaryLineOptions",
+    "ShowBreakBoundaryConnector",
+    "ShowHistoricalLines",
+    "HistoricalTopLineOptions",
+    "HistoricalBottomLineOptions",
+    "RenderingMode",
+    "InactiveStateOpacity",
+    "DynamicActiveLevelRangePercent",
+    "DynamicHistoryHorizonMode",
+    "DynamicHistoryBoundedDays",
+    "OpenLineProjectionMode",
+    "OpenLineProjectionMinutes",
+    "OpenLineProjectionCandles",
+    "ShowEndMarker",
+    "TerminationMarkerColor",
+    "ShowBreakMarkers",
+    "BreakMarkerColor",
+    "ShowRoleChangeMarkers",
+    "RoleMarkerColor",
+    "ShowMarkersAtEvent",
+    "ShowMarkersAtLineEnd",
+    "EventMarkerOffsetMode",
+    "EventMarkerOffsetX",
+    "EventMarkerOffsetY",
+    "LineEndMarkerOffsetMode",
+    "LineEndMarkerOffsetX",
+    "LineEndMarkerOffsetY",
+    "EventMarkerFontSize",
+    "LineEndMarkerFontSize",
+    "CalculationRangeMode",
+    "InitialHistoryDays",
+    "CalculationStartTime",
+    "WarmupMode",
+    "AdditionalWarmupDays",
+    "EnableReplayCheckpoint",
+    "VerifyFullHistoryNow",
+    "CancelFullHistoryVerify"
   ],
-  "settings": [
+  "setting_facts": [
     {
       "id": "MaturityBeforeMinutes",
       "label": "Before (minutes)",
@@ -849,129 +682,33 @@
       "documentation_anchor": "setting-cancel-full-history"
     }
   ],
-  "base_settings": [
-    {
-      "id": "BasePositionOnChart",
-      "label": "Position on chart",
-      "group": "VIEW",
-      "type": "selector",
-      "observed_value": "Over chart",
-      "range_or_options": "Over chart | On chart background | New sub window",
-      "atomic_controls": 1
-    },
-    {
-      "id": "BaseAutoScaling",
-      "label": "Use indicator values in window Auto scaling mode",
-      "group": "VIEW",
-      "type": "boolean",
-      "observed_value": false,
-      "range_or_options": "true | false",
-      "atomic_controls": 1
-    },
-    {
-      "id": "BaseTimeframeSeconds",
-      "label": "Seconds",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–9.999",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeMinutes",
-      "label": "Minutes",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–9.999",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeHours",
-      "label": "Hours",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–9.999",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeDays",
-      "label": "Days",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–999",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeWeeks",
-      "label": "Weeks",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–99",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeMonth",
-      "label": "Month",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–99",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseTimeframeYears",
-      "label": "Years",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "timeframe_range",
-      "observed_value": "enabled",
-      "range_or_options": "1–99",
-      "atomic_controls": 3
-    },
-    {
-      "id": "BaseAdditionalAggregation",
-      "label": "Additional on the specified aggregation",
-      "group": "TIMEFRAME VISIBILITY",
-      "type": "action",
-      "observed_value": "ADD AGGREGATION",
-      "range_or_options": "eine explizite Aggregationsregel hinzufügen",
-      "atomic_controls": 1
-    },
-    {
-      "id": "BaseUpdateType",
-      "label": "UpdateType",
-      "group": "BASE",
-      "type": "selector",
-      "observed_value": "On tick",
-      "range_or_options": "On tick | On bar close",
-      "atomic_controls": 1
-    }
+  "line_option_ids": [
+    "ProvisionalTopLineOptions",
+    "ProvisionalBottomLineOptions",
+    "ActiveTopLineOptions",
+    "ActiveBottomLineOptions",
+    "BreakBoundaryLineOptions",
+    "HistoricalTopLineOptions",
+    "HistoricalBottomLineOptions"
   ],
-  "test_suites": [
-    {
-      "suite_id": "FZMT",
-      "title": "Lern- und Regressionssuite",
-      "catalog": "includes/manual-test-catalog.json",
-      "count": 24,
-      "state": "available_local_only"
-    },
-    {
-      "suite_id": "FZV2-RM",
-      "title": "Fractal Zones v2 Remediation – Benutzerbewertung",
-      "catalog": "includes/fractal-zones-v2-remediation-user-test-catalog.json",
-      "count": 19,
-      "state": "historical_pending_user_evaluation"
-    },
-    {
-      "suite_id": "FZCURRENT",
-      "title": "Aktuelle V5/V6-Benutzermatrix",
-      "catalog": "includes/fractal-zones-current-user-test-catalog.json",
-      "count": 12,
-      "state": "current_source_validated_runtime_pending"
-    }
+  "action_ids": [
+    "VerifyFullHistoryNow",
+    "CancelFullHistoryVerify"
+  ],
+  "visibility_branches": [
+    "break_one_minute_atr",
+    "break_percent_of_level",
+    "break_fixed_ticks",
+    "rendering_active_focus",
+    "projection_minutes",
+    "projection_chart_candles",
+    "history_fixed_lookback",
+    "history_fixed_start",
+    "history_chart_loaded_warmup_automatic",
+    "history_chart_loaded_warmup_manual",
+    "history_dynamic_active_level",
+    "history_dynamic_all_available",
+    "history_dynamic_bounded_days"
   ],
   "conformance": {
     "historical_v1_to_v4": {
@@ -1042,13 +779,18 @@
     ],
     "mva_namespace_rule": "suite_qualified"
   },
-  "privacy": {
-    "absolute_paths_persisted": false,
-    "source_text_persisted": false,
-    "repository_metadata_persisted": false,
-    "raw_source_hashes_persisted": false,
-    "sensitive_runtime_data_persisted": false,
-    "analytics_or_telemetry": false,
-    "runtime_network_api": false
+  "runtime_evidence": {
+    "historical_v1_to_v4": "historical_runtime_evidence_retained",
+    "v5": "sourceValidatedRuntimePending",
+    "v6": "sourceValidatedRuntimePending",
+    "tooltip_vs_engine_residual": "source_confirmed_runtime_ui_pending"
+  },
+  "sanitization": {
+    "private_paths": false,
+    "private_repository_metadata": false,
+    "private_source_text": false,
+    "raw_source_hashes": false,
+    "raw_logs": false,
+    "sensitive_runtime_data": false
   }
 }

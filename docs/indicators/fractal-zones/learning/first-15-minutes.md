@@ -2,7 +2,7 @@
 
 ## 1. Orientierung
 
-Lade Fractal Zones in einen neutralen Chart. Standardmäßig nutzt der Indikator `Adaptive`, `ChartLoadedRangePlusWarmup`, Maturity 30/30 und One-minute ATR. Prüfe, ob der Status-Overlay einen vollständigen statt unvollständigen Datenzustand meldet.
+Lade Fractal Zones in einen neutralen Chart. Standardmäßig nutzt der Indikator `Adaptive`, `Chart loaded range plus warm-up`, Maturity 30/30 und One-minute ATR. Prüfe den Host-Status auf Ready oder einen begründeten Incomplete-Zustand; ein produktseitiger Overlay-Schalter gehört nicht zum aktuellen Inventar.
 
 ## 2. Linien lesen
 

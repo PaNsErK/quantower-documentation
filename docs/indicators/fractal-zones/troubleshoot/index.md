@@ -1,7 +1,7 @@
 # Diagnoseweg
 
 1. **Status lesen:** Datenzustand, ProjectionSegmentCount, Rebuild und Paint.
-2. **Nur eine Ursache ändern:** Datenbereich, Preisfilter, Rendering-Modus oder Break-Parameter getrennt testen.
+2. **Nur eine Ursache ändern:** Datenbereich, dynamischen Historienmodus, Rendering-Modus oder Break-Parameter getrennt testen.
 3. **Full als Referenz:** Adaptive/Active focus gegen Full vergleichen.
 4. **Recovery beobachten:** letzte gute Generation muss sichtbar bleiben.
 5. **Erst dann Deep Verify:** nicht mehrfach klicken; Single-Flight beachten.

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,47 +18,54 @@ class PublicationGuardTests(unittest.TestCase):
 
     def test_current_inventory_is_exact(self) -> None:
         manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
+        ids = {item["id"] for item in manifest["settings"]}
         self.assertEqual(56, len(manifest["settings"]))
         self.assertEqual(70, sum(item["atomic_controls"] for item in manifest["settings"]))
         self.assertEqual(7, sum(item["type"] == "line_options" for item in manifest["settings"]))
         self.assertEqual(2, sum(item["type"] == "action" for item in manifest["settings"]))
+        self.assertTrue({"DynamicActiveLevelRangePercent", "DynamicHistoryHorizonMode", "DynamicHistoryBoundedDays"} <= ids)
+        self.assertFalse({"ShowStatusOverlay", "EnablePriceRelevanceFilter", "PriceRelevancePercent"} & ids)
 
-    def test_runtime_and_user_acceptance_are_not_conflated(self) -> None:
+    def test_historical_and_current_runtime_states_are_not_conflated(self) -> None:
         manifest = validator.load_json(ROOT / "docs/data/public-indicator-manifest.json")
-        self.assertTrue(manifest["publication"]["runtime_acceptance_complete"])
+        self.assertFalse(manifest["publication"]["runtime_acceptance_complete"])
         self.assertFalse(manifest["publication"]["manual_acceptance_complete"])
-        self.assertEqual("pending_user_evaluation", manifest["publication"]["user_evaluation"])
+        self.assertEqual("sourceValidatedRuntimePending", manifest["conformance"]["current_source_suites"][0]["runtime_state"])
 
-    def test_fzmt_and_user_suites_are_separate_and_contiguous(self) -> None:
+    def test_three_test_suites_are_separate_and_contiguous(self) -> None:
         fzmt = validator.load_json(ROOT / "docs/includes/manual-test-catalog.json")
-        user = validator.load_json(ROOT / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json")
+        historical = validator.load_json(ROOT / "docs/includes/fractal-zones-v2-remediation-user-test-catalog.json")
+        current = validator.load_json(ROOT / "docs/includes/fractal-zones-current-user-test-catalog.json")
         self.assertEqual([f"FZMT-{index:02d}" for index in range(1, 25)], [item["id"] for item in fzmt])
-        self.assertEqual([f"FZV2-RM-{index:03d}" for index in range(1, 20)], [item["id"] for item in user])
-        self.assertTrue(all("result" not in item and "note" not in item for item in user))
+        self.assertEqual([f"FZV2-RM-{index:03d}" for index in range(1, 20)], [item["id"] for item in historical])
+        self.assertEqual([f"FZCURRENT-{index:03d}" for index in range(1, 13)], [item["id"] for item in current])
+        self.assertTrue(all("result" not in item and "note" not in item for item in historical + current))
 
-    def test_runtime_facts_are_closed(self) -> None:
+    def test_historical_runtime_facts_are_retained(self) -> None:
         runtime = validator.load_json(ROOT / "docs/data/fractal-zones-runtime-acceptance.json")
-        self.assertEqual(2700.009, runtime["soak"]["elapsed_seconds"])
-        self.assertEqual(188, runtime["soak"]["responsive_samples"])
-        self.assertEqual("accepted_persistence_quota_and_efficiency_risk", runtime["residual_warning"]["classification"])
+        historical = runtime["historical_v1_to_v4"]
+        self.assertEqual(2700.009, historical["soak"]["elapsed_seconds"])
+        self.assertEqual(188, historical["soak"]["responsive_samples"])
+        self.assertEqual("accepted_persistence_quota_and_efficiency_risk", historical["residual_warning"]["classification"])
+        self.assertEqual(["FZCP-v5", "FZCP-v6"], [item["suite_id"] for item in runtime["current_v5_v6"]])
 
-    def test_valid_result_passes_and_wrong_namespace_fails(self) -> None:
+    def test_v3_result_passes_and_wrong_namespace_fails(self) -> None:
         schema = validator.load_json(ROOT / "schemas/manual-test-result.schema.json")
-        valid = validator.load_json(ROOT / "tests/fixtures/manual-result-v2-valid.json")
-        invalid = validator.load_json(ROOT / "tests/fixtures/manual-result-v2-invalid-suite.json")
+        valid = validator.load_json(ROOT / "tests/fixtures/manual-result-current-valid.json")
+        invalid = validator.load_json(ROOT / "tests/fixtures/manual-result-current-invalid-suite.json")
         self.assertFalse(list(validator.Draft202012Validator(schema).iter_errors(valid)))
         self.assertTrue(list(validator.Draft202012Validator(schema).iter_errors(invalid)))
 
-    def test_manual_test_runtime_separates_suites_and_limits_legacy_migration(self) -> None:
+    def test_manual_test_runtime_uses_v3_and_preserves_local_migration(self) -> None:
         script = validator.read_utf8(ROOT / "docs/assets/javascripts/manual-tests.js")
+        self.assertIn('"fzdocs.manual-test-state.v3." + suiteId', script)
         self.assertIn('"fzdocs.manual-test-state.v2." + suiteId', script)
-        self.assertIn('suiteId === "FZMT"', script)
-        self.assertIn('suiteId !== "FZMT" && suiteId !== "FZV2-RM"', script)
-        self.assertIn('value.suite_id !== suiteId', script)
+        self.assertIn('suiteId !== "FZMT" && suiteId !== "FZV2-RM" && suiteId !== "FZCURRENT"', script)
+        self.assertIn('"fz-manual-test-result-v3"', script)
 
     def test_current_simulator_inventory_is_registered(self) -> None:
         script = validator.read_utf8(ROOT / "docs/assets/javascripts/fractal-zones-simulators.js")
-        for simulator in ("break-boundary", "role-ended", "timeframe-parity", "lifecycle", "rendering-modes", "break-source", "history-range"):
+        for simulator in ("break-boundary", "role-ended", "timeframe-parity", "lifecycle", "rendering-modes", "break-source", "history-range", "dynamic-history", "multiblock-history"):
             self.assertIn(f'"{simulator}"', script)
 
     def test_source_tree_rejects_private_or_network_content(self) -> None:

@@ -2,7 +2,7 @@
 
 ## Übung A: Preisquelle
 
-Vergleiche `Close` und `High/Low` auf demselben Level. Close reagiert erst auf den Schlusskurs; High/Low kann beide Seiten innerhalb einer Bar erkennen. Beobachte nur – ändere keine weiteren Parameter.
+Vergleiche `Close` und `High/Low` auf demselben Level. Close reagiert erst auf den Schlusskurs; High/Low bewertet die für Resistance bzw. Support erwartete Seite. Eine beidseitige Candle erzeugt keinen zweiten Commit. Beobachte nur – ändere keine weiteren Parameter.
 
 <div data-fz-simulator="break-source"></div>
 

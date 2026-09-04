@@ -9,7 +9,9 @@
     "lifecycle": initLifecycle,
     "rendering-modes": initRenderingModes,
     "break-source": initBreakSource,
-    "history-range": initHistoryRange
+    "history-range": initHistoryRange,
+    "dynamic-history": initDynamicHistory,
+    "multiblock-history": initMultiBlockHistory
   };
 
   function html(tag, className, text) {
@@ -604,7 +606,7 @@
 
   function initHistoryRange(root) {
     var controls = html("div", "fz-simulator__controls");
-    var mode = selectControl([["loaded", "Chart loaded range + warm-up"], ["rolling", "Rolling lookback days"], ["fixed", "Fixed calculation start"]], "loaded");
+    var mode = selectControl([["loaded", "Chart loaded range + warm-up"], ["rolling", "Fixed lookback days"], ["fixed", "Fixed calculation start"], ["dynamic", "Dynamic active-level price range"]], "loaded");
     var warmup = rangeControl(2, 30, 1, 10);
     controls.append(field("Berechnungsbereich", mode), field("Warm-up: 10 Tage", warmup));
     var output = html("div");
@@ -613,17 +615,72 @@
       warmup.parentElement.querySelector("span").textContent = "Warm-up: " + warmup.value + " Tage";
       var node = chart("Berechnungsbereich und Warm-up", "0 0 800 250");
       addLine(node, 70, 130, 750, 130, "fz-chart-grid");
-      var start = mode.value === "fixed" ? 100 : mode.value === "rolling" ? 250 : 390;
+      var start = mode.value === "fixed" ? 100 : mode.value === "rolling" ? 250 : mode.value === "dynamic" ? 430 : 390;
       if (mode.value === "loaded") {
         addLine(node, 270, 130, 390, 130, "", { stroke: "#ffca28", "stroke-width": 12, opacity: 0.45 });
       }
       addLine(node, start, 130, 735, 130, "", { stroke: "#35c57a", "stroke-width": 12, opacity: 0.8 });
       addText(node, start, 105, "Berechnungsstart", "", { "text-anchor": "middle" });
       addText(node, 735, 105, "Jetzt", "", { "text-anchor": "middle" });
-      var detail = mode.value === "fixed" ? "expliziter UTC-Anker" : mode.value === "rolling" ? "rollierendes Fenster (z. B. 90 Tage)" : "geladener Chartbereich plus Vorlauf";
+      var detail = mode.value === "fixed" ? "expliziter UTC-Anker" : mode.value === "rolling" ? "rollierendes Fenster (z. B. 90 Tage)" : mode.value === "dynamic" ? "aktive Solid-Level im Zielband plus Historienhorizont" : "geladener Chartbereich plus Vorlauf";
       output.replaceChildren(node, statusRow([["Modus", detail], ["Semantik", "gemeinsamer Zeitraum bleibt source-identisch"], ["Darstellung", "kein Level-Clustering oder Löschen"]]));
     }
     [mode, warmup].forEach(function (control) { control.addEventListener("input", render); control.addEventListener("change", render); });
+    render();
+  }
+
+  function initDynamicHistory(root) {
+    var controls = html("div", "fz-simulator__controls");
+    var range = rangeControl(1, 30, 0.5, 10);
+    var horizon = selectControl([["all", "All available provider history"], ["bounded", "Bounded days"]], "all");
+    var days = rangeControl(1, 3650, 1, 365);
+    controls.append(field("Aktive Range: 10,00 %", range), field("Historienhorizont", horizon), field("Bounded days: 365", days));
+    var output = html("div");
+    root.replaceChildren(controls, output);
+    function render() {
+      range.parentElement.querySelector("span").textContent = "Aktive Range: " + Number(range.value).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " %";
+      days.parentElement.querySelector("span").textContent = "Bounded days: " + days.value;
+      days.disabled = horizon.value !== "bounded";
+      var node = chart("Dynamische Historie relativ zu aktiven Levels", "0 0 800 260");
+      addLine(node, 60, 130, 760, 130, "fz-chart-grid");
+      addLine(node, 450, 80, 450, 190, "", { stroke: "#35c57a", "stroke-width": 3 });
+      addLine(node, 310, 130, 590, 130, "", { stroke: "#ffca28", "stroke-width": 18, opacity: 0.4 });
+      addText(node, 450, 60, "letzter geschlossener MIN1-Schluss", "", { "text-anchor": "middle" });
+      addText(node, 450, 170, "Zielband ± " + range.value + " %", "", { "text-anchor": "middle" });
+      output.replaceChildren(node, statusRow([
+        ["Historienmodus", horizon.value === "all" ? "Anbieterhistorie vollständig anfordern" : "auf " + days.value + " Tage begrenzen"],
+        ["Hysterese", "Zielband mit Reserve verhindert unnötige Rangewechsel"],
+        ["Darstellung", "Kein Cluster, Merge, Sampling oder Unterdrücken"]
+      ]));
+    }
+    [range, horizon, days].forEach(function (control) { control.addEventListener("input", render); control.addEventListener("change", render); });
+    render();
+  }
+
+  function initMultiBlockHistory(root) {
+    var controls = html("div", "fz-simulator__controls");
+    var blocks = rangeControl(1, 5, 1, 3);
+    var provider = selectControl([["complete", "Provider vollständig"], ["bounded", "Providergrenze belegt"]], "complete");
+    controls.append(field("Blöcke: 3", blocks), field("Datenlage", provider));
+    var output = html("div");
+    root.replaceChildren(controls, output);
+    function render() {
+      blocks.parentElement.querySelector("span").textContent = "Blöcke: " + blocks.value;
+      var node = chart("Mehrblock-Historie ohne synthetische Minuten", "0 0 800 250");
+      var count = Number(blocks.value);
+      for (var index = 0; index < count; index += 1) {
+        var x = 80 + index * 135;
+        node.appendChild(svgNode("rect", { x: x, y: 90, width: 105, height: 55, rx: 6, fill: index === count - 1 && provider.value === "bounded" ? "#ffca28" : "#35c57a", opacity: 0.75 }));
+        addText(node, x + 52, 123, "Block " + (index + 1), "", { "text-anchor": "middle" });
+      }
+      addLine(node, 80, 175, 740, 175, "fz-chart-grid");
+      output.replaceChildren(node, statusRow([
+        ["Blockgrenze", "höchstens 30.000 erwartete Minuten je Block"],
+        ["Fallback", "höchstens ein DirectReload nach Cache"],
+        ["Ergebnis", provider.value === "complete" ? "Ready nach vollständiger Quelle" : "recoverable Incomplete; keine synthetischen Minuten"]
+      ]));
+    }
+    [blocks, provider].forEach(function (control) { control.addEventListener("input", render); control.addEventListener("change", render); });
     render();
   }
 

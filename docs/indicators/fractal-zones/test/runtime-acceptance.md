@@ -1,12 +1,10 @@
 # Technische Runtime-Abnahme
 
-`runtime_acceptance_complete=true`
+`runtime_acceptance_complete=false`
 
-Die aktuelle veröffentlichte Evidenz bestätigt Build, automatisierte Tests, FZCP v1–v4, ein 9/9-Deployment, Laufzeitverhalten und MVA-17…25. Der Host blieb in einem 2.700,009-Sekunden-Soak bei 188 von 188 Stichproben responsiv.
+## Historische V1–V4-Evidenz
 
-Fünfzehn frühere Benutzerprüfungen wurden in diesem Lauf bewusst nicht wiederholt. Ihre Einzelheiten werden hier weder erfunden noch als neue FZV2-RM-Fälle dupliziert.
-
-## Reproduzierbare Größenklassen
+Die veröffentlichte historische Evidenz bestätigt Build, automatisierte Tests, FZCP v1–v4, ein 9/9-Deployment, Laufzeitverhalten und MVA-17..25. Der Host blieb in einem 2.700,009-Sekunden-Soak bei 188 von 188 Stichproben responsiv.
 
 | Klasse | effektive MIN1-Bars | Laufzeit | Working Set |
 |---|---:|---:|---:|
@@ -14,8 +12,12 @@ Fünfzehn frühere Benutzerprüfungen wurden in diesem Lauf bewusst nicht wieder
 | 30k | 28.800 | ca. 15 s | 678 MiB |
 | ≈130k | 129.600 | unter 30 s | 981 MiB |
 
-Die Werte sind Evidenz des geprüften Systems, keine universelle Hardwaregarantie.
+Diese Werte bleiben historische Evidenz des damals geprüften Systems, keine universelle Hardwaregarantie.
 
-## Akzeptierte nichtblockierende Warnung
+## Aktuelle V5/V6-Grenze
 
-Im Persistenz-Stresstest wurde QuotaExceeded ausgelöst. Optionale Writes pausierten wie vorgesehen; Berechnung und sichtbare Projektion blieben funktionsfähig. Diese Warnung ist dokumentiert und darf nicht als bestanden verschwinden.
+FZCP-v5 und FZCP-v6 sind dokumentationsseitig quellvalidiert, aber **nicht** runtime-validiert: `sourceValidatedRuntimePending`. Erst eine separate nicht-tradende Runtime-Prüfung darf den aktuellen Runtime-Status verändern. Die spätere UI-Inventur allein ist ebenfalls keine vollständige Runtime-Abnahme.
+
+## Akzeptierte historische Warnung
+
+Im Persistenz-Stresstest wurde QuotaExceeded ausgelöst. Optionale Writes pausierten wie vorgesehen; Berechnung und sichtbare Projektion blieben funktionsfähig. Die aktuellen Quotenregeln führen diese Grenze fort, ohne Linien zu reduzieren oder aus dem Chart zu entfernen.

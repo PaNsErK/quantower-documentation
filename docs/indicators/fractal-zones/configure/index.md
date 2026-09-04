@@ -32,9 +32,9 @@ Diese Referenz ist das vollständige aktuelle Inventar der **56 produktseitigen 
 <span id=setting-historical-bottom-line></span>| Line Settings (historically continued level) | **Bottom line options** (HistoricalBottomLineOptions) | line_options | Dash | 1 | Red | Solid | Dash | Dot | DashDot; Breite 1–10; Color Picker | immer |
 <span id=setting-rendering-mode></span>| Rendering | **Rendering mode** (RenderingMode) | selector | Adaptive | Adaptive | Full | Active focus | immer |
 <span id=setting-inactive-state-opacity></span>| Rendering | **Inactive state opacity** (InactiveStateOpacity) | double | 0,35 | 0,10–1,00; Schritt 0,05; 2 Dezimalstellen | nur Active focus |
-<span id=setting-show-status-overlay></span>| Rendering | **Show status overlay** (ShowStatusOverlay) | boolean | an | true | false | immer |
-<span id=setting-enable-price-filter></span>| Rendering | **Limit rendering to current-price range** (EnablePriceRelevanceFilter) | boolean | aus | true | false | immer |
-<span id=setting-price-relevance-percent></span>| Rendering | **Current-price range (+/- %)** (PriceRelevancePercent) | double | 10 | 0–10.000 %; Schritt 0,5; 2 Dezimalstellen | nur wenn Preisfilter aktiv |
+<span id=setting-dynamic-active-level-range-percent></span>| History | **Active-level price range (+/- %)** (DynamicActiveLevelRangePercent) | double | 10,00 | 0–10.000 %; Schritt 0,5; 2 Dezimalstellen | nur Dynamic active-level price range |
+<span id=setting-dynamic-history-horizon-mode></span>| History | **Dynamic history horizon** (DynamicHistoryHorizonMode) | selector | All available provider history | All available provider history | Bounded days | nur Dynamic active-level price range |
+<span id=setting-dynamic-history-bounded-days></span>| History | **Dynamic history (days)** (DynamicHistoryBoundedDays) | integer | 365 | 1–3.650 Tage; Schritt 1 | nur Dynamic active-level price range + Bounded days |
 <span id=setting-open-line-mode></span>| Rendering | **Open line end** (OpenLineProjectionMode) | selector | Current bar end | Current bar end | Minutes | Chart candles | immer |
 <span id=setting-open-line-minutes></span>| Rendering | **Projection (minutes)** (OpenLineProjectionMinutes) | integer | 30 | 1–10.080 Minuten; Schritt 1 | nur Open line end = Minutes |
 <span id=setting-open-line-candles></span>| Rendering | **Projection (chart candles)** (OpenLineProjectionCandles) | integer | 3 | 1–500 zeitbasierte Chartkerzen; Schritt 1 | nur Open line end = Chart candles |
@@ -54,7 +54,7 @@ Diese Referenz ist das vollständige aktuelle Inventar der **56 produktseitigen 
 <span id=setting-line-end-marker-offset-y></span>| Markers | **Line-end marker Y offset** (LineEndMarkerOffsetY) | integer | 0 | -200–200 DPI-Pixel | immer |
 <span id=setting-event-marker-font-size></span>| Markers | **Event marker font size** (EventMarkerFontSize) | integer | 0 | 0 = Hostschrift; sonst 6–32 pt | immer |
 <span id=setting-line-end-marker-font-size></span>| Markers | **Line-end marker font size** (LineEndMarkerFontSize) | integer | 0 | 0 = Hostschrift; sonst 6–32 pt | immer |
-<span id=setting-calculation-range-mode></span>| History | **Calculation range mode** (CalculationRangeMode) | selector | Chart loaded range plus warm-up | Fixed lookback days | Fixed calculation start | Chart loaded range plus warm-up | immer |
+<span id=setting-calculation-range-mode></span>| History | **Calculation range mode** (CalculationRangeMode) | selector | Chart loaded range plus warm-up | Fixed lookback days | Fixed calculation start | Chart loaded range plus warm-up | Dynamic active-level price range | immer |
 <span id=setting-initial-history-days></span>| History | **Fixed lookback (days)** (InitialHistoryDays) | integer | 90 | 1–36.500 Kalendertage; Schritt 1 | nur Fixed lookback days |
 <span id=setting-calculation-start-time></span>| History | **Calculation start** (CalculationStartTime) | datetime | unset | Plattformzeitzone; intern UTC; Änderung mit Bestätigung | nur Fixed calculation start |
 <span id=setting-warmup-mode></span>| History | **Warm-up mode** (WarmupMode) | selector | Automatic | Automatic | Manual | nur Chart loaded range plus warm-up |
@@ -74,4 +74,4 @@ Diese Referenz ist das vollständige aktuelle Inventar der **56 produktseitigen 
 - Reine Anzeigeoptionen verändern keine Levelidentität und starten keinen semantischen Replay.
 - Semantische Einstellungen erzeugen eine neue Settings-Generation; die letzte gute Projektion bleibt bis zum atomaren Publish sichtbar.
 - Null ist bei Break-Distanz und Break-Bestätigung absichtlich gültig.
-- Linien werden nicht geclustert, zusammengelegt, gesampelt oder unterdrückt. Der optionale Preisfilter ist eine reversible Anzeigeabfrage.
+- Linien werden nicht geclustert, zusammengelegt, gesampelt oder unterdrückt. Dynamische Historie begrenzt den Berechnungs-/Publikationsscope und ist keine Anzeigeunterdrückung.

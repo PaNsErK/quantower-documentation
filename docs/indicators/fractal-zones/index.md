@@ -20,6 +20,7 @@ Candidate → Provisional/Dot → Active/Solid → BreakPending
 - Top-Ursprung bleibt grün, Bottom-Ursprung rot – auch nach Rollenwechsel.
 - Linien werden nicht geclustert, gemergt, gesampelt oder unterdrückt.
 - Berechnung ist timeframe-unabhängig; der Chart-Timeframe ist nur die Ansicht.
+- Vier Calculation-Range-Modi reichen vom festen 90-Tage-Fenster bis zur dynamischen Active-Level-Range; die dynamische Variante ist ein Berechnungsscope, kein optischer Linienfilter.
 - Datenlücken, Sidecar-Fehler und Quotenprobleme degradieren fail-closed statt unvollständige Ergebnisse als vollständig zu veröffentlichen.
 
 ## Drei Tiefen
@@ -28,10 +29,10 @@ Candidate → Provisional/Dot → Active/Solid → BreakPending
     Starte mit [Erste 15 Minuten](learning/first-15-minutes.md) und [Current State](current-state.md).
 
 === "Praxis"
-    Nutze [Alle Einstellungen](configure/index.md), die Simulatoren und die [interaktive Testsuite](test/manual-suite.md).
+    Nutze [Alle Einstellungen](configure/index.md), den [dynamischen Historienbereich](understand/dynamic-history.md), die Simulatoren und die [interaktive Testsuite](test/manual-suite.md).
 
 === "Technik"
-    Lies [Break Engine](understand/break-engine.md), [Recovery](understand/recovery.md) und [Runtime-Acceptance](test/runtime-acceptance.md).
+    Lies [Break Engine](understand/break-engine.md), [Mehrblock-Historie](understand/multiblock-history.md), [Recovery](understand/recovery.md) und [Runtime-Acceptance](test/runtime-acceptance.md).
 
 !!! warning "Sicherheitsgrenze"
     Fractal Zones ist ein nicht-tradender Indikator. Tests bleiben auf Chart- und Indikatoroberflächen.
